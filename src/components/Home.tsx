@@ -1,7 +1,9 @@
 import { BookOpen, FileText, Bell, HeartPulse, ArrowRight, MessageCircle, CalendarDays } from 'lucide-react';
 import RoutineWidget from './RoutineWidget';
+import CalendarWidget from './CalendarWidget';
+import GalleryWidget from './GalleryWidget';
 
-export default function Home({ setActiveTab }: { setActiveTab: (t: string) => void }) {
+export default function Home({ setActiveTab, setActiveAlbumId }: { setActiveTab: (t: string) => void, setActiveAlbumId: (id: string | null) => void }) {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
@@ -105,6 +107,14 @@ export default function Home({ setActiveTab }: { setActiveTab: (t: string) => vo
           <span className="text-emerald-400 text-sm font-medium flex items-center gap-2 group-hover:gap-3 transition-all">View updates <ArrowRight size={18} /></span>
         </div>
       </section>
+
+      {/* Calendar Widget Section */}
+      <section className="mt-8 lg:mt-12">
+        <CalendarWidget setActiveTab={setActiveTab} />
+      </section>
+
+      {/* Gallery Widget Section */}
+      <GalleryWidget setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />
 
       {/* Contact Section */}
       <section id="contact-section" className="mt-12 lg:mt-16 bg-slate-900/40 backdrop-blur-sm p-8 md:p-12 rounded-[2rem] border border-white/5 text-center flex flex-col items-center justify-center animate-in slide-in-from-bottom-4 duration-700 delay-300">

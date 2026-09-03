@@ -5,23 +5,28 @@ import Home from './components/Home';
 import ResourceList from './components/ResourceList';
 import Notices from './components/Notices';
 import Routine from './components/Routine';
+import CalendarPage from './components/Calendar';
+import GalleryPage from './components/GalleryPage';
 import { resources, notices } from './data';
 import { Heart } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
+  const [activeAlbumId, setActiveAlbumId] = useState<string | null>(null);
 
   const lectures = resources.filter(r => r.type === 'lecture');
   const books = resources.filter(r => r.type === 'book');
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-200 text-slate-200">
-      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />
       <NoticeTicker notices={notices} setActiveTab={setActiveTab} />
 
       <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 md:pt-6 md:pb-12">
-        {(activeTab === 'home' || activeTab === 'contact') && <Home setActiveTab={setActiveTab} />}
+        {(activeTab === 'home' || activeTab === 'contact') && <Home setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />}
         {activeTab === 'routine' && <Routine />}
+        {activeTab === 'calendar' && <CalendarPage />}
+        {activeTab === 'gallery' && <GalleryPage activeAlbumId={activeAlbumId} setActiveAlbumId={setActiveAlbumId} />}
         {activeTab === 'lectures' && (
           <ResourceList
             title="Class Lectures"

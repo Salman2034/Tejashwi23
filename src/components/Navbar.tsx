@@ -1,7 +1,7 @@
-import { Stethoscope, BookOpen, FileText, Bell, Menu, X, MessageCircle, CalendarDays } from 'lucide-react';
+import { Stethoscope, BookOpen, FileText, Bell, Menu, X, MessageCircle, CalendarDays, Image as ImageIcon } from 'lucide-react';
 import { useState } from 'react';
 
-export default function Navbar({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (t: string) => void }) {
+export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { activeTab: string, setActiveTab: (t: string) => void, setActiveAlbumId: (id: string | null) => void }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
@@ -10,6 +10,8 @@ export default function Navbar({ activeTab, setActiveTab }: { activeTab: string,
     { id: 'lectures', label: 'Lectures', icon: FileText },
     { id: 'books', label: 'Books', icon: BookOpen },
     { id: 'notices', label: 'Notices', icon: Bell },
+    { id: 'calendar', label: 'Calendar', icon: CalendarDays },
+    { id: 'gallery', label: 'Gallery', icon: ImageIcon },
     { id: 'contact', label: 'Contact', icon: MessageCircle },
   ];
 
@@ -20,6 +22,7 @@ export default function Navbar({ activeTab, setActiveTab }: { activeTab: string,
         document.getElementById('contact-section')?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     } else {
+      if (id === 'gallery') setActiveAlbumId(null);
       setActiveTab(id);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -41,28 +44,28 @@ export default function Navbar({ activeTab, setActiveTab }: { activeTab: string,
               <p className="text-xs text-emerald-400/80 font-medium tracking-wider uppercase">East West Medical College</p>
             </div>
           </div>
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-2">
+          <div className="hidden lg:block">
+            <div className="ml-6 flex items-baseline space-x-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                       activeTab === item.id 
                         ? 'bg-emerald-500/10 text-emerald-400 shadow-inner border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]' 
                         : 'text-slate-400 hover:bg-white/5 hover:text-slate-200 border border-transparent'
                     }`}
                   >
-                    <Icon size={16} className={activeTab === item.id ? "text-emerald-400" : "text-slate-500"} />
+                    <Icon size={14} className={activeTab === item.id ? "text-emerald-400" : "text-slate-500"} />
                     {item.label}
                   </button>
                 )
               })}
             </div>
           </div>
-          <div className="-mr-2 flex md:hidden">
+          <div className="-mr-2 flex lg:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-white/10 focus:outline-none transition-colors"
@@ -73,7 +76,7 @@ export default function Navbar({ activeTab, setActiveTab }: { activeTab: string,
         </div>
       </div>
       {isOpen && (
-        <div className="md:hidden bg-slate-900/95 backdrop-blur-xl shadow-inner border-t border-white/5">
+        <div className="lg:hidden bg-slate-900/95 backdrop-blur-xl shadow-inner border-t border-white/5">
           <div className="px-3 pt-3 pb-4 space-y-1 sm:px-4">
             {navItems.map((item) => {
               const Icon = item.icon;

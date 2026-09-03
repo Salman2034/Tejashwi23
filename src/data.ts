@@ -10,10 +10,17 @@ export const notices: Notice[] = [
   },
   {
     id: '2',
-    title: 'Anatomy Prof Exam Schedule Updated',
-    content: 'The upcoming professional examination routine has been published. Please check the college notice board for detailed timing and viva schedules.',
-    date: '2026-09-01',
-    isImportant: false,
+    title: 'Term Exam Starting Soon',
+    content: 'The Term Examination will officially start from 13th September. Please prepare accordingly.',
+    date: '2026-09-03',
+    isImportant: true,
+  },
+  {
+    id: '3',
+    title: 'Complete Integrated Teaching Assignment',
+    content: 'Please ensure to complete your integrated teaching assignment before the term exam begins.',
+    date: '2026-09-03',
+    isImportant: true,
   }
 ];
 
