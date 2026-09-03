@@ -1,4 +1,4 @@
-import { Stethoscope, BookOpen, FileText, Bell, Menu, X, MessageCircle } from 'lucide-react';
+import { Stethoscope, BookOpen, FileText, Bell, Menu, X, MessageCircle, CalendarDays } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Navbar({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (t: string) => void }) {
@@ -6,6 +6,7 @@ export default function Navbar({ activeTab, setActiveTab }: { activeTab: string,
 
   const navItems = [
     { id: 'home', label: 'Home', icon: Stethoscope },
+    { id: 'routine', label: 'Routine', icon: CalendarDays },
     { id: 'lectures', label: 'Lectures', icon: FileText },
     { id: 'books', label: 'Books', icon: BookOpen },
     { id: 'notices', label: 'Notices', icon: Bell },

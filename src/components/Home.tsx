@@ -1,4 +1,5 @@
-import { BookOpen, FileText, Bell, HeartPulse, ArrowRight, MessageCircle } from 'lucide-react';
+import { BookOpen, FileText, Bell, HeartPulse, ArrowRight, MessageCircle, CalendarDays } from 'lucide-react';
+import RoutineWidget from './RoutineWidget';
 
 export default function Home({ setActiveTab }: { setActiveTab: (t: string) => void }) {
   return (
@@ -27,7 +28,7 @@ export default function Home({ setActiveTab }: { setActiveTab: (t: string) => vo
         </div>
         
         <div className="relative px-6 py-10 sm:px-12 sm:py-16 md:flex md:items-center md:justify-between text-center md:text-left z-10">
-          <div className="md:w-2/3 md:pr-12">
+          <div className="md:w-7/12 lg:w-2/3 md:pr-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm font-semibold mb-6 shadow-[0_0_20px_rgba(16,185,129,0.1)] backdrop-blur-md">
               <HeartPulse size={16} className="text-emerald-400 animate-pulse" /> 23rd Batch EWMC
             </div>
@@ -36,7 +37,7 @@ export default function Home({ setActiveTab }: { setActiveTab: (t: string) => vo
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-emerald-400 whitespace-nowrap drop-shadow-sm">Tejashwi 23</span>
             </h2>
             <p className="text-base sm:text-lg text-slate-300 mb-8 max-w-2xl mx-auto md:mx-0 leading-relaxed font-light">
-              The official digital hub for the 23rd batch of East West Medical College. Access lecture notes, textbooks, and important batch notices all in one place.
+              The official digital hub for the 23rd batch of East West Medical College. Access class routines, lecture notes, textbooks, and batch notices all in one place.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <button 
@@ -55,11 +56,16 @@ export default function Home({ setActiveTab }: { setActiveTab: (t: string) => vo
               </button>
             </div>
           </div>
-          <div className="hidden md:flex md:w-1/3 justify-center mt-8 md:mt-0 opacity-80">
-            <HeartPulse size={220} className="text-emerald-500/20 drop-shadow-[0_0_50px_rgba(16,185,129,0.2)]" strokeWidth={1} />
+          <div className="hidden md:block md:w-5/12 lg:w-1/3 mt-8 md:mt-0">
+            <RoutineWidget setActiveTab={setActiveTab} />
           </div>
         </div>
       </section>
+
+      {/* Routine Widget for Mobile (Hidden on Desktop) */}
+      <div className="md:hidden">
+        <RoutineWidget setActiveTab={setActiveTab} />
+      </div>
 
       {/* Quick Access Cards */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
@@ -70,9 +76,9 @@ export default function Home({ setActiveTab }: { setActiveTab: (t: string) => vo
           <div className="w-14 h-14 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all duration-300 ring-1 ring-emerald-500/20 group-hover:ring-emerald-500/40 shadow-inner">
             <FileText size={26} />
           </div>
-          <h3 className="text-2xl font-bold text-slate-100 mb-3 tracking-tight">Class Lectures</h3>
-          <p className="text-slate-400 mb-8 leading-relaxed flex-grow font-light">Download PDF slides, handwritten notes, and presentations from recent classes.</p>
-          <span className="text-emerald-400 font-medium flex items-center gap-2 group-hover:gap-3 transition-all">Browse resources <ArrowRight size={18} /></span>
+          <h3 className="text-xl font-bold text-slate-100 mb-3 tracking-tight">Class Lectures</h3>
+          <p className="text-slate-400 text-sm mb-8 leading-relaxed flex-grow font-light">Download PDF slides, handwritten notes, and presentations.</p>
+          <span className="text-emerald-400 text-sm font-medium flex items-center gap-2 group-hover:gap-3 transition-all">Browse resources <ArrowRight size={18} /></span>
         </div>
 
         <div 
@@ -82,9 +88,9 @@ export default function Home({ setActiveTab }: { setActiveTab: (t: string) => vo
           <div className="w-14 h-14 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all duration-300 ring-1 ring-emerald-500/20 group-hover:ring-emerald-500/40 shadow-inner">
             <BookOpen size={26} />
           </div>
-          <h3 className="text-2xl font-bold text-slate-100 mb-3 tracking-tight">Textbooks</h3>
-          <p className="text-slate-400 mb-8 leading-relaxed flex-grow font-light">Access a curated digital collection of reference medical textbooks for your academic year.</p>
-          <span className="text-emerald-400 font-medium flex items-center gap-2 group-hover:gap-3 transition-all">Open library <ArrowRight size={18} /></span>
+          <h3 className="text-xl font-bold text-slate-100 mb-3 tracking-tight">Textbooks</h3>
+          <p className="text-slate-400 text-sm mb-8 leading-relaxed flex-grow font-light">Access a curated digital collection of reference medical textbooks.</p>
+          <span className="text-emerald-400 text-sm font-medium flex items-center gap-2 group-hover:gap-3 transition-all">Open library <ArrowRight size={18} /></span>
         </div>
 
         <div 
@@ -94,9 +100,9 @@ export default function Home({ setActiveTab }: { setActiveTab: (t: string) => vo
           <div className="w-14 h-14 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all duration-300 ring-1 ring-emerald-500/20 group-hover:ring-emerald-500/40 shadow-inner">
             <Bell size={26} />
           </div>
-          <h3 className="text-2xl font-bold text-slate-100 mb-3 tracking-tight">Notices</h3>
-          <p className="text-slate-400 mb-8 leading-relaxed flex-grow font-light">Stay updated with the latest batch announcements, exam schedules, and important alerts.</p>
-          <span className="text-emerald-400 font-medium flex items-center gap-2 group-hover:gap-3 transition-all">View updates <ArrowRight size={18} /></span>
+          <h3 className="text-xl font-bold text-slate-100 mb-3 tracking-tight">Notices</h3>
+          <p className="text-slate-400 text-sm mb-8 leading-relaxed flex-grow font-light">Stay updated with the latest batch announcements and alerts.</p>
+          <span className="text-emerald-400 text-sm font-medium flex items-center gap-2 group-hover:gap-3 transition-all">View updates <ArrowRight size={18} /></span>
         </div>
       </section>
 

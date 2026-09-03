@@ -4,6 +4,7 @@ import NoticeTicker from './components/NoticeTicker';
 import Home from './components/Home';
 import ResourceList from './components/ResourceList';
 import Notices from './components/Notices';
+import Routine from './components/Routine';
 import { resources, notices } from './data';
 import { Heart } from 'lucide-react';
 
@@ -20,6 +21,7 @@ export default function App() {
 
       <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 md:pt-6 md:pb-12">
         {(activeTab === 'home' || activeTab === 'contact') && <Home setActiveTab={setActiveTab} />}
+        {activeTab === 'routine' && <Routine />}
         {activeTab === 'lectures' && (
           <ResourceList
             title="Class Lectures"
