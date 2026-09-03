@@ -1,0 +1,6 @@
+{
+  "name": "Tejashwi 23 - EWMC",
+  "description": "Batch website for Tejashwi 23, the 23rd batch of East West Medical College.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
