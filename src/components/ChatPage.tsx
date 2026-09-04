@@ -62,7 +62,9 @@ export default function ChatPage() {
 
   // Chat message input
   const [inputText, setInputText] = useState('');
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const isFirstRenderRef = useRef(true);
+  const prevMessagesCountRef = useRef(0);
 
   // Check if roll is already taken by another student
   const checkRollAvailability = async (roll: string, currentUid: string): Promise<boolean> => {
@@ -192,8 +194,30 @@ export default function ChatPage() {
     }
   }, []);
 
+  // Keep scroll focused at the top of the page when opening Chat, and scroll only inside the messages box
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
+  // Scroll to bottom strictly INSIDE the chat container, never moving the entire window/page
+  useEffect(() => {
+    if (!chatContainerRef.current) return;
+    
+    if (isFirstRenderRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      isFirstRenderRef.current = false;
+      prevMessagesCountRef.current = messages.length;
+      return;
+    }
+
+    // When channel changes or new message is received, smoothly scroll inside the container only
+    if (messages.length !== prevMessagesCountRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+      prevMessagesCountRef.current = messages.length;
+    }
   }, [messages, activeChannel]);
 
   // Exclusive Google One-Click Sign-In
@@ -870,7 +894,7 @@ export default function ChatPage() {
           </div>
 
           {/* Messages Container */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 custom-scrollbar">
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 custom-scrollbar">
             {currentChannelMessages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-400">
                 <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mb-3">
@@ -933,7 +957,6 @@ export default function ChatPage() {
                 );
               })
             )}
-            <div ref={messagesEndRef} />
           </div>
 
           {/* Chat Message Input Field */}
