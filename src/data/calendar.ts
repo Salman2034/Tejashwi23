@@ -41,13 +41,13 @@ export const academicCalendar: MonthCalendar[] = [
   { year: 2026, monthIndex: 8, monthName: 'September', events: [
       { id: '14', date: 1, displayDate: '1st September to 3rd September, 2026', title: "Feedback class of 2nd card", type: 'academic' },
       { id: '15', date: 4, displayDate: '4th September, 2026', title: "Srikrishna Janmashtami", type: 'holiday' },
-      { id: '16', date: 4, displayDate: '4th September to 11th September, 2026', title: "Preparatory leave for 1st term", type: 'holiday' },
-      { id: '17', date: 12, displayDate: '12th September to 26th September, 2026', title: "1st term final examination", type: 'exam' },
-      { id: '18', date: 27, displayDate: '27th September to 3rd October, 2026', title: "Post term leave", type: 'holiday' }
+      { id: '16', date: 4, displayDate: '4th September to 12th September, 2026', title: "Preparatory leave for 1st term", type: 'holiday' },
+      { id: '17', date: 13, displayDate: '13th September to 28th September, 2026', title: "1st term final examination", type: 'exam' },
+      { id: '18', date: 29, displayDate: '29th September to 5th October, 2026', title: "Post term leave", type: 'holiday' }
   ]},
   { year: 2026, monthIndex: 9, monthName: 'October', events: [
       { id: '19', date: 1, displayDate: '1st week of October, 2026 to 2nd week of April, 2027', title: "2nd Term", type: 'academic' },
-      { id: '20', date: 4, displayDate: '4th October to 6th October, 2026', title: "Feedback Class of 1st term exam", type: 'academic' },
+      { id: '20', date: 6, displayDate: '6th October to 8th October, 2026', title: "Feedback Class of 1st term exam", type: 'academic' },
       { id: '21', date: 17, displayDate: '17th October, 2026', title: "Parents meeting", type: 'other' },
       { id: '22', date: 20, displayDate: '20th October & 21st October, 2026', title: "Durga puja", type: 'holiday' }
   ]},
