@@ -17,6 +17,7 @@ import {
 } from 'firebase/auth';
 import { db, auth } from '../firebase';
 import { ChatMessage, INITIAL_CHAT_MESSAGES } from '../data/chat';
+import { useNotifications } from '../context/NotificationContext';
 
 const ADMIN_EMAIL = 'cadetsalman2034@gmail.com';
 
@@ -27,7 +28,13 @@ const CHANNELS = [
 ] as const;
 
 export default function ChatPage() {
-  const [activeChannel, setActiveChannel] = useState<'batch' | 'academic' | 'casual'>('batch');
+  const { 
+    chatActiveChannel: activeChannel, 
+    setChatActiveChannel: setActiveChannel,
+    markMessagesAsRead,
+    notifications
+  } = useNotifications();
+
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_CHAT_MESSAGES);
   const [isFirebaseConnected, setIsFirebaseConnected] = useState<boolean>(false);
   const [isSending, setIsSending] = useState(false);
@@ -197,7 +204,8 @@ export default function ChatPage() {
   // Keep scroll focused at the top of the page when opening Chat, and scroll only inside the messages box
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
-  }, []);
+    markMessagesAsRead(activeChannel);
+  }, [activeChannel, markMessagesAsRead]);
 
   // Scroll to bottom strictly INSIDE the chat container, never moving the entire window/page
   useEffect(() => {
@@ -826,29 +834,44 @@ export default function ChatPage() {
               {CHANNELS.map((ch) => {
                 const isActive = activeChannel === ch.id;
                 const count = messages.filter((m) => (m.channel || 'batch') === ch.id).length;
+                const unreadForChannel = notifications.filter(
+                  (n) => n.type === 'message' && !n.read && n.channelId === ch.id
+                ).length;
                 return (
                   <button
                     key={ch.id}
                     onClick={() => setActiveChannel(ch.id)}
-                    className={`w-full text-left p-2.5 sm:p-3 rounded-xl transition-all flex items-center justify-between ${
+                    className={`w-full text-left p-2.5 sm:p-3 rounded-xl transition-all flex items-center justify-between cursor-pointer relative ${
                       isActive
                         ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
                         : 'text-slate-700 dark:text-slate-300 hover:bg-emerald-100/50 dark:hover:bg-emerald-500/10'
                     }`}
                   >
                     <div className="flex items-center gap-2.5 truncate">
-                      <Hash size={18} className={isActive ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'} />
+                      <div className="relative">
+                        <Hash size={18} className={isActive ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'} />
+                        {unreadForChannel > 0 && !isActive && (
+                          <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-rose-500 ring-1 ring-white dark:ring-[#03130d] animate-pulse" />
+                        )}
+                      </div>
                       <span className="font-semibold text-sm truncate">{ch.name}</span>
                     </div>
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full font-mono font-bold ${
-                        isActive
-                          ? 'bg-white/20 text-white'
-                          : 'bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300'
-                      }`}
-                    >
-                      {count}
-                    </span>
+                    <div className="flex items-center gap-1">
+                      {unreadForChannel > 0 && !isActive && (
+                        <span className="text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-rose-500 text-white">
+                          {unreadForChannel}
+                        </span>
+                      )}
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full font-mono font-bold ${
+                          isActive
+                            ? 'bg-white/20 text-white'
+                            : 'bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300'
+                        }`}
+                      >
+                        {count}
+                      </span>
+                    </div>
                   </button>
                 );
               })}

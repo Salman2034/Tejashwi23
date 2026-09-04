@@ -95,3 +95,21 @@ export interface GalleryGroup {
   createdBy?: string;
 }
 
+export type NotificationType = 'notice' | 'message';
+
+export interface AppNotification {
+  id: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  timestamp: number;
+  read: boolean;
+  linkTab: 'notices' | 'chat' | 'home';
+  isImportant?: boolean;
+  channelId?: 'batch' | 'academic' | 'casual';
+  senderName?: string;
+  senderRoll?: string;
+  senderRole?: 'admin' | 'student';
+  noticeId?: string;
+}
+

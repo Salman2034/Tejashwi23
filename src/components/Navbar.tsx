@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { Stethoscope, BookOpen, FileText, Bell, MessageCircle, MessageSquare, CalendarDays, Image as ImageIcon, Vote, ChevronLeft, ChevronRight } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
+import NotificationCenter from './NotificationCenter';
 
 export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { activeTab: string, setActiveTab: (t: string) => void, setActiveAlbumId: (id: string | null) => void }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const navItems = [
     { id: 'home', label: 'Home', icon: Stethoscope },
@@ -104,8 +106,8 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
               </div>
             </div>
 
-            {/* Desktop Navigation Links + Theme Toggler */}
-            <div className="hidden lg:flex items-center gap-1">
+            {/* Desktop Navigation Links + Notification Bell + Theme Toggler */}
+            <div className="hidden lg:flex items-center gap-1.5">
               <nav className="flex items-center bg-slate-100/60 dark:bg-black/20 p-1 rounded-xl border border-emerald-900/10 dark:border-emerald-500/15">
                 {navItems.map((item) => {
                   const Icon = item.icon;
@@ -114,7 +116,7 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
                     <button
                       key={item.id}
                       onClick={() => handleNavClick(item.id)}
-                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 whitespace-nowrap ${
+                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 whitespace-nowrap cursor-pointer ${
                         isActive 
                           ? 'bg-emerald-600 text-white dark:bg-emerald-500/25 dark:text-emerald-300 shadow-xs border border-emerald-700 dark:border-emerald-500/40' 
                           : 'text-slate-700 dark:text-slate-300 hover:text-emerald-800 dark:hover:text-emerald-200 hover:bg-white/60 dark:hover:bg-white/10'
@@ -128,14 +130,36 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
               </nav>
 
               <div className="h-5 w-px bg-emerald-900/10 dark:bg-white/10 mx-0.5 shrink-0" />
+
+              {/* Notification Bell Button */}
+              <button
+                type="button"
+                onClick={() => setIsNotificationOpen(true)}
+                title="Notifications"
+                className="w-8 h-8 rounded-lg flex items-center justify-center transition-all border cursor-pointer bg-slate-100/80 dark:bg-black/20 text-slate-700 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-white border-emerald-900/10 dark:border-emerald-500/15 hover:bg-slate-200/60 dark:hover:bg-white/10"
+              >
+                <Bell size={15} />
+              </button>
+
               <ThemeToggle compact={true} className="!w-8 !h-8 !rounded-lg" />
             </div>
 
-            {/* Mobile & Tablet Header Active View Indicator + Theme Toggle */}
+            {/* Mobile & Tablet Header Active View Indicator + Notification Bell + Theme Toggle */}
             <div className="lg:hidden flex items-center gap-1.5">
               <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100/80 dark:bg-white/5 backdrop-blur-xl text-emerald-900 dark:text-emerald-400 border border-emerald-300/60 dark:border-emerald-500/30 capitalize">
                 {navItems.find(i => i.id === activeTab)?.label || activeTab}
               </span>
+
+              {/* Mobile Notification Bell */}
+              <button
+                type="button"
+                onClick={() => setIsNotificationOpen(true)}
+                title="Notifications"
+                className="w-7 h-7 rounded-lg flex items-center justify-center transition-all border cursor-pointer bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 border-emerald-900/10 dark:border-emerald-500/20 hover:bg-slate-200/60 dark:hover:bg-white/10"
+              >
+                <Bell size={14} />
+              </button>
+
               <ThemeToggle compact={true} className="!w-7 !h-7 !rounded-lg" />
             </div>
           </div>
@@ -144,6 +168,12 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
 
       {/* Spacer matching compact height */}
       <div className="h-12 sm:h-13 w-full shrink-0" aria-hidden="true" />
+
+      {/* Slide-over Notification Center Modal */}
+      <NotificationCenter 
+        isOpen={isNotificationOpen} 
+        onClose={() => setIsNotificationOpen(false)} 
+      />
 
       {/* Mobile & Tablet Floating Bottom Glass Dock - Compact Ergonomic Layout with Scroll Hint & Arrows */}
       <nav 

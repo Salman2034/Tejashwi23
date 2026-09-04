@@ -16,10 +16,13 @@ import { galleryGroups as defaultGalleryGroups } from './data/gallery';
 import { Notice, Resource, GalleryGroup } from './types';
 import { Heart } from 'lucide-react';
 import { ThemeProvider } from './context/ThemeContext';
+import { NotificationProvider } from './context/NotificationContext';
+import NotificationToast from './components/NotificationToast';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [activeAlbumId, setActiveAlbumId] = useState<string | null>(null);
+  const [chatActiveChannel, setChatActiveChannel] = useState<'batch' | 'academic' | 'casual'>('batch');
   const [noticesList, setNoticesList] = useState<Notice[]>(defaultNotices);
   const [resourcesList, setResourcesList] = useState<Resource[]>(defaultResources);
   const [galleryList, setGalleryList] = useState<GalleryGroup[]>(defaultGalleryGroups);
@@ -113,13 +116,22 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-[#f3f7f5] dark:bg-[#04130d] text-slate-800 dark:text-slate-200 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-950 dark:selection:text-emerald-200 transition-colors duration-300 relative overflow-x-clip">
-        {/* Ambient deep green background aura */}
-        <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-emerald-500/10 dark:bg-emerald-600/10 rounded-full blur-[140px] pointer-events-none -z-10 -translate-y-1/2" />
-        <div className="fixed bottom-1/4 right-0 w-[500px] h-[500px] bg-teal-500/10 dark:bg-teal-700/10 rounded-full blur-[120px] pointer-events-none -z-10 translate-x-1/3" />
+      <NotificationProvider
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        chatActiveChannel={chatActiveChannel}
+        setChatActiveChannel={setChatActiveChannel}
+      >
+        <div className="min-h-screen bg-[#f3f7f5] dark:bg-[#04130d] text-slate-800 dark:text-slate-200 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-950 dark:selection:text-emerald-200 transition-colors duration-300 relative overflow-x-clip">
+          {/* Ambient deep green background aura */}
+          <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-emerald-500/10 dark:bg-emerald-600/10 rounded-full blur-[140px] pointer-events-none -z-10 -translate-y-1/2" />
+          <div className="fixed bottom-1/4 right-0 w-[500px] h-[500px] bg-teal-500/10 dark:bg-teal-700/10 rounded-full blur-[120px] pointer-events-none -z-10 translate-x-1/3" />
 
-        <Navbar activeTab={activeTab} setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />
-        <NoticeTicker notices={noticesList} setActiveTab={setActiveTab} />
+          {/* Toast Notification Alert Overlay */}
+          <NotificationToast />
+
+          <Navbar activeTab={activeTab} setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />
+          <NoticeTicker notices={noticesList} setActiveTab={setActiveTab} />
 
         <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 lg:pt-6 lg:pb-12">
           {(activeTab === 'home' || activeTab === 'contact') && (
@@ -185,6 +197,7 @@ export default function App() {
           </div>
         </footer>
       </div>
-    </ThemeProvider>
-  );
+    </NotificationProvider>
+  </ThemeProvider>
+);
 }

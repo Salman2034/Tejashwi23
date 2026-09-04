@@ -10,10 +10,13 @@ import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { db, auth } from '../firebase';
 import { Notice } from '../types';
 import { notices as defaultNotices } from '../data';
+import { useNotifications } from '../context/NotificationContext';
 
 const ADMIN_EMAIL = 'cadetsalman2034@gmail.com';
 
 export default function Notices({ notices }: { notices: Notice[] }) {
+  const { markNoticesAsRead } = useNotifications();
+
   // Authentication State
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const isCurrentUserAdmin = (currentUser?.email || '').toLowerCase() === ADMIN_EMAIL.toLowerCase();
@@ -37,6 +40,11 @@ export default function Notices({ notices }: { notices: Notice[] }) {
 
   // User notification feedback toast
   const [actionNotice, setActionNotice] = useState<string | null>(null);
+
+  // Mark all notices as read when visiting Notices page
+  useEffect(() => {
+    markNoticesAsRead();
+  }, [markNoticesAsRead]);
 
   // Listen to Auth State globally (no login button rendered here per user instructions)
   useEffect(() => {
