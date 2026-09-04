@@ -1044,7 +1044,14 @@ export default function ChatPage() {
             ) : (
               currentChannelMessages.map((msg) => {
                 const isMe = currentUser ? msg.senderUid === currentUser.uid : false;
-                const formattedTime = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                const msgDate = new Date(msg.timestamp);
+                const today = new Date();
+                const isToday = msgDate.toDateString() === today.toDateString();
+                const formattedTime = msgDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const formattedDate = msgDate.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                const timestampDisplay = isToday ? `Today at ${formattedTime}` : `${formattedDate}, ${formattedTime}`;
+
                 const isMsgAdmin = msg.role === 'admin' || (msg.senderEmail || '').toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
                 return (
@@ -1063,7 +1070,7 @@ export default function ChatPage() {
                           <ShieldAlert size={10} /> Admin
                         </span>
                       )}
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">{formattedTime}</span>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">{timestampDisplay}</span>
 
                       {/* Admin Message Delete & Ban Triggers */}
                       {isCurrentUserAdmin && (
