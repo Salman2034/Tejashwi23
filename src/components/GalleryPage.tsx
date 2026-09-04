@@ -23,17 +23,12 @@ export default function GalleryPage({ activeAlbumId, setActiveAlbumId }: { activ
           >
             <X size={24} />
           </button>
-          <div className="relative max-w-full max-h-full">
+          <div className="relative max-w-full max-h-full flex flex-col items-center">
             <img 
               src={lightboxImage.src} 
               alt={lightboxImage.alt}
-              className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+              className="max-w-full max-h-[88vh] object-contain rounded-lg shadow-2xl"
             />
-            {lightboxImage.caption && (
-              <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-center rounded-b-lg">
-                <p className="text-white text-lg font-medium">{lightboxImage.caption}</p>
-              </div>
-            )}
           </div>
         </div>
       )}
@@ -98,27 +93,18 @@ export default function GalleryPage({ activeAlbumId, setActiveAlbumId }: { activ
                 <div 
                   key={img.id}
                   onClick={() => setLightboxImage(img)}
-                  className="group relative rounded-2xl overflow-hidden aspect-[4/3] bg-emerald-950/20 border border-emerald-900/10 dark:border-white/5 shadow-lg cursor-pointer"
+                  className="group relative rounded-2xl overflow-hidden aspect-[4/3] bg-emerald-950/20 border border-emerald-900/10 dark:border-white/5 shadow-md hover:shadow-xl transition-all cursor-pointer"
                 >
                   <img 
                     src={img.src} 
                     alt={img.alt} 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent opacity-90 transition-opacity" />
                   
-                  {/* Photo Title & Caption Overlay styled like the home GalleryWidget */}
-                  <div className="absolute bottom-3 left-3.5 right-3.5 text-white font-medium drop-shadow-md flex items-end justify-between gap-2 z-10">
-                    <div className="min-w-0 flex-1">
-                      <div className="font-bold text-sm leading-snug text-white drop-shadow-sm truncate group-hover:text-emerald-300 transition-colors">
-                        {img.caption || img.alt}
-                      </div>
-                      <div className="text-xs text-emerald-300/90 mt-0.5 font-semibold flex items-center gap-1.5">
-                        <span>{activeGroup.title}</span>
-                      </div>
-                    </div>
-                    <div className="w-8 h-8 rounded-lg bg-white/20 dark:bg-emerald-950/60 backdrop-blur-md flex items-center justify-center text-emerald-200 border border-white/20 shrink-0 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors">
-                      <ZoomIn size={16} />
+                  {/* Subtle hover effect with zoom icon only - no text covering the picture */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 transition-all duration-300 shadow-lg">
+                      <ZoomIn size={20} />
                     </div>
                   </div>
                 </div>
