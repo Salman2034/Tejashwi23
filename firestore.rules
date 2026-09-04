@@ -50,5 +50,13 @@ service cloud.firestore {
         allow delete: if isAdmin();
       }
     }
+
+    // Notices collection:
+    // Anyone can read notices
+    // Only Admin can create, update, or delete notices
+    match /notices/{noticeId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
   }
 }

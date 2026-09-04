@@ -23,6 +23,9 @@ export interface Notice {
   content: string;
   date: string;
   isImportant: boolean;
+  createdTimestamp?: number;
+  updatedTimestamp?: number;
+  createdBy?: string;
 }
 
 export interface PollOption {

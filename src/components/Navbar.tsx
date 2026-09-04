@@ -1,7 +1,12 @@
-import { Stethoscope, BookOpen, FileText, Bell, MessageCircle, MessageSquare, CalendarDays, Image as ImageIcon, Vote } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Stethoscope, BookOpen, FileText, Bell, MessageCircle, MessageSquare, CalendarDays, Image as ImageIcon, Vote, ChevronLeft, ChevronRight } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
 export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { activeTab: string, setActiveTab: (t: string) => void, setActiveAlbumId: (id: string | null) => void }) {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
   const navItems = [
     { id: 'home', label: 'Home', icon: Stethoscope },
     { id: 'routine', label: 'Routine', icon: CalendarDays },
@@ -14,6 +19,54 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
     { id: 'polls', label: 'Polls', icon: Vote },
     { id: 'contact', label: 'Contact', icon: MessageCircle },
   ];
+
+  const updateScrollIndicators = () => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    setCanScrollLeft(scrollLeft > 6);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 6);
+  };
+
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+
+    updateScrollIndicators();
+
+    el.addEventListener('scroll', updateScrollIndicators, { passive: true });
+    window.addEventListener('resize', updateScrollIndicators);
+
+    const ro = new ResizeObserver(() => {
+      updateScrollIndicators();
+    });
+    ro.observe(el);
+
+    return () => {
+      el.removeEventListener('scroll', updateScrollIndicators);
+      window.removeEventListener('resize', updateScrollIndicators);
+      ro.disconnect();
+    };
+  }, []);
+
+  // Center active tab when switched
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    const activeBtn = el.querySelector(`[data-tab-id="${activeTab}"]`) as HTMLElement | null;
+    if (activeBtn) {
+      const leftPos = activeBtn.offsetLeft - (el.clientWidth / 2) + (activeBtn.clientWidth / 2);
+      el.scrollTo({ left: Math.max(0, leftPos), behavior: 'smooth' });
+    }
+    const timer = setTimeout(updateScrollIndicators, 300);
+    return () => clearTimeout(timer);
+  }, [activeTab]);
+
+  const scrollByOffset = (offset: number) => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+    }
+  };
 
   const handleNavClick = (id: string) => {
     if (id === 'contact') {
@@ -92,7 +145,7 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
       {/* Spacer matching compact height */}
       <div className="h-12 sm:h-13 w-full shrink-0" aria-hidden="true" />
 
-      {/* Mobile & Tablet Floating Bottom Glass Dock - Compact Ergonomic Layout */}
+      {/* Mobile & Tablet Floating Bottom Glass Dock - Compact Ergonomic Layout with Scroll Hint & Arrows */}
       <nav 
         id="mobile-bottom-navbar"
         aria-label="Mobile Bottom Navigation"
@@ -101,25 +154,56 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
           bottom: 'max(0.5rem, env(safe-area-inset-bottom, 6px))',
         }}
       >
-        <div className="flex items-center gap-0.5 p-1 rounded-2xl bg-white/90 dark:bg-[#04130d]/85 backdrop-blur-xl backdrop-saturate-180 border border-emerald-900/15 dark:border-white/15 shadow-[0_10px_30px_rgba(0,0,0,0.28)] ring-1 ring-emerald-900/5 dark:ring-white/10 overflow-x-auto no-scrollbar max-w-[95vw]">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleNavClick(item.id)}
-                className={`flex flex-col items-center justify-center py-1 px-1.5 sm:px-2 rounded-xl text-[9px] font-semibold transition-all shrink-0 min-w-[38px] ${
-                  isActive
-                    ? 'bg-emerald-600 text-white dark:bg-emerald-500/25 dark:text-emerald-300 shadow-xs ring-1 ring-emerald-500/30'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-white'
-                }`}
-              >
-                <Icon size={14} />
-                <span className="text-[8.5px] leading-tight mt-0.5 tracking-tight">{item.label}</span>
-              </button>
-            );
-          })}
+        <div className="relative flex items-center p-1 rounded-2xl bg-white/95 dark:bg-[#04130d]/90 backdrop-blur-xl backdrop-saturate-180 border border-emerald-900/15 dark:border-white/15 shadow-[0_10px_30px_rgba(0,0,0,0.28)] ring-1 ring-emerald-900/5 dark:ring-white/10 max-w-[95vw]">
+          {/* Left Scroll Indicator Arrow */}
+          {canScrollLeft && (
+            <button
+              onClick={() => scrollByOffset(-110)}
+              aria-label="Scroll menu left"
+              title="Scroll left"
+              className="shrink-0 flex items-center justify-center w-5.5 h-7 rounded-lg bg-emerald-500/15 dark:bg-emerald-500/25 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/30 transition-all mr-0.5 active:scale-90"
+            >
+              <ChevronLeft size={14} strokeWidth={2.5} />
+            </button>
+          )}
+
+          {/* Scrollable Items Container */}
+          <div 
+            ref={scrollContainerRef}
+            className="flex items-center gap-0.5 overflow-x-auto no-scrollbar scroll-smooth"
+          >
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  data-tab-id={item.id}
+                  onClick={() => handleNavClick(item.id)}
+                  className={`flex flex-col items-center justify-center py-1 px-1.5 sm:px-2 rounded-xl text-[9px] font-semibold transition-all shrink-0 min-w-[38px] ${
+                    isActive
+                      ? 'bg-emerald-600 text-white dark:bg-emerald-500/25 dark:text-emerald-300 shadow-xs ring-1 ring-emerald-500/30'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-white'
+                  }`}
+                >
+                  <Icon size={14} />
+                  <span className="text-[8.5px] leading-tight mt-0.5 tracking-tight">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right Scroll Indicator Arrow with subtle pulse hint */}
+          {canScrollRight && (
+            <button
+              onClick={() => scrollByOffset(110)}
+              aria-label="Scroll menu right"
+              title="More tabs available - swipe or tap to scroll"
+              className="shrink-0 flex items-center justify-center w-5.5 h-7 rounded-lg bg-emerald-500/15 dark:bg-emerald-500/25 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/30 transition-all ml-0.5 animate-pulse active:scale-90"
+            >
+              <ChevronRight size={14} strokeWidth={2.5} />
+            </button>
+          )}
         </div>
       </nav>
     </>

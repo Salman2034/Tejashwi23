@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { db } from './firebase';
 import Navbar from './components/Navbar';
 import NoticeTicker from './components/NoticeTicker';
 import Home from './components/Home';
@@ -9,13 +11,43 @@ import CalendarPage from './components/Calendar';
 import GalleryPage from './components/GalleryPage';
 import ChatPage from './components/ChatPage';
 import PollingPage from './components/PollingPage';
-import { resources, notices } from './data';
+import { resources, notices as defaultNotices } from './data';
+import { Notice } from './types';
 import { Heart } from 'lucide-react';
 import { ThemeProvider } from './context/ThemeContext';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [activeAlbumId, setActiveAlbumId] = useState<string | null>(null);
+  const [noticesList, setNoticesList] = useState<Notice[]>(defaultNotices);
+
+  // Synchronize notices real-time with Firebase Firestore
+  useEffect(() => {
+    try {
+      const q = query(collection(db, 'notices'), orderBy('createdTimestamp', 'desc'));
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          if (!snapshot.empty) {
+            const fetched: Notice[] = snapshot.docs.map((docSnap) => ({
+              id: docSnap.id,
+              ...(docSnap.data() as Omit<Notice, 'id'>),
+            }));
+            setNoticesList(fetched);
+          } else {
+            setNoticesList(defaultNotices);
+          }
+        },
+        (err) => {
+          console.warn('Firestore notices onSnapshot note:', err);
+          setNoticesList(defaultNotices);
+        }
+      );
+      return () => unsubscribe();
+    } catch (e) {
+      console.warn('Error initiating notices listener:', e);
+    }
+  }, []);
 
   const lectures = resources.filter(r => r.type === 'lecture');
   const books = resources.filter(r => r.type === 'book');
@@ -28,7 +60,7 @@ export default function App() {
         <div className="fixed bottom-1/4 right-0 w-[500px] h-[500px] bg-teal-500/10 dark:bg-teal-700/10 rounded-full blur-[120px] pointer-events-none -z-10 translate-x-1/3" />
 
         <Navbar activeTab={activeTab} setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />
-        <NoticeTicker notices={notices} setActiveTab={setActiveTab} />
+        <NoticeTicker notices={noticesList} setActiveTab={setActiveTab} />
 
         <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 lg:pt-6 lg:pb-12">
           {(activeTab === 'home' || activeTab === 'contact') && <Home setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />}
@@ -52,7 +84,7 @@ export default function App() {
             />
           )}
           {activeTab === 'notices' && (
-            <Notices notices={notices} />
+            <Notices notices={noticesList} />
           )}
           {activeTab === 'chat' && <ChatPage />}
           {activeTab === 'polls' && <PollingPage />}

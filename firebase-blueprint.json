@@ -71,6 +71,22 @@
         "timestamp": { "type": "number" }
       },
       "required": ["pollId", "uid", "optionId", "timestamp"]
+    },
+    "notice": {
+      "title": "Notice",
+      "description": "Batch notice and announcement managed by admin",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "date": { "type": "string" },
+        "isImportant": { "type": "boolean" },
+        "createdTimestamp": { "type": "number" },
+        "updatedTimestamp": { "type": "number" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["title", "content", "date", "createdTimestamp"]
     }
   },
   "firestore": {
@@ -97,6 +113,12 @@
         "$ref": "#/entities/pollVote"
       },
       "description": "Subcollection storing one vote per authenticated student"
+    },
+    "/notices/{noticeId}": {
+      "schema": {
+        "$ref": "#/entities/notice"
+      },
+      "description": "Batch announcements managed by Admin"
     }
   }
 }
