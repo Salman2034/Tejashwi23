@@ -45,6 +45,16 @@ export default function ResourceList({ title, description, resources, showHierar
     return TERMS_CONFIG.find(t => t.term === activeTerm);
   }, [activeTerm]);
 
+  // Subject-level resources (like curriculum PDFs) that do not belong to any specific term
+  const subjectLevelResources = useMemo(() => {
+    if (!activePhase || !activeSubject) return [];
+    return resources.filter(r => 
+      r.phase === activePhase && 
+      r.subject === activeSubject && 
+      !r.term
+    );
+  }, [resources, activePhase, activeSubject]);
+
   const filteredResources = useMemo(() => {
     if (search) {
       return resources.filter(r => 
@@ -263,8 +273,8 @@ export default function ResourceList({ title, description, resources, showHierar
 
       {/* LEVEL 3: Term Folders (1st Term, 2nd Term, 3rd Term) for Class Lectures */}
       {!search && activePhase && activeSubject && showHierarchy && !activeTerm && (
-        <div className="animate-in slide-in-from-bottom-4 duration-500">
-          <div className="flex items-center justify-between mb-6 px-2">
+        <div className="animate-in slide-in-from-bottom-4 duration-500 space-y-8">
+          <div className="flex items-center justify-between px-2">
             <button 
               onClick={resetToSubjects} 
               className="flex items-center gap-2 text-slate-400 hover:text-slate-200 transition-colors"
@@ -272,41 +282,58 @@ export default function ResourceList({ title, description, resources, showHierar
               <ArrowLeft size={18} /> Back to Subjects
             </button>
             <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20">
-              {activeSubject} Terms
+              {activeSubject}
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {TERMS_CONFIG.map(({ term, cards, description: termDesc }) => {
-              const termFileCount = resources.filter(r => 
-                r.phase === activePhase && 
-                r.subject === activeSubject && 
-                r.term === term
-              ).length;
+          {/* Subject-level curriculum or syllabus resources (outside term folders) */}
+          {subjectLevelResources.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 px-2 text-slate-300 font-semibold text-sm">
+                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>General & Curriculum Resources</span>
+              </div>
+              <FileList resources={subjectLevelResources} showPath={false} />
+            </div>
+          )}
 
-              return (
-                <button
-                  key={term}
-                  onClick={() => setActiveTerm(term)}
-                  className="group bg-slate-900/40 backdrop-blur-sm p-6 rounded-3xl border border-white/5 hover:border-blue-500/30 hover:bg-slate-800/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] transition-all text-left flex flex-col items-start gap-5 hover:-translate-y-1"
-                >
-                  <div className="p-4 bg-blue-500/10 text-blue-400 rounded-2xl group-hover:scale-110 group-hover:bg-blue-500/20 transition-all ring-1 ring-blue-500/20 shadow-inner">
-                    <Folder size={36} fill="currentColor" className="opacity-80" strokeWidth={1.5} />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-xl font-bold text-slate-200 group-hover:text-blue-300 transition-colors">{term}</h3>
+          <div>
+            <div className="flex items-center gap-2 px-2 mb-4 text-slate-300 font-semibold text-sm">
+              <Folder size={16} className="text-blue-400" />
+              <span>Term Folders</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {TERMS_CONFIG.map(({ term, cards, description: termDesc }) => {
+                const termFileCount = resources.filter(r => 
+                  r.phase === activePhase && 
+                  r.subject === activeSubject && 
+                  r.term === term
+                ).length;
+
+                return (
+                  <button
+                    key={term}
+                    onClick={() => setActiveTerm(term)}
+                    className="group bg-slate-900/40 backdrop-blur-sm p-6 rounded-3xl border border-white/5 hover:border-blue-500/30 hover:bg-slate-800/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] transition-all text-left flex flex-col items-start gap-5 hover:-translate-y-1"
+                  >
+                    <div className="p-4 bg-blue-500/10 text-blue-400 rounded-2xl group-hover:scale-110 group-hover:bg-blue-500/20 transition-all ring-1 ring-blue-500/20 shadow-inner">
+                      <Folder size={36} fill="currentColor" className="opacity-80" strokeWidth={1.5} />
                     </div>
-                    <p className="text-xs text-slate-400 mt-1 font-medium">{cards.join(' & ')}</p>
-                    <p className="text-xs text-slate-500 mt-1">{termDesc}</p>
-                    <div className="mt-4 pt-3 border-t border-white/5 w-full flex items-center justify-between text-xs text-blue-400/80 font-semibold">
-                      <span>{termFileCount} {termFileCount === 1 ? 'Lecture' : 'Lectures'}</span>
-                      <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-xl font-bold text-slate-200 group-hover:text-blue-300 transition-colors">{term}</h3>
+                      </div>
+                      <p className="text-xs text-slate-400 mt-1 font-medium">{cards.join(' & ')}</p>
+                      <p className="text-xs text-slate-500 mt-1">{termDesc}</p>
+                      <div className="mt-4 pt-3 border-t border-white/5 w-full flex items-center justify-between text-xs text-blue-400/80 font-semibold">
+                        <span>{termFileCount} {termFileCount === 1 ? 'Lecture' : 'Lectures'}</span>
+                        <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
-                  </div>
-                </button>
-              );
-            })}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

@@ -25,6 +25,39 @@ export const notices: Notice[] = [
 ];
 
 export const resources: Resource[] = [
+  // BMDC Curriculums (Subject level - not in any term folder)
+  {
+    id: 'curriculum-biochemistry',
+    title: 'Biochemistry BMDC Curriculum',
+    description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Biochemistry.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/5.Biochemistry.pdf',
+    phase: '1st Phase',
+    subject: 'Biochemistry'
+  },
+  {
+    id: 'curriculum-anatomy',
+    title: 'Anatomy BMDC Curriculum',
+    description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Anatomy.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
+    phase: '1st Phase',
+    subject: 'Anatomy'
+  },
+  {
+    id: 'curriculum-physiology',
+    title: 'Physiology BMDC Curriculum',
+    description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Physiology.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/4.Physiology.pdf',
+    phase: '1st Phase',
+    subject: 'Physiology'
+  },
+
+  // 1st Term Card 01 Lectures
   {
     id: 'bio-t1-c1-item01',
     title: 'Item 01',
