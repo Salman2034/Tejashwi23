@@ -8,27 +8,16 @@ export default function Home({ setActiveTab, setActiveAlbumId }: { setActiveTab:
   return (
     <div className="space-y-12">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#06241a] via-[#093224] to-[#041c14] text-white rounded-[2rem] overflow-hidden shadow-2xl border border-emerald-500/20 backdrop-blur-md">
+      <section className="relative bg-[#061d15] text-white rounded-[2rem] overflow-hidden shadow-2xl border border-emerald-500/30 backdrop-blur-md">
         <img 
           src="/Ewmch-bg.png" 
           alt="EWMC Building Background" 
-          className="absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-lighten pointer-events-none -z-20"
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-85 md:opacity-90 pointer-events-none -z-20"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#04140e]/90 via-[#06241a]/60 to-[#03110b]/95 -z-10"></div>
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/15 rounded-full blur-[100px] translate-x-1/3 -translate-y-1/3 -z-10 pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-teal-500/15 rounded-full blur-[80px] -translate-x-1/3 translate-y-1/3 -z-10 pointer-events-none"></div>
-        
-        <div className="absolute inset-0 opacity-[0.04] mix-blend-screen pointer-events-none -z-10">
-          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="medical-pattern" width="60" height="60" patternUnits="userSpaceOnUse">
-                <path d="M30 10 v40 M10 30 h40" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                <circle cx="30" cy="30" r="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#medical-pattern)" />
-          </svg>
-        </div>
+        {/* Transparent tint so text has clear contrast while keeping the college building clearly visible */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#03140e]/85 via-[#03140e]/60 to-[#03140e]/45 -z-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#03140e]/90 via-transparent to-transparent -z-10"></div>
+        <div className="absolute top-0 right-0 w-[450px] h-[450px] bg-emerald-500/10 rounded-full blur-[90px] translate-x-1/3 -translate-y-1/3 -z-10 pointer-events-none"></div>
         
         <div className="relative px-6 py-10 sm:px-12 sm:py-16 md:flex md:items-center md:justify-between text-center md:text-left z-10">
           <div className="md:w-7/12 lg:w-2/3 md:pr-12">

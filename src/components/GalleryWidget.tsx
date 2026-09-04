@@ -41,13 +41,17 @@ export default function GalleryWidget({ setActiveTab, setActiveAlbumId }: { setA
               alt={group.title} 
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
-            <div className="absolute bottom-4 left-4 right-4 text-white font-medium drop-shadow-md translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all flex items-end justify-between">
-              <div>
-                <div className="font-semibold text-sm leading-tight">{group.title}</div>
-                <div className="text-xs text-emerald-300 mt-0.5 font-semibold">{group.images.length} Photos</div>
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent opacity-90 transition-opacity" />
+            <div className="absolute bottom-3 left-3.5 right-3.5 text-white font-medium drop-shadow-md flex items-end justify-between gap-2 z-10">
+              <div className="min-w-0 flex-1">
+                <div className="font-bold text-sm leading-snug text-white drop-shadow-sm truncate group-hover:text-emerald-300 transition-colors">
+                  {group.title}
+                </div>
+                <div className="text-xs text-emerald-300/90 mt-0.5 font-semibold flex items-center gap-1.5">
+                  <span>{group.images.length} Photos</span>
+                </div>
               </div>
-              <span className="text-[10px] uppercase font-bold bg-white/15 backdrop-blur-md px-2 py-0.5 rounded text-emerald-100 border border-white/15">
+              <span className="shrink-0 text-[10px] uppercase font-bold bg-white/20 dark:bg-emerald-950/60 backdrop-blur-md px-2 py-0.5 rounded text-emerald-200 border border-white/20">
                 {group.phase}
               </span>
             </div>

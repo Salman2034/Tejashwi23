@@ -54,15 +54,24 @@ export default function App() {
           )}
         </main>
 
-        <footer className="bg-[#03110b] text-emerald-200/70 pt-8 pb-28 lg:py-8 border-t border-emerald-900/30 mt-auto shadow-2xl transition-colors">
-          <div className="max-w-7xl mx-auto px-4 text-center text-sm flex flex-col items-center justify-center gap-3">
-            <p className="font-medium text-emerald-100 text-base">
+        <footer className="relative bg-[#03110b] text-emerald-200/70 pt-10 pb-28 lg:py-10 border-t border-emerald-500/20 mt-auto shadow-2xl transition-colors overflow-hidden">
+          {/* College building image background */}
+          <img 
+            src="/Ewmch-bg.png" 
+            alt="East West Medical College" 
+            className="absolute inset-0 w-full h-full object-cover object-bottom opacity-25 dark:opacity-30 pointer-events-none select-none -z-10" 
+          />
+          {/* Subtle gradient overlay to guarantee contrast and deep emerald aesthetic */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#020b07]/95 via-[#03110b]/85 to-[#041910]/80 pointer-events-none -z-10" />
+
+          <div className="relative max-w-7xl mx-auto px-4 text-center text-sm flex flex-col items-center justify-center gap-3 z-10">
+            <p className="font-semibold text-emerald-100 text-base drop-shadow-sm">
               © {new Date().getFullYear()} Tejashwi 23 - East West Medical College.
             </p>
-            <p className="flex items-center gap-1.5 justify-center text-emerald-300/80">
+            <p className="flex items-center gap-1.5 justify-center text-emerald-300/90 font-medium">
               Made with <Heart size={16} className="text-rose-500 fill-rose-500 animate-pulse" /> for the batch.
             </p>
-            <p className="text-emerald-400/60 mt-[-4px] text-xs font-mono tracking-wider">
+            <p className="text-emerald-400/70 mt-[-2px] text-xs font-mono tracking-wider">
               by Salman Sami, Roll 01
             </p>
           </div>
