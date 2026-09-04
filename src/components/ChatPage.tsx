@@ -237,11 +237,24 @@ export default function ChatPage() {
       provider.setCustomParameters({ prompt: 'select_account' });
       await signInWithPopup(auth, provider);
     } catch (err: unknown) {
-      console.error('Google sign-in error:', err);
-      if (err instanceof Error) {
-        setAuthError(err.message);
+      const firebaseError = err as { code?: string; message?: string };
+      
+      // If user intentionally closed or cancelled the popup, do not show a harsh error
+      if (
+        firebaseError?.code === 'auth/popup-closed-by-user' ||
+        firebaseError?.code === 'auth/cancelled-popup-request'
+      ) {
+        // User voluntarily dismissed popup
+        setAuthError(null);
+      } else if (firebaseError?.code === 'auth/popup-blocked') {
+        setAuthError('Sign-in popup was blocked by your browser. Please allow popups for this site.');
+      } else if (firebaseError?.code === 'auth/unauthorized-domain') {
+        setAuthError('This domain is pending authorization in Firebase Console (Authentication > Settings > Authorized domains).');
+      } else if (firebaseError?.code === 'auth/network-request-failed') {
+        setAuthError('Network error. Please check your internet connection and try again.');
       } else {
-        setAuthError('Google sign-in could not be completed. Please try again.');
+        console.warn('Google sign-in notification:', err);
+        setAuthError(firebaseError?.message || 'Google sign-in could not be completed. Please try again.');
       }
     } finally {
       setIsSubmittingAuth(false);

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
 import Navbar from './components/Navbar';
@@ -11,6 +11,7 @@ import CalendarPage from './components/Calendar';
 import GalleryPage from './components/GalleryPage';
 import ChatPage from './components/ChatPage';
 import PollingPage from './components/PollingPage';
+import LoadingScreen from './components/LoadingScreen';
 import { resources as defaultResources, notices as defaultNotices } from './data';
 import { galleryGroups as defaultGalleryGroups } from './data/gallery';
 import { Notice, Resource, GalleryGroup } from './types';
@@ -20,12 +21,45 @@ import { NotificationProvider } from './context/NotificationContext';
 import NotificationToast from './components/NotificationToast';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTabState] = useState('home');
   const [activeAlbumId, setActiveAlbumId] = useState<string | null>(null);
   const [chatActiveChannel, setChatActiveChannel] = useState<'batch' | 'academic' | 'casual'>('batch');
   const [noticesList, setNoticesList] = useState<Notice[]>(defaultNotices);
   const [resourcesList, setResourcesList] = useState<Resource[]>(defaultResources);
   const [galleryList, setGalleryList] = useState<GalleryGroup[]>(defaultGalleryGroups);
+
+  // Loading States: Initial full-screen splash + tab transition loader
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isPageTransitioning, setIsPageTransitioning] = useState(false);
+  const pageTransitionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Smooth Tab Switcher with micro-loading transition
+  const setActiveTab = useCallback((newTab: string) => {
+    if (newTab === activeTab) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (pageTransitionTimeoutRef.current) {
+      clearTimeout(pageTransitionTimeoutRef.current);
+    }
+
+    setIsPageTransitioning(true);
+    setActiveTabState(newTab);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
+    pageTransitionTimeoutRef.current = setTimeout(() => {
+      setIsPageTransitioning(false);
+    }, 320);
+  }, [activeTab]);
+
+  // Complete initial loading after app mounts
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 950);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Synchronize notices real-time with Firebase Firestore
   useEffect(() => {
@@ -123,6 +157,13 @@ export default function App() {
         setChatActiveChannel={setChatActiveChannel}
       >
         <div className="min-h-screen bg-[#f3f7f5] dark:bg-[#04130d] text-slate-800 dark:text-slate-200 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-950 dark:selection:text-emerald-200 transition-colors duration-300 relative overflow-x-clip">
+          {/* Branded Launch & Page Transition Loading Screen */}
+          <LoadingScreen 
+            isInitialLoading={isInitialLoading} 
+            activeTab={activeTab} 
+            isPageTransitioning={isPageTransitioning} 
+          />
+
           {/* Ambient deep green background aura */}
           <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-emerald-500/10 dark:bg-emerald-600/10 rounded-full blur-[140px] pointer-events-none -z-10 -translate-y-1/2" />
           <div className="fixed bottom-1/4 right-0 w-[500px] h-[500px] bg-teal-500/10 dark:bg-teal-700/10 rounded-full blur-[120px] pointer-events-none -z-10 translate-x-1/3" />

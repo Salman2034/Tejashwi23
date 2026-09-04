@@ -1,12 +1,10 @@
 {
-  "projectId": "essential-talent-t53bd",
-  "appId": "1:1026777921049:web:632a4a2f10b5b2fab5dc88",
-  "apiKey": "AIzaSyCdwGZ_tV_O-3eOXTxNhBm5DkYTqjlkoZ0",
-  "authDomain": "essential-talent-t53bd.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-tejashwi23ewmc-e31b2ea4-2e67-4a5c-99be-15e148989397",
-  "storageBucket": "essential-talent-t53bd.firebasestorage.app",
-  "messagingSenderId": "1026777921049",
-  "measurementId": "",
-  "oAuthClientId": "1026777921049-alq9svm91qtp07u9p3q1vesgrtntanvr.apps.googleusercontent.com",
-  "recaptchaSiteKey": ""
+  "projectId": "tejashwi23-ewmc",
+  "appId": "1:895036207468:web:b44d37e05a698c68b38349",
+  "apiKey": "AIzaSyAe9Oy8VEgPAwKKRsDTmV9nOvabLXpQOhc",
+  "authDomain": "tejashwi23-ewmc.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "tejashwi23-ewmc.firebasestorage.app",
+  "messagingSenderId": "895036207468",
+  "measurementId": "G-2GSF8FVDSR"
 }
