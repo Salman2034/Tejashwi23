@@ -9,6 +9,7 @@ import CalendarPage from './components/Calendar';
 import GalleryPage from './components/GalleryPage';
 import { resources, notices } from './data';
 import { Heart } from 'lucide-react';
+import { ThemeProvider } from './context/ThemeContext';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -18,49 +19,55 @@ export default function App() {
   const books = resources.filter(r => r.type === 'book');
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-200 text-slate-200">
-      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />
-      <NoticeTicker notices={notices} setActiveTab={setActiveTab} />
+    <ThemeProvider>
+      <div className="min-h-screen bg-[#f3f7f5] dark:bg-[#04130d] text-slate-800 dark:text-slate-200 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-950 dark:selection:text-emerald-200 transition-colors duration-300 relative overflow-x-clip">
+        {/* Ambient deep green background aura */}
+        <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-emerald-500/10 dark:bg-emerald-600/10 rounded-full blur-[140px] pointer-events-none -z-10 -translate-y-1/2" />
+        <div className="fixed bottom-1/4 right-0 w-[500px] h-[500px] bg-teal-500/10 dark:bg-teal-700/10 rounded-full blur-[120px] pointer-events-none -z-10 translate-x-1/3" />
 
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 lg:pt-6 lg:pb-12">
-        {(activeTab === 'home' || activeTab === 'contact') && <Home setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />}
-        {activeTab === 'routine' && <Routine />}
-        {activeTab === 'calendar' && <CalendarPage />}
-        {activeTab === 'gallery' && <GalleryPage activeAlbumId={activeAlbumId} setActiveAlbumId={setActiveAlbumId} />}
-        {activeTab === 'lectures' && (
-          <ResourceList
-            title="Class Lectures"
-            description="Download PDF slides, handwritten notes, and presentations from our classes."
-            resources={lectures}
-            showHierarchy={true}
-          />
-        )}
-        {activeTab === 'books' && (
-          <ResourceList
-            title="Medical Textbooks"
-            description="Digital copies of reference books and study materials for the current academic year."
-            resources={books}
-            showHierarchy={false}
-          />
-        )}
-        {activeTab === 'notices' && (
-          <Notices notices={notices} />
-        )}
-      </main>
+        <Navbar activeTab={activeTab} setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />
+        <NoticeTicker notices={notices} setActiveTab={setActiveTab} />
 
-      <footer className="bg-slate-950 text-slate-400 pt-8 pb-28 lg:py-8 border-t border-white/5 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 text-center text-sm flex flex-col items-center justify-center gap-3">
-          <p className="font-medium text-slate-300 text-base">
-            © {new Date().getFullYear()} Tejashwi 23 - East West Medical College.
-          </p>
-          <p className="flex items-center gap-1.5 justify-center text-slate-500">
-            Made with <Heart size={16} className="text-red-500/80 fill-red-500/80 animate-pulse" /> for the batch.
-          </p>
-          <p className="text-slate-500 mt-[-4px]">
-            by Salman Sami, Roll 01
-          </p>
-        </div>
-      </footer>
-    </div>
+        <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 lg:pt-6 lg:pb-12">
+          {(activeTab === 'home' || activeTab === 'contact') && <Home setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />}
+          {activeTab === 'routine' && <Routine />}
+          {activeTab === 'calendar' && <CalendarPage />}
+          {activeTab === 'gallery' && <GalleryPage activeAlbumId={activeAlbumId} setActiveAlbumId={setActiveAlbumId} />}
+          {activeTab === 'lectures' && (
+            <ResourceList
+              title="Class Lectures"
+              description="Download PDF slides, handwritten notes, and presentations from our classes."
+              resources={lectures}
+              showHierarchy={true}
+            />
+          )}
+          {activeTab === 'books' && (
+            <ResourceList
+              title="Medical Textbooks"
+              description="Digital copies of reference books and study materials for the current academic year."
+              resources={books}
+              showHierarchy={false}
+            />
+          )}
+          {activeTab === 'notices' && (
+            <Notices notices={notices} />
+          )}
+        </main>
+
+        <footer className="bg-[#03110b] text-emerald-200/70 pt-8 pb-28 lg:py-8 border-t border-emerald-900/30 mt-auto shadow-2xl transition-colors">
+          <div className="max-w-7xl mx-auto px-4 text-center text-sm flex flex-col items-center justify-center gap-3">
+            <p className="font-medium text-emerald-100 text-base">
+              © {new Date().getFullYear()} Tejashwi 23 - East West Medical College.
+            </p>
+            <p className="flex items-center gap-1.5 justify-center text-emerald-300/80">
+              Made with <Heart size={16} className="text-rose-500 fill-rose-500 animate-pulse" /> for the batch.
+            </p>
+            <p className="text-emerald-400/60 mt-[-4px] text-xs font-mono tracking-wider">
+              by Salman Sami, Roll 01
+            </p>
+          </div>
+        </footer>
+      </div>
+    </ThemeProvider>
   );
 }

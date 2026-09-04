@@ -10,12 +10,12 @@ export default function NoticeTicker({ notices, setActiveTab }: { notices: Notic
   return (
     <div 
       onClick={() => setActiveTab('notices')}
-      className="bg-slate-950 border-b border-white/5 flex items-center h-10 overflow-hidden relative w-full cursor-pointer hover:bg-slate-900 transition-colors"
+      className="bg-emerald-50/90 dark:bg-[#061811] border-b border-emerald-900/10 dark:border-emerald-500/15 flex items-center h-10 overflow-hidden relative w-full cursor-pointer hover:bg-emerald-100/60 dark:hover:bg-[#092218] transition-colors"
     >
       {/* Fixed Label */}
-      <div className="absolute left-0 top-0 bottom-0 z-10 bg-slate-900 border-r border-white/10 px-4 flex items-center gap-2 shadow-[10px_0_20px_rgba(0,0,0,0.8)] shrink-0">
-        <AlertCircle size={16} className="text-red-500 animate-pulse" />
-        <span className="text-xs font-bold tracking-widest text-slate-200 uppercase">Notice</span>
+      <div className="absolute left-0 top-0 bottom-0 z-10 bg-emerald-100 dark:bg-[#0a271e] border-r border-emerald-300/60 dark:border-emerald-500/20 px-3.5 sm:px-4 flex items-center gap-2 shadow-[6px_0_15px_rgba(4,40,24,0.06)] dark:shadow-[10px_0_20px_rgba(0,0,0,0.6)] shrink-0">
+        <AlertCircle size={15} className="text-rose-500 animate-pulse shrink-0" />
+        <span className="text-[11px] sm:text-xs font-bold tracking-widest text-emerald-900 dark:text-emerald-300 uppercase">Notice</span>
       </div>
 
       {/* Scrolling Content */}
@@ -26,9 +26,13 @@ export default function NoticeTicker({ notices, setActiveTab }: { notices: Notic
         <div className="flex items-center whitespace-nowrap animate-marquee group-hover:[animation-play-state:paused] w-max">
           {tickerItems.map((notice, index) => (
             <div key={`${notice.id}-${index}`} className="flex items-center">
-              <span className="mx-6 text-slate-700">|</span>
-              <span className={`text-sm ${notice.isImportant ? 'text-red-400 font-medium' : 'text-slate-300 hover:text-white transition-colors'}`}>
-                {notice.isImportant && <span className="mr-2 text-red-500 font-bold uppercase text-xs tracking-wider">Breaking</span>}
+              <span className="mx-5 text-emerald-900/20 dark:text-emerald-500/20 font-light">/</span>
+              <span className={`text-xs sm:text-sm ${notice.isImportant ? 'text-rose-700 dark:text-rose-400 font-semibold' : 'text-emerald-950/80 dark:text-slate-300 hover:text-emerald-950 dark:hover:text-white transition-colors'}`}>
+                {notice.isImportant && (
+                  <span className="mr-2 px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold uppercase text-[10px] tracking-wider border border-rose-300/40 dark:border-rose-500/30">
+                    Breaking
+                  </span>
+                )}
                 {notice.title}
               </span>
             </div>

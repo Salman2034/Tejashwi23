@@ -99,22 +99,22 @@ export default function RoutineWidget({ setActiveTab }: { setActiveTab: (t: stri
   };
 
   return (
-    <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-2xl flex flex-col h-full relative overflow-hidden">
+    <div className="bg-white/90 dark:bg-[#061d15]/80 backdrop-blur-xl border border-emerald-900/15 dark:border-emerald-500/20 rounded-2xl p-5 shadow-2xl flex flex-col h-full relative overflow-hidden text-slate-800 dark:text-slate-200">
       <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-[40px] -z-10"></div>
       
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <CalendarDays className="text-emerald-400" size={20} />
-          <h3 className="font-bold text-slate-100">{currentDay.day}'s Routine</h3>
+          <CalendarDays className="text-emerald-600 dark:text-emerald-400" size={20} />
+          <h3 className="font-bold text-emerald-950 dark:text-slate-100">{currentDay.day}'s Routine</h3>
         </div>
-        <div className="text-xs font-medium px-2 py-1 bg-slate-800 rounded-md text-slate-300">
+        <div className="text-xs font-medium px-2 py-1 bg-emerald-100 dark:bg-[#0b281f] text-emerald-900 dark:text-emerald-300 rounded-md border border-emerald-200 dark:border-emerald-500/20">
           {currentDay.isHoliday ? 'Holiday' : `Period ${currentPeriodIndex + 1} of ${currentDay.periods.length}`}
         </div>
       </div>
 
       <div className="flex-grow flex items-center justify-center min-h-[140px]">
         {currentDay.isHoliday ? (
-          <div className="text-center text-emerald-400/80 font-medium tracking-widest text-sm">
+          <div className="text-center text-emerald-600 dark:text-emerald-400 font-semibold tracking-widest text-sm">
             W E E K L Y <br /> H O L I D A Y
           </div>
         ) : (
@@ -122,7 +122,8 @@ export default function RoutineWidget({ setActiveTab }: { setActiveTab: (t: stri
             <button 
               onClick={handlePrev}
               disabled={currentPeriodIndex === 0}
-              className="absolute left-0 top-1/2 -translate-y-1/2 p-1 bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:hover:bg-slate-800 rounded-full text-slate-300 transition-colors"
+              aria-label="Previous Period"
+              className="absolute left-0 top-1/2 -translate-y-1/2 p-1 bg-emerald-100 dark:bg-[#0b281f] hover:bg-emerald-200 dark:hover:bg-[#103a2d] disabled:opacity-30 disabled:hover:bg-emerald-100 dark:disabled:hover:bg-[#0b281f] rounded-full text-emerald-900 dark:text-emerald-300 transition-colors border border-emerald-200 dark:border-emerald-500/20"
             >
               <ChevronLeft size={20} />
             </button>
@@ -132,21 +133,21 @@ export default function RoutineWidget({ setActiveTab }: { setActiveTab: (t: stri
                 const p = currentDay.periods[currentPeriodIndex];
                 return (
                   <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                    <div className="inline-flex items-center gap-1.5 text-emerald-400 text-xs font-semibold mb-2 bg-emerald-500/10 px-2 py-0.5 rounded">
+                    <div className="inline-flex items-center gap-1.5 text-emerald-700 dark:text-emerald-300 text-xs font-semibold mb-2 bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded">
                       <Clock size={12} /> {p.time}
                     </div>
                     
                     {p.type === 'break' && (
-                      <div className="text-slate-300 font-bold tracking-widest uppercase">
+                      <div className="text-slate-800 dark:text-slate-200 font-bold tracking-widest uppercase">
                         {p.title}
                       </div>
                     )}
                     
                     {p.type === 'lecture' && (
                       <>
-                        <h4 className="text-lg font-bold text-slate-100 leading-tight">{p.title}</h4>
-                        <div className="text-sm text-slate-400 mt-1">{p.teacher}</div>
-                        <div className="text-xs text-slate-500 mt-1 flex items-center justify-center gap-1">
+                        <h4 className="text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight">{p.title}</h4>
+                        <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">{p.teacher}</div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center justify-center gap-1">
                           <MapPin size={12} /> {p.location}
                         </div>
                       </>
@@ -154,11 +155,11 @@ export default function RoutineWidget({ setActiveTab }: { setActiveTab: (t: stri
                     
                     {p.type === 'tutorial' && (
                       <>
-                        <h4 className="text-base font-bold text-blue-400 leading-tight mb-2">Tutorial / Practical</h4>
-                        <div className="text-xs text-slate-300 grid grid-cols-2 gap-x-2 gap-y-1 text-left max-w-[200px] mx-auto">
+                        <h4 className="text-base font-bold text-emerald-700 dark:text-emerald-400 leading-tight mb-2">Tutorial / Practical</h4>
+                        <div className="text-xs text-slate-700 dark:text-slate-300 grid grid-cols-2 gap-x-2 gap-y-1 text-left max-w-[200px] mx-auto">
                           {p.batches?.map(b => (
                             <div key={b.batch} className="flex gap-1 truncate" title={b.details}>
-                              <span className="font-bold text-slate-400">{b.batch}:</span>
+                              <span className="font-bold text-emerald-800 dark:text-slate-400">{b.batch}:</span>
                               <span className="truncate">{b.details}</span>
                             </div>
                           ))}
@@ -173,7 +174,8 @@ export default function RoutineWidget({ setActiveTab }: { setActiveTab: (t: stri
             <button 
               onClick={handleNext}
               disabled={currentPeriodIndex === currentDay.periods.length - 1}
-              className="absolute right-0 top-1/2 -translate-y-1/2 p-1 bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:hover:bg-slate-800 rounded-full text-slate-300 transition-colors"
+              aria-label="Next Period"
+              className="absolute right-0 top-1/2 -translate-y-1/2 p-1 bg-emerald-100 dark:bg-[#0b281f] hover:bg-emerald-200 dark:hover:bg-[#103a2d] disabled:opacity-30 disabled:hover:bg-emerald-100 dark:disabled:hover:bg-[#0b281f] rounded-full text-emerald-900 dark:text-emerald-300 transition-colors border border-emerald-200 dark:border-emerald-500/20"
             >
               <ChevronRight size={20} />
             </button>
@@ -183,7 +185,7 @@ export default function RoutineWidget({ setActiveTab }: { setActiveTab: (t: stri
 
       <button 
         onClick={() => setActiveTab('routine')}
-        className="mt-4 w-full py-2 bg-slate-800/80 hover:bg-slate-700 text-sm font-medium text-slate-200 rounded-lg transition-colors border border-white/5"
+        className="mt-4 w-full py-2 bg-emerald-600 hover:bg-emerald-700 dark:bg-[#0a261c] dark:hover:bg-[#103829] text-sm font-semibold text-white dark:text-emerald-200 rounded-lg transition-colors border border-emerald-700 dark:border-emerald-500/30 shadow-sm"
       >
         See full routine
       </button>

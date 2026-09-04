@@ -39,18 +39,18 @@ export default function GalleryPage({ activeAlbumId, setActiveAlbumId }: { activ
       )}
 
       <div className="flex items-center gap-3 mb-8">
-        <div className="bg-teal-500/10 text-teal-400 p-2.5 rounded-xl border border-teal-500/20 shadow-[0_0_15px_rgba(20,184,166,0.15)]">
+        <div className="p-3 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-xl border border-emerald-500/25 shadow-inner">
           <ImageIcon size={28} />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-slate-100 tracking-tight">{activeGroup ? activeGroup.title : 'Gallery'}</h1>
-          <p className="text-slate-400 mt-1">{activeGroup ? `${activeGroup.phase} • ${activeGroup.description}` : 'Memories, events, and moments of 23rd Batch'}</p>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{activeGroup ? activeGroup.title : 'Gallery'}</h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-1">{activeGroup ? `${activeGroup.phase} • ${activeGroup.description}` : 'Memories, events, and moments of 23rd Batch'}</p>
         </div>
       </div>
 
       {/* Phase Selector Tabs (only shown when browsing albums) */}
       {!activeGroup && (
-        <div className="flex flex-wrap gap-2 mb-8 bg-slate-900/40 p-2 rounded-2xl border border-white/5 backdrop-blur-sm">
+        <div className="flex flex-wrap gap-2 mb-8 bg-white/80 dark:bg-[#0a231b]/60 p-2 rounded-2xl border border-emerald-900/10 dark:border-white/5 backdrop-blur-sm shadow-sm">
           {PHASES.map((phase) => {
             const count = galleryGroups.filter(g => g.phase === phase).length;
             const isSelected = selectedPhase === phase;
@@ -60,14 +60,14 @@ export default function GalleryPage({ activeAlbumId, setActiveAlbumId }: { activ
                 onClick={() => setSelectedPhase(phase)}
                 className={`flex-1 min-w-[120px] py-2.5 px-4 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
                   isSelected
-                    ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.15)]'
-                    : 'bg-transparent text-slate-400 hover:bg-slate-800/80 hover:text-slate-200 border border-transparent'
+                    ? 'bg-emerald-600 text-white dark:bg-emerald-500/20 dark:text-emerald-300 border border-emerald-700 dark:border-emerald-500/30 shadow-sm'
+                    : 'bg-transparent text-emerald-950/70 dark:text-slate-400 hover:bg-emerald-100/60 dark:hover:bg-[#0e2f24] hover:text-emerald-950 dark:hover:text-slate-200 border border-transparent'
                 }`}
               >
                 <span>{phase}</span>
                 {count > 0 && (
                   <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                    isSelected ? 'bg-blue-500/30 text-blue-300' : 'bg-slate-800 text-slate-400'
+                    isSelected ? 'bg-emerald-700/50 text-white dark:bg-emerald-500/30 dark:text-emerald-200' : 'bg-emerald-100 dark:bg-slate-800 text-emerald-900 dark:text-slate-400'
                   }`}>
                     {count}
                   </span>
@@ -82,14 +82,14 @@ export default function GalleryPage({ activeAlbumId, setActiveAlbumId }: { activ
         <>
           <button 
             onClick={() => setActiveAlbumId(null)}
-            className="flex items-center gap-2 text-slate-400 hover:text-teal-400 transition-colors mb-6 font-medium text-sm bg-slate-900/50 hover:bg-teal-500/10 w-fit px-4 py-2 rounded-xl border border-white/5 hover:border-teal-500/20"
+            className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 hover:text-emerald-950 dark:hover:text-emerald-200 transition-colors mb-6 font-semibold text-sm bg-white/80 dark:bg-[#0a231b]/60 hover:bg-emerald-100/60 dark:hover:bg-[#0e2f24] w-fit px-4 py-2 rounded-xl border border-emerald-900/10 dark:border-white/5 shadow-sm"
           >
             <ArrowLeft size={16} /> Back to Albums
           </button>
           
           {activeGroup.images.length === 0 ? (
-            <div className="text-center py-16 bg-slate-900/40 rounded-2xl border border-white/5">
-              <p className="text-slate-400 font-medium">Photos for this album will appear once uploaded.</p>
+            <div className="text-center py-16 bg-white/80 dark:bg-[#0a231b]/60 rounded-2xl border border-emerald-900/10 dark:border-white/5 shadow-sm">
+              <p className="text-slate-700 dark:text-slate-300 font-medium">Photos for this album will appear once uploaded.</p>
               <p className="text-slate-500 text-xs mt-1">Upload images to public/gallery/ to view them here.</p>
             </div>
           ) : (
@@ -98,7 +98,7 @@ export default function GalleryPage({ activeAlbumId, setActiveAlbumId }: { activ
                 <div 
                   key={img.id}
                   onClick={() => setLightboxImage(img)}
-                  className="group relative rounded-2xl overflow-hidden aspect-[4/3] bg-slate-900 border border-white/5 shadow-lg cursor-pointer"
+                  className="group relative rounded-2xl overflow-hidden aspect-[4/3] bg-emerald-950/20 border border-emerald-900/10 dark:border-white/5 shadow-lg cursor-pointer"
                 >
                   <img 
                     src={img.src} 
@@ -116,12 +116,12 @@ export default function GalleryPage({ activeAlbumId, setActiveAlbumId }: { activ
           )}
         </>
       ) : filteredGroups.length === 0 ? (
-        <div className="bg-slate-900/40 backdrop-blur-md border border-white/5 rounded-2xl p-16 text-center flex flex-col items-center justify-center">
-          <div className="w-16 h-16 bg-slate-800/50 rounded-2xl flex items-center justify-center mb-4 border border-white/5 text-slate-500">
+        <div className="bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-md border border-emerald-900/10 dark:border-white/5 rounded-2xl p-16 text-center flex flex-col items-center justify-center shadow-sm">
+          <div className="w-16 h-16 bg-emerald-100 dark:bg-slate-800/50 rounded-2xl flex items-center justify-center mb-4 border border-emerald-200 dark:border-white/5 text-emerald-700 dark:text-slate-400">
             <Folder size={28} />
           </div>
-          <h3 className="text-xl font-bold text-slate-300">No Albums Yet</h3>
-          <p className="text-slate-500 text-sm mt-1 max-w-md">
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-200">No Albums Yet</h3>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mt-1 max-w-md">
             Albums and photos for {selectedPhase} will be added as we progress through academic sessions.
           </p>
         </div>
@@ -131,7 +131,7 @@ export default function GalleryPage({ activeAlbumId, setActiveAlbumId }: { activ
             <div 
               key={group.id}
               onClick={() => setActiveAlbumId(group.id)}
-              className="group relative rounded-2xl overflow-hidden aspect-[4/3] bg-slate-900 border border-white/5 shadow-lg cursor-pointer"
+              className="group relative rounded-2xl overflow-hidden aspect-[4/3] bg-emerald-950/20 border border-emerald-900/10 dark:border-white/5 shadow-lg cursor-pointer"
             >
               <img 
                 src={group.coverImage} 
@@ -143,7 +143,7 @@ export default function GalleryPage({ activeAlbumId, setActiveAlbumId }: { activ
               <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-white font-bold text-xl leading-tight">{group.title}</h3>
-                  <span className="text-xs font-bold bg-teal-500/20 text-teal-300 px-2.5 py-1 rounded-md border border-teal-500/30">
+                  <span className="text-xs font-bold bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-md border border-emerald-500/30">
                     {group.images.length} Photos
                   </span>
                 </div>
