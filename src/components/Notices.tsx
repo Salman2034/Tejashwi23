@@ -336,15 +336,19 @@ export default function Notices({ notices }: { notices: Notice[] }) {
 
       {/* Add / Edit Notice Modal */}
       {showNoticeModal && isCurrentUserAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-lg bg-white dark:bg-[#051c14] border border-emerald-500/30 rounded-3xl p-6 sm:p-7 shadow-2xl animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 mb-5 border-b border-slate-200/80 dark:border-white/10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] border border-slate-200 dark:border-emerald-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] animate-in zoom-in-95 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            
+            {/* Top Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 rounded-t-3xl" />
+
+            <div className="flex items-center justify-between pb-4 mb-5 border-b border-slate-200/80 dark:border-white/10 pt-1">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                <div className="p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/50 shadow-sm">
                   {modalMode === 'add' ? <PlusCircle size={22} /> : <Edit3 size={22} />}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
                     {modalMode === 'add' ? 'Publish New Notice' : 'Edit Notice'}
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -354,7 +358,7 @@ export default function Notices({ notices }: { notices: Notice[] }) {
               </div>
               <button
                 onClick={() => setShowNoticeModal(false)}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors cursor-pointer"
+                className="p-2 rounded-full text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition-all cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -362,14 +366,14 @@ export default function Notices({ notices }: { notices: Notice[] }) {
 
             <form onSubmit={handleSubmitNotice} className="space-y-4">
               {formError && (
-                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs font-semibold flex items-center gap-2">
-                  <AlertCircle size={15} className="shrink-0" />
+                <div className="p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-xs font-semibold flex items-center gap-2">
+                  <AlertCircle size={16} className="shrink-0" />
                   <span>{formError}</span>
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                   Notice Title *
                 </label>
                 <input
@@ -378,13 +382,13 @@ export default function Notices({ notices }: { notices: Notice[] }) {
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
                   placeholder="e.g., 2nd Term Examination Schedule Released"
-                  className="w-full px-4 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#0a231b] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-emerald-500 transition-all"
+                  className="w-full px-4 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                     Date *
                   </label>
                   <input
@@ -392,12 +396,12 @@ export default function Notices({ notices }: { notices: Notice[] }) {
                     required
                     value={formDate}
                     onChange={(e) => setFormDate(e.target.value)}
-                    className="w-full px-4 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#0a231b] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-emerald-500 transition-all"
+                    className="w-full px-4 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/50 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
                   />
                 </div>
 
                 <div className="flex flex-col justify-end">
-                  <label className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 dark:bg-[#0a231b] border border-slate-200 dark:border-white/10 cursor-pointer hover:bg-slate-100 dark:hover:bg-[#0d2e23] transition-colors">
+                  <label className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/50 cursor-pointer hover:bg-slate-100 dark:hover:bg-emerald-950/40 transition-colors">
                     <input
                       type="checkbox"
                       checked={formIsImportant}
@@ -412,7 +416,7 @@ export default function Notices({ notices }: { notices: Notice[] }) {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                   Notice Content / Details *
                 </label>
                 <textarea
@@ -421,7 +425,7 @@ export default function Notices({ notices }: { notices: Notice[] }) {
                   value={formContent}
                   onChange={(e) => setFormContent(e.target.value)}
                   placeholder="Provide detailed instructions, timings, room numbers, or guidelines..."
-                  className="w-full px-4 py-3 text-sm rounded-xl bg-slate-50 dark:bg-[#0a231b] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-emerald-500 transition-all leading-relaxed resize-y"
+                  className="w-full px-4 py-3 text-sm rounded-xl bg-slate-50 dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all leading-relaxed resize-y"
                 />
               </div>
 
@@ -430,14 +434,14 @@ export default function Notices({ notices }: { notices: Notice[] }) {
                   type="button"
                   disabled={isSubmitting}
                   onClick={() => setShowNoticeModal(false)}
-                  className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#0a231b] rounded-xl transition-all cursor-pointer"
+                  className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="px-6 py-2.5 text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl shadow-md hover:shadow-emerald-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <>
@@ -459,14 +463,18 @@ export default function Notices({ notices }: { notices: Notice[] }) {
 
       {/* Delete Notice Confirmation Modal */}
       {noticeToDelete && isCurrentUserAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-md bg-white dark:bg-[#051c14] border border-rose-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95">
-            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3">
-              <div className="p-2.5 rounded-2xl bg-rose-500/10 border border-rose-500/20">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="relative w-full max-w-md bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] border border-rose-500/30 rounded-3xl p-6 sm:p-7 shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] animate-in zoom-in-95 overflow-hidden">
+            
+            {/* Top Red Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 via-red-500 to-rose-500 rounded-t-3xl" />
+
+            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3 pt-1">
+              <div className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200/80 dark:border-rose-900/40">
                 <Trash2 size={24} />
               </div>
               <div>
-                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
+                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
                   Delete Notice
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -475,7 +483,7 @@ export default function Notices({ notices }: { notices: Notice[] }) {
               </div>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-5 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
               Are you sure you want to permanently delete <strong className="text-slate-900 dark:text-slate-100">"{noticeToDelete.title}"</strong>? It will immediately disappear from the website and the notice ticker for all students.
             </p>
 
@@ -484,7 +492,7 @@ export default function Notices({ notices }: { notices: Notice[] }) {
                 type="button"
                 disabled={isDeleting}
                 onClick={() => setNoticeToDelete(null)}
-                className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#0a231b] rounded-xl transition-all cursor-pointer"
+                className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
               >
                 Cancel
               </button>
@@ -492,7 +500,7 @@ export default function Notices({ notices }: { notices: Notice[] }) {
                 type="button"
                 disabled={isDeleting}
                 onClick={handleConfirmDelete}
-                className="px-5 py-2.5 text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                className="px-5 py-2.5 text-xs font-bold bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white rounded-xl shadow-md hover:shadow-rose-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 {isDeleting ? (
                   <>

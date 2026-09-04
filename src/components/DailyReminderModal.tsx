@@ -167,32 +167,35 @@ export default function DailyReminderModal({ isAppReady }: { isAppReady: boolean
   if (!isOpen || !reminder) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-emerald-950/40 dark:bg-black/70 backdrop-blur-md animate-in fade-in duration-300">
-      <div className="relative w-full max-w-xl bg-gradient-to-br from-white to-emerald-50/20 dark:from-[#051a12] dark:to-[#020e0a] border border-emerald-900/15 dark:border-emerald-500/20 rounded-3xl p-6 sm:p-8 shadow-[0_20px_50px_rgba(4,47,31,0.25)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-center overflow-hidden animate-in zoom-in-95 duration-300">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
+      <div className="relative w-full max-w-xl bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] border border-emerald-500/20 dark:border-emerald-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] text-center overflow-hidden animate-in zoom-in-95 duration-300">
         
-        {/* Intricate Islamic Geometric Background Elements */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 dark:bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-teal-500/5 dark:bg-teal-500/5 rounded-full blur-2xl pointer-events-none" />
+        {/* Top Accent Gradient Line */}
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 rounded-t-3xl" />
+
+        {/* Background Ambient Glows */}
+        <div className="absolute top-0 right-0 w-36 h-36 bg-emerald-500/10 dark:bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-36 h-36 bg-teal-500/10 dark:bg-teal-500/10 rounded-full blur-2xl pointer-events-none" />
 
         {/* Header Icon & Type Tag */}
-        <div className="flex flex-col items-center gap-2 mb-4">
-          <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center border border-emerald-200/50 dark:border-emerald-800/30 shadow-xs">
-            <BookOpen size={22} className="animate-pulse" />
+        <div className="flex flex-col items-center gap-2 mb-4 pt-1">
+          <div className="w-13 h-13 bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center border border-emerald-200/80 dark:border-emerald-800/50 shadow-sm">
+            <BookOpen size={24} className="animate-pulse" />
           </div>
-          <span className="inline-flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-[10px] font-extrabold tracking-widest uppercase px-3 py-1 rounded-full border border-emerald-100 dark:border-emerald-900/30">
-            <Sparkles size={10} /> Daily Reflection
+          <span className="inline-flex items-center gap-1.5 bg-emerald-100/70 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[11px] font-extrabold tracking-widest uppercase px-3.5 py-1 rounded-full border border-emerald-200/80 dark:border-emerald-800/40">
+            <Sparkles size={11} className="text-emerald-500" /> Daily Reflection
           </span>
         </div>
 
         {/* Heading */}
-        <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-emerald-100 mb-4 px-2">
+        <h3 className="text-base sm:text-xl font-extrabold text-slate-900 dark:text-emerald-50 mb-4 px-2 tracking-tight">
           {reminder.heading}
         </h3>
 
         {/* Arabic (If Quran Verse) */}
         {reminder.arabic && (
-          <div className="my-5 p-4 bg-emerald-50/40 dark:bg-[#03140e] rounded-2xl border border-emerald-900/5 dark:border-emerald-500/10">
-            <p className="font-arabic text-xl sm:text-2xl leading-loose text-emerald-800 dark:text-emerald-300 text-center select-all tracking-wide font-medium">
+          <div className="my-5 p-4 sm:p-5 bg-emerald-50/70 dark:bg-[#02140d] rounded-2xl border border-emerald-200/60 dark:border-emerald-500/20 shadow-inner">
+            <p className="font-arabic text-xl sm:text-2xl leading-loose text-emerald-900 dark:text-emerald-300 text-center select-all tracking-wide font-medium">
               {reminder.arabic}
             </p>
           </div>
@@ -200,19 +203,19 @@ export default function DailyReminderModal({ isAppReady }: { isAppReady: boolean
 
         {/* Translation Block */}
         <div className="relative px-2 mb-6 sm:px-4">
-          <Quote size={40} className="absolute -top-4 -left-1 text-emerald-100 dark:text-emerald-900/20 pointer-events-none transform -scale-x-100" />
-          <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed italic relative z-10 font-medium px-4">
+          <Quote size={40} className="absolute -top-4 -left-1 text-emerald-200/60 dark:text-emerald-900/30 pointer-events-none transform -scale-x-100" />
+          <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed italic relative z-10 font-medium px-4">
             {reminder.english}
           </p>
         </div>
 
         {/* Source Citation */}
-        <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 font-mono tracking-wider bg-emerald-100/35 dark:bg-emerald-950/20 px-3 py-1.5 rounded-lg inline-block border border-emerald-200/20 dark:border-emerald-800/20">
+        <div className="text-xs font-semibold text-emerald-700 dark:text-emerald-300 font-mono tracking-wider bg-emerald-100/80 dark:bg-emerald-950/50 px-3.5 py-1.5 rounded-xl inline-block border border-emerald-200/80 dark:border-emerald-800/40">
           — {reminder.source}
         </div>
 
         {/* Motivation note */}
-        <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-6 max-w-sm mx-auto">
+        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-6 max-w-sm mx-auto leading-normal font-medium">
           "When life feels heavy, remember: your patience, your tears, your duʿā, and your struggle are all witnessed and valued."
         </p>
 
@@ -220,7 +223,7 @@ export default function DailyReminderModal({ isAppReady }: { isAppReady: boolean
         <div className="mt-6 flex justify-center">
           <button
             onClick={() => setIsOpen(false)}
-            className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg hover:shadow-emerald-500/10 transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
+            className="px-7 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
           >
             Alhamdulillah
           </button>
@@ -229,9 +232,10 @@ export default function DailyReminderModal({ isAppReady }: { isAppReady: boolean
         {/* Close Button Top Right */}
         <button
           onClick={() => setIsOpen(false)}
-          className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all cursor-pointer active:scale-90"
+          className="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition-all cursor-pointer active:scale-90"
+          aria-label="Close modal"
         >
-          <X size={16} />
+          <X size={18} />
         </button>
       </div>
     </div>

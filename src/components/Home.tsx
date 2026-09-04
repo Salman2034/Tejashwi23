@@ -42,7 +42,7 @@ export default function Home({
               Welcome to <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-emerald-400 whitespace-nowrap drop-shadow-sm">Tejashwi 23</span>
             </h2>
-            <p className="text-base sm:text-lg text-emerald-100/80 mb-8 max-w-2xl mx-auto md:mx-0 leading-relaxed font-light">
+            <p className="text-base sm:text-lg text-emerald-50 font-medium mb-8 max-w-2xl mx-auto md:mx-0 leading-relaxed drop-shadow-sm">
               Hey batchmates! Welcome to our shared space. Find class routines and lecture slides, explore medical textbooks, vote on batch decisions, and stay connected with friends through real-time chat. Let’s make medical school a little easier together.
             </p>
             <div className="flex flex-col sm:flex-row gap-3.5 justify-center md:justify-start items-center">

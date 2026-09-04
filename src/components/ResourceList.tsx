@@ -1320,42 +1320,46 @@ export default function ResourceList({
 
       {/* MODAL 1: Create Folder Modal */}
       {showFolderModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-[#0a231b] w-full max-w-lg rounded-3xl shadow-2xl border border-emerald-500/30 overflow-hidden">
-            <div className="p-6 border-b border-emerald-900/10 dark:border-white/10 flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] w-full max-w-lg rounded-3xl shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] border border-slate-200 dark:border-emerald-500/30 overflow-hidden">
+            
+            {/* Top Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 rounded-t-3xl" />
+
+            <div className="p-6 sm:p-7 border-b border-slate-200/80 dark:border-white/10 flex items-center justify-between pt-7">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
+                <div className="p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/50 shadow-sm">
                   <FolderPlus size={22} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">Create New Folder</h3>
+                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">Create New Folder</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">Add a subject or topic folder to {folderPhase}</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowFolderModal(false)}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                className="p-2 rounded-full text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition-all cursor-pointer"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleCreateFolder} className="p-6 space-y-5">
+            <form onSubmit={handleCreateFolder} className="p-6 sm:p-7 space-y-5">
               {folderFormError && (
-                <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-sm flex items-start gap-2.5">
-                  <AlertCircle size={18} className="shrink-0 mt-0.5" />
+                <div className="p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-xs font-semibold flex items-center gap-2">
+                  <AlertCircle size={16} className="shrink-0" />
                   <span>{folderFormError}</span>
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                   Academic Phase
                 </label>
                 <select
                   value={folderPhase}
                   onChange={(e) => setFolderPhase(e.target.value as Phase)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none text-sm font-medium"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-emerald-900/50 bg-slate-50 dark:bg-[#02100a] text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none text-sm font-medium"
                 >
                   {PHASES.map((p) => (
                     <option key={p} value={p}>
@@ -1366,7 +1370,7 @@ export default function ResourceList({
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                   Folder / Subject Name *
                 </label>
                 <input
@@ -1375,22 +1379,22 @@ export default function ResourceList({
                   placeholder="e.g., Forensic Medicine, Community Medicine, Histology..."
                   value={newFolderName}
                   onChange={(e) => setNewFolderName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none text-sm"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-emerald-900/50 bg-slate-50 dark:bg-[#02100a] text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                   Folder Scope
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => setFolderSectionScope('all')}
-                    className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${
+                    className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                       folderSectionScope === 'all'
-                        ? 'bg-emerald-600 text-white border-emerald-600'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-transparent'
+                        ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-sm'
+                        : 'bg-slate-100 dark:bg-emerald-950/40 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-200 dark:hover:bg-emerald-900/60'
                     }`}
                   >
                     Both Sections
@@ -1398,10 +1402,10 @@ export default function ResourceList({
                   <button
                     type="button"
                     onClick={() => setFolderSectionScope('lecture')}
-                    className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${
+                    className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                       folderSectionScope === 'lecture'
-                        ? 'bg-emerald-600 text-white border-emerald-600'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-transparent'
+                        ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-sm'
+                        : 'bg-slate-100 dark:bg-emerald-950/40 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-200 dark:hover:bg-emerald-900/60'
                     }`}
                   >
                     Lectures Only
@@ -1409,10 +1413,10 @@ export default function ResourceList({
                   <button
                     type="button"
                     onClick={() => setFolderSectionScope('book')}
-                    className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${
+                    className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                       folderSectionScope === 'book'
-                        ? 'bg-emerald-600 text-white border-emerald-600'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-transparent'
+                        ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-sm'
+                        : 'bg-slate-100 dark:bg-emerald-950/40 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-200 dark:hover:bg-emerald-900/60'
                     }`}
                   >
                     Books Only
@@ -1420,18 +1424,18 @@ export default function ResourceList({
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-emerald-900/10 dark:border-white/10 flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-slate-200/80 dark:border-white/10 flex items-center justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setShowFolderModal(false)}
-                  className="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                  className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingFolder}
-                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-sm font-bold shadow-md transition-all flex items-center gap-2"
+                  className="px-6 py-2.5 text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 text-white rounded-xl shadow-md hover:shadow-emerald-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
                 >
                   {isSubmittingFolder ? (
                     <>
@@ -1450,34 +1454,38 @@ export default function ResourceList({
 
       {/* MODAL 2: Delete Folder Confirmation Modal */}
       {folderToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-[#0a231b] w-full max-w-md rounded-3xl shadow-2xl border border-rose-500/30 overflow-hidden">
-            <div className="p-6 text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900/50 flex items-center justify-center mx-auto text-rose-600 dark:text-rose-400">
-                <Trash2 size={30} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] w-full max-w-md rounded-3xl shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] border border-rose-500/30 overflow-hidden">
+            
+            {/* Top Red Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 via-red-500 to-rose-500 rounded-t-3xl" />
+
+            <div className="p-6 sm:p-7 text-center space-y-4 pt-7">
+              <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200/80 dark:border-rose-900/40 flex items-center justify-center mx-auto text-rose-600 dark:text-rose-400 shadow-sm">
+                <Trash2 size={26} />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+              <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
                 Delete &quot;{folderToDelete.name}&quot;?
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Are you sure you want to delete the folder <strong className="text-slate-900 dark:text-slate-200">&quot;{folderToDelete.name}&quot;</strong> from {folderToDelete.phase}?
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                Are you sure you want to delete the folder <strong className="text-slate-900 dark:text-slate-100">&quot;{folderToDelete.name}&quot;</strong> from {folderToDelete.phase}?
                 {folderToDelete.fileCount > 0 ? (
                   <span className="block mt-2 font-semibold text-rose-600 dark:text-rose-400">
                     Warning: This will also delete {folderToDelete.fileCount} associated resource(s) inside this folder from Firebase!
                   </span>
                 ) : (
-                  <span className="block mt-1 text-xs text-slate-500">
+                  <span className="block mt-1 text-xs text-slate-400 dark:text-slate-500">
                     This folder currently contains no files.
                   </span>
                 )}
               </p>
 
-              <div className="pt-4 flex items-center justify-center gap-3">
+              <div className="pt-3 flex items-center justify-center gap-3">
                 <button
                   type="button"
                   disabled={isDeletingFolder}
                   onClick={() => setFolderToDelete(null)}
-                  className="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                  className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1485,7 +1493,7 @@ export default function ResourceList({
                   type="button"
                   disabled={isDeletingFolder}
                   onClick={handleConfirmDeleteFolder}
-                  className="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white text-sm font-bold shadow-md transition-all flex items-center gap-2"
+                  className="px-6 py-2.5 text-xs font-bold bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 disabled:opacity-50 text-white rounded-xl shadow-md hover:shadow-rose-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
                 >
                   {isDeletingFolder ? (
                     <>
@@ -1493,7 +1501,10 @@ export default function ResourceList({
                       <span>Deleting...</span>
                     </>
                   ) : (
-                    <span>Confirm Delete</span>
+                    <>
+                      <Trash2 size={15} />
+                      <span>Confirm Delete</span>
+                    </>
                   )}
                 </button>
               </div>
@@ -1504,15 +1515,19 @@ export default function ResourceList({
 
       {/* MODAL 3: Add / Edit Resource Modal */}
       {showResourceModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto">
-          <div className="bg-white dark:bg-[#0a231b] w-full max-w-xl rounded-3xl shadow-2xl border border-emerald-500/30 overflow-hidden my-8">
-            <div className="p-6 border-b border-emerald-900/10 dark:border-white/10 flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
+          <div className="relative bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] w-full max-w-xl rounded-3xl shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] border border-slate-200 dark:border-emerald-500/30 overflow-hidden my-8">
+            
+            {/* Top Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 rounded-t-3xl" />
+
+            <div className="p-6 sm:p-7 border-b border-slate-200/80 dark:border-white/10 flex items-center justify-between pt-7">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
+                <div className="p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/50 shadow-sm">
                   {resourceModalMode === 'add' ? <PlusCircle size={22} /> : <Edit3 size={22} />}
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
                     {resourceModalMode === 'add'
                       ? resFormType === 'lecture'
                         ? 'Add New Lecture Material'
@@ -1526,16 +1541,16 @@ export default function ResourceList({
               </div>
               <button
                 onClick={() => setShowResourceModal(false)}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                className="p-2 rounded-full text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition-all cursor-pointer"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmitResource} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+            <form onSubmit={handleSubmitResource} className="p-6 sm:p-7 space-y-4 max-h-[75vh] overflow-y-auto custom-scrollbar">
               {resFormError && (
-                <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-sm flex items-start gap-2.5">
-                  <AlertCircle size={18} className="shrink-0 mt-0.5" />
+                <div className="p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-xs font-semibold flex items-center gap-2">
+                  <AlertCircle size={16} className="shrink-0" />
                   <span>{resFormError}</span>
                 </div>
               )}
@@ -1545,10 +1560,10 @@ export default function ResourceList({
                 <button
                   type="button"
                   onClick={() => setResFormType('lecture')}
-                  className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${
+                  className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                     resFormType === 'lecture'
-                      ? 'bg-emerald-600 text-white border-emerald-600'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-transparent'
+                      ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-sm'
+                      : 'bg-slate-100 dark:bg-emerald-950/40 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-200 dark:hover:bg-emerald-900/60'
                   }`}
                 >
                   Class Lecture
@@ -1556,10 +1571,10 @@ export default function ResourceList({
                 <button
                   type="button"
                   onClick={() => setResFormType('book')}
-                  className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${
+                  className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                     resFormType === 'book'
-                      ? 'bg-emerald-600 text-white border-emerald-600'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-transparent'
+                      ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-sm'
+                      : 'bg-slate-100 dark:bg-emerald-950/40 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-200 dark:hover:bg-emerald-900/60'
                   }`}
                 >
                   Medical Textbook
@@ -1568,7 +1583,7 @@ export default function ResourceList({
 
               {/* Title */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                   Resource Title *
                 </label>
                 <input
@@ -1577,13 +1592,13 @@ export default function ResourceList({
                   placeholder="e.g., Item 09 - Enzyme Kinetics & Regulation, or Guyton Physiology 14th Ed"
                   value={resFormTitle}
                   onChange={(e) => setResFormTitle(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none text-sm"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-emerald-900/50 bg-slate-50 dark:bg-[#02100a] text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none text-sm"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                   Description / Topic Outline
                 </label>
                 <textarea
@@ -1591,13 +1606,13 @@ export default function ResourceList({
                   placeholder="Brief summary of lecture contents, key chapters, or instructor notes..."
                   value={resFormDescription}
                   onChange={(e) => setResFormDescription(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none text-sm resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-emerald-900/50 bg-slate-50 dark:bg-[#02100a] text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none text-sm resize-none"
                 />
               </div>
 
               {/* Link / URL */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                   File URL / Link * (Telegram, Google Drive, OneDrive, Web PDF)
                 </label>
                 <input
@@ -1606,14 +1621,14 @@ export default function ResourceList({
                   placeholder="https://t.me/... or https://drive.google.com/... or https://..."
                   value={resFormFileUrl}
                   onChange={(e) => setResFormFileUrl(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none text-sm font-mono"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-emerald-900/50 bg-slate-50 dark:bg-[#02100a] text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none text-sm font-mono"
                 />
               </div>
 
               {/* Phase & Subject */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                     Phase *
                   </label>
                   <select
@@ -1627,7 +1642,7 @@ export default function ResourceList({
                         setResFormSubject(subDefaults[0]);
                       }
                     }}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none text-sm font-medium"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-emerald-900/50 bg-slate-50 dark:bg-[#02100a] text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none text-sm font-medium"
                   >
                     {PHASES.map((p) => (
                       <option key={p} value={p}>
@@ -1638,13 +1653,13 @@ export default function ResourceList({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                     Folder / Subject *
                   </label>
                   <select
                     value={resFormSubject}
                     onChange={(e) => setResFormSubject(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none text-sm font-medium"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-emerald-900/50 bg-slate-50 dark:bg-[#02100a] text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none text-sm font-medium"
                   >
                     {availableSubjects.map((s) => (
                       <option key={s} value={s}>
@@ -1659,7 +1674,7 @@ export default function ResourceList({
               {/* Custom Subject text field if selected */}
               {resFormSubject === '__custom__' && (
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                     New Folder Name *
                   </label>
                   <input
@@ -1668,15 +1683,15 @@ export default function ResourceList({
                     placeholder="e.g. Pathology, Microbiology..."
                     value={resFormCustomSubject}
                     onChange={(e) => setResFormCustomSubject(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none text-sm"
+                    className="w-full px-4 py-2.5 rounded-xl border border-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none text-sm"
                   />
                 </div>
               )}
 
               {/* If Book: Category selection (Textbooks vs Guides vs Curriculum) */}
               {resFormType === 'book' && (
-                <div className="p-3 rounded-2xl bg-emerald-500/5 border border-emerald-500/20">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                <div className="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-[#02140d] border border-emerald-200 dark:border-emerald-800/40">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-2">
                     Placement / Folder *
                   </label>
                   <div className="grid grid-cols-3 gap-2">
@@ -1685,8 +1700,8 @@ export default function ResourceList({
                       onClick={() => setResFormCategory('Textbooks')}
                       className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                         resFormCategory === 'Textbooks'
-                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-slate-800'
+                          ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-xs'
+                          : 'bg-white dark:bg-[#02100a] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-50 dark:hover:bg-emerald-950/40'
                       }`}
                     >
                       <BookOpen size={13} />
@@ -1697,8 +1712,8 @@ export default function ResourceList({
                       onClick={() => setResFormCategory('Guides')}
                       className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                         resFormCategory === 'Guides'
-                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-slate-800'
+                          ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-xs'
+                          : 'bg-white dark:bg-[#02100a] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-50 dark:hover:bg-emerald-950/40'
                       }`}
                     >
                       <Bookmark size={13} />
@@ -1709,8 +1724,8 @@ export default function ResourceList({
                       onClick={() => setResFormCategory('Curriculum')}
                       className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                         resFormCategory === 'Curriculum'
-                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-slate-800'
+                          ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-xs'
+                          : 'bg-white dark:bg-[#02100a] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-50 dark:hover:bg-emerald-950/40'
                       }`}
                     >
                       <File size={13} />
@@ -1722,15 +1737,15 @@ export default function ResourceList({
 
               {/* If Lecture: Term and Card dropdowns */}
               {resFormType === 'lecture' && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-2xl bg-emerald-500/5 border border-emerald-500/20">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-[#02140d] border border-emerald-200 dark:border-emerald-800/40">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-emerald-300/90 mb-1">
                       Term (Optional)
                     </label>
                     <select
                       value={resFormTerm}
                       onChange={(e) => setResFormTerm(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none text-xs"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-emerald-900/50 bg-white dark:bg-[#02100a] text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none text-xs"
                     >
                       <option value="">None (Subject / Curriculum level)</option>
                       {ALL_TERMS.map((t) => (
@@ -1742,13 +1757,13 @@ export default function ResourceList({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-emerald-300/90 mb-1">
                       Card (Optional)
                     </label>
                     <select
                       value={resFormCard}
                       onChange={(e) => setResFormCard(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none text-xs"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-emerald-900/50 bg-white dark:bg-[#02100a] text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none text-xs"
                     >
                       <option value="">None</option>
                       {ALL_CARDS.map((c) => (
@@ -1764,19 +1779,19 @@ export default function ResourceList({
               {/* Date & File Size */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                     Date
                   </label>
                   <input
                     type="date"
                     value={resFormDate}
                     onChange={(e) => setResFormDate(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none text-sm"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-emerald-900/50 bg-slate-50 dark:bg-[#02100a] text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                     File Size (optional)
                   </label>
                   <input
@@ -1784,24 +1799,24 @@ export default function ResourceList({
                     placeholder="e.g., 4.2 MB or PDF"
                     value={resFormFileSize}
                     onChange={(e) => setResFormFileSize(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 outline-none text-sm"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-emerald-900/50 bg-slate-50 dark:bg-[#02100a] text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none text-sm"
                   />
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="pt-4 border-t border-emerald-900/10 dark:border-white/10 flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-slate-200/80 dark:border-white/10 flex items-center justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setShowResourceModal(false)}
-                  className="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                  className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingResource}
-                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-sm font-bold shadow-md transition-all flex items-center gap-2"
+                  className="px-6 py-2.5 text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 text-white rounded-xl shadow-md hover:shadow-emerald-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
                 >
                   {isSubmittingResource ? (
                     <>
@@ -1820,25 +1835,29 @@ export default function ResourceList({
 
       {/* MODAL 4: Delete Resource Confirmation Modal */}
       {resourceToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-[#0a231b] w-full max-w-md rounded-3xl shadow-2xl border border-rose-500/30 overflow-hidden">
-            <div className="p-6 text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900/50 flex items-center justify-center mx-auto text-rose-600 dark:text-rose-400">
-                <Trash2 size={30} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] w-full max-w-md rounded-3xl shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] border border-rose-500/30 overflow-hidden">
+            
+            {/* Top Red Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 via-red-500 to-rose-500 rounded-t-3xl" />
+
+            <div className="p-6 sm:p-7 text-center space-y-4 pt-7">
+              <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200/80 dark:border-rose-900/40 flex items-center justify-center mx-auto text-rose-600 dark:text-rose-400 shadow-sm">
+                <Trash2 size={26} />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+              <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
                 Delete Resource?
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Are you sure you want to permanently delete <strong className="text-slate-900 dark:text-slate-200">&quot;{resourceToDelete.title}&quot;</strong> from Firebase?
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                Are you sure you want to permanently delete <strong className="text-slate-900 dark:text-slate-100">&quot;{resourceToDelete.title}&quot;</strong> from Firebase?
               </p>
 
-              <div className="pt-4 flex items-center justify-center gap-3">
+              <div className="pt-3 flex items-center justify-center gap-3">
                 <button
                   type="button"
                   disabled={isDeletingResource}
                   onClick={() => setResourceToDelete(null)}
-                  className="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                  className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1846,7 +1865,7 @@ export default function ResourceList({
                   type="button"
                   disabled={isDeletingResource}
                   onClick={handleConfirmDeleteResource}
-                  className="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white text-sm font-bold shadow-md transition-all flex items-center gap-2"
+                  className="px-6 py-2.5 text-xs font-bold bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 disabled:opacity-50 text-white rounded-xl shadow-md hover:shadow-rose-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
                 >
                   {isDeletingResource ? (
                     <>
@@ -1854,7 +1873,10 @@ export default function ResourceList({
                       <span>Deleting...</span>
                     </>
                   ) : (
-                    <span>Delete Resource</span>
+                    <>
+                      <Trash2 size={15} />
+                      <span>Delete Resource</span>
+                    </>
                   )}
                 </button>
               </div>

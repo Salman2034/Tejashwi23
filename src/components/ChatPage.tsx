@@ -832,14 +832,18 @@ export default function ChatPage() {
 
       {/* Admin Clear Chat Confirmation Modal */}
       {showClearConfirmModal && isCurrentUserAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-md bg-white dark:bg-[#051c14] border border-rose-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95">
-            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3">
-              <div className="p-2.5 rounded-2xl bg-rose-500/10 border border-rose-500/20">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="relative w-full max-w-md bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] border border-rose-500/30 rounded-3xl p-6 sm:p-7 shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] animate-in zoom-in-95 overflow-hidden">
+            
+            {/* Top Red Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 via-red-500 to-rose-500 rounded-t-3xl" />
+
+            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3 pt-1">
+              <div className="p-2.5 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200/80 dark:border-rose-900/40 shadow-sm">
                 <Trash2 size={24} />
               </div>
               <div>
-                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
+                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
                   Delete Chat from Database
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -856,10 +860,10 @@ export default function ChatPage() {
               <button
                 type="button"
                 onClick={() => setClearScope('channel')}
-                className={`w-full p-3 rounded-xl text-left text-xs sm:text-sm font-semibold border transition-all flex items-center justify-between ${
+                className={`w-full p-3 rounded-xl text-left text-xs sm:text-sm font-semibold border transition-all cursor-pointer flex items-center justify-between ${
                   clearScope === 'channel'
-                    ? 'border-rose-500 bg-rose-500/10 text-rose-700 dark:text-rose-300'
-                    : 'border-slate-200 dark:border-emerald-500/20 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#06241a]'
+                    ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 shadow-sm'
+                    : 'border-slate-200 dark:border-emerald-900/40 bg-slate-50 dark:bg-[#02100a] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-emerald-950/40'
                 }`}
               >
                 <div>
@@ -874,10 +878,10 @@ export default function ChatPage() {
               <button
                 type="button"
                 onClick={() => setClearScope('all')}
-                className={`w-full p-3 rounded-xl text-left text-xs sm:text-sm font-semibold border transition-all flex items-center justify-between ${
+                className={`w-full p-3 rounded-xl text-left text-xs sm:text-sm font-semibold border transition-all cursor-pointer flex items-center justify-between ${
                   clearScope === 'all'
-                    ? 'border-rose-500 bg-rose-500/10 text-rose-700 dark:text-rose-300'
-                    : 'border-slate-200 dark:border-emerald-500/20 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#06241a]'
+                    ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 shadow-sm'
+                    : 'border-slate-200 dark:border-emerald-900/40 bg-slate-50 dark:bg-[#02100a] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-emerald-950/40'
                 }`}
               >
                 <div>
@@ -890,12 +894,12 @@ export default function ChatPage() {
               </button>
             </div>
 
-            <div className="flex items-center justify-end gap-2.5">
+            <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-200/80 dark:border-white/10">
               <button
                 type="button"
                 disabled={isClearingChat}
                 onClick={() => setShowClearConfirmModal(false)}
-                className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#0a231b] rounded-xl transition-all"
+                className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
               >
                 Cancel
               </button>
@@ -903,7 +907,7 @@ export default function ChatPage() {
                 type="button"
                 disabled={isClearingChat}
                 onClick={handleClearChatConfirmed}
-                className="px-5 py-2.5 text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-md transition-all flex items-center gap-2"
+                className="px-5 py-2.5 text-xs font-bold bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white rounded-xl shadow-md hover:shadow-rose-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
               >
                 {isClearingChat ? (
                   <>
@@ -924,18 +928,24 @@ export default function ChatPage() {
 
       {/* Edit Profile Modal */}
       {isEditingProfile && currentUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-md bg-white dark:bg-[#051c14] border border-emerald-900/20 dark:border-emerald-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold">
-                <Edit2 size={18} />
-                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="relative w-full max-w-md bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] border border-slate-200 dark:border-emerald-500/30 rounded-3xl p-6 sm:p-7 shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] animate-in zoom-in-95 overflow-hidden">
+            
+            {/* Top Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 rounded-t-3xl" />
+
+            <div className="flex items-center justify-between mb-4 pt-1">
+              <div className="flex items-center gap-2.5 text-emerald-700 dark:text-emerald-400 font-bold">
+                <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/50">
+                  <Edit2 size={18} />
+                </div>
+                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
                   Edit Profile
                 </h3>
               </div>
               <button
                 onClick={() => setIsEditingProfile(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                className="p-2 rounded-full text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition-all cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -946,14 +956,14 @@ export default function ChatPage() {
             </p>
 
             {profileError && (
-              <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-2">
+              <div className="mb-4 p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-xs font-semibold flex items-center gap-2">
                 <AlertCircle size={16} className="shrink-0" />
                 <span>{profileError}</span>
               </div>
             )}
 
             {profileSuccess && (
-              <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs flex items-center gap-2">
+              <div className="mb-4 p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
                 <Check size={16} className="shrink-0" />
                 <span>{profileSuccess}</span>
               </div>
@@ -961,7 +971,7 @@ export default function ChatPage() {
 
             <form onSubmit={handleSaveProfile} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                   Full Name
                 </label>
                 <input
@@ -970,13 +980,13 @@ export default function ChatPage() {
                   onChange={(e) => setEditName(e.target.value)}
                   placeholder="Your Name"
                   required
-                  className="w-full px-3.5 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#03130d] border border-emerald-900/15 dark:border-emerald-500/25 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
                 />
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90">
                     Roll Number
                   </label>
                   <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
@@ -988,25 +998,25 @@ export default function ChatPage() {
                   value={editRoll}
                   onChange={(e) => setEditRoll(e.target.value)}
                   placeholder="e.g. 23"
-                  className="w-full px-3.5 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#03130d] border border-emerald-900/15 dark:border-emerald-500/25 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+                  className="w-full px-4 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 font-mono transition-all"
                 />
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                   Duplicate roll numbers are prevented to prevent impersonation.
                 </p>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2">
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-200/80 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setIsEditingProfile(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#0a231b] rounded-xl transition-all"
+                  className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSavingProfile}
-                  className="px-5 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-md transition-all flex items-center gap-1.5"
+                  className="px-5 py-2.5 text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl shadow-md hover:shadow-emerald-500/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   {isSavingProfile ? 'Saving...' : 'Save Changes'}
                 </button>
@@ -1478,14 +1488,18 @@ export default function ChatPage() {
 
       {/* Admin Ban User Confirmation Modal */}
       {showBanConfirmModal && isCurrentUserAdmin && userToBan && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in animate-duration-150">
-          <div className="w-full max-w-md bg-white dark:bg-[#051c14] border border-amber-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95 animate-duration-150">
-            <div className="flex items-center gap-3 text-amber-600 dark:text-amber-400 mb-3">
-              <div className="p-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="relative w-full max-w-md bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] border border-amber-500/30 rounded-3xl p-6 sm:p-7 shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] animate-in zoom-in-95 overflow-hidden">
+            
+            {/* Top Amber Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 rounded-t-3xl" />
+
+            <div className="flex items-center gap-3 text-amber-600 dark:text-amber-400 mb-3 pt-1">
+              <div className="p-2.5 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-900/40 shadow-sm">
                 <UserX size={24} />
               </div>
               <div>
-                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
+                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
                   Ban Chat Participant
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -1500,7 +1514,7 @@ export default function ChatPage() {
               </p>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-amber-300/90 mb-1.5">
                   Reason for Ban
                 </label>
                 <input
@@ -1508,12 +1522,12 @@ export default function ChatPage() {
                   placeholder="e.g. Spamming, inappropriate language, off-topic"
                   value={banReason}
                   onChange={(e) => setBanReason(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#03130d] border border-emerald-900/15 dark:border-emerald-500/25 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full px-4 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2.5">
+            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-200/80 dark:border-white/10">
               <button
                 type="button"
                 disabled={isBanningUser}
@@ -1521,7 +1535,7 @@ export default function ChatPage() {
                   setShowBanConfirmModal(false);
                   setUserToBan(null);
                 }}
-                className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#0a231b] rounded-xl transition-all"
+                className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
               >
                 Cancel
               </button>
@@ -1529,7 +1543,7 @@ export default function ChatPage() {
                 type="button"
                 disabled={isBanningUser}
                 onClick={handleConfirmBan}
-                className="px-5 py-2.5 text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white rounded-xl shadow-md transition-all flex items-center gap-2"
+                className="px-5 py-2.5 text-xs font-bold bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white rounded-xl shadow-md hover:shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 {isBanningUser ? (
                   <>
@@ -1550,15 +1564,19 @@ export default function ChatPage() {
 
       {/* Admin Banned Users Management Modal */}
       {showBanManagementModal && isCurrentUserAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in animate-duration-150">
-          <div className="w-full max-w-lg bg-white dark:bg-[#051c14] border border-emerald-900/20 dark:border-emerald-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95 animate-duration-150">
-            <div className="flex items-center justify-between mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="relative w-full max-w-lg bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] border border-slate-200 dark:border-emerald-500/30 rounded-3xl p-6 sm:p-7 shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] animate-in zoom-in-95 overflow-hidden">
+            
+            {/* Top Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-emerald-400 to-teal-500 rounded-t-3xl" />
+
+            <div className="flex items-center justify-between mb-4 pt-1">
               <div className="flex items-center gap-2.5 text-slate-900 dark:text-slate-100">
-                <div className="p-2.5 bg-amber-500/15 text-amber-600 dark:text-amber-400 rounded-xl border border-amber-500/25">
+                <div className="p-2.5 bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 rounded-xl border border-amber-200 dark:border-amber-900/40">
                   <UserX size={20} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-extrabold">
+                  <h3 className="text-lg font-extrabold tracking-tight">
                     Banned Chat Users
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -1568,7 +1586,7 @@ export default function ChatPage() {
               </div>
               <button
                 onClick={() => setShowBanManagementModal(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                className="p-2 rounded-full text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition-all cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -1583,7 +1601,7 @@ export default function ChatPage() {
                 </div>
               ) : (
                 bannedUsersList.map((user) => (
-                  <div key={user.uid} className="p-3.5 rounded-xl border border-slate-100 dark:border-emerald-900/30 bg-slate-50 dark:bg-[#03130d] flex items-start justify-between gap-3 animate-in fade-in animate-duration-150">
+                  <div key={user.uid} className="p-3.5 rounded-xl border border-slate-200/80 dark:border-emerald-900/40 bg-slate-50 dark:bg-[#02100a] flex items-start justify-between gap-3 animate-in fade-in">
                     <div className="space-y-1">
                       <div className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
                         {user.name || 'Anonymous User'}
@@ -1602,7 +1620,7 @@ export default function ChatPage() {
                     </div>
                     <button
                       onClick={() => handleUnbanUser(user.uid, user.name || 'Anonymous User')}
-                      className="px-3 py-1.5 rounded-lg bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-700 dark:text-emerald-400 border border-emerald-600/20 text-xs font-bold transition-all shrink-0 cursor-pointer"
+                      className="px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-400 border border-emerald-300/60 dark:border-emerald-800/40 text-xs font-bold transition-all shrink-0 cursor-pointer active:scale-95"
                     >
                       Unban
                     </button>
@@ -1611,11 +1629,11 @@ export default function ChatPage() {
               )}
             </div>
 
-            <div className="flex items-center justify-end">
+            <div className="flex items-center justify-end pt-3 border-t border-slate-200/80 dark:border-white/10">
               <button
                 type="button"
                 onClick={() => setShowBanManagementModal(false)}
-                className="px-5 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-md transition-all"
+                className="px-5 py-2.5 text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl shadow-md transition-all cursor-pointer"
               >
                 Close
               </button>
@@ -1626,14 +1644,18 @@ export default function ChatPage() {
 
       {/* Student Report Message Modal */}
       {showReportModal && messageToReport && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in animate-duration-150">
-          <div className="w-full max-w-md bg-white dark:bg-[#051c14] border border-rose-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95 animate-duration-150">
-            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3">
-              <div className="p-2.5 rounded-2xl bg-rose-500/10 border border-rose-500/20">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="relative w-full max-w-md bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] border border-rose-500/30 rounded-3xl p-6 sm:p-7 shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] animate-in zoom-in-95 overflow-hidden">
+            
+            {/* Top Red Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 via-red-500 to-rose-500 rounded-t-3xl" />
+
+            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3 pt-1">
+              <div className="p-2.5 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200/80 dark:border-rose-900/40 shadow-sm">
                 <Flag size={24} />
               </div>
               <div>
-                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
+                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
                   Report Message
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -1643,7 +1665,7 @@ export default function ChatPage() {
             </div>
 
             <div className="space-y-4 mb-5">
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#03130d] border border-slate-100 dark:border-emerald-950/40">
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/40">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">
                   Message by {messageToReport.senderName}
                 </p>
@@ -1653,7 +1675,7 @@ export default function ChatPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-rose-300/90 mb-2">
                   Select Reason for Flagging
                 </label>
                 <div className="grid grid-cols-2 gap-2 mb-3">
@@ -1667,10 +1689,10 @@ export default function ChatPage() {
                       key={r}
                       type="button"
                       onClick={() => setReportReason(r)}
-                      className={`px-3 py-2 rounded-xl text-xs font-semibold text-center border transition-all ${
+                      className={`px-3 py-2 rounded-xl text-xs font-semibold text-center border transition-all cursor-pointer ${
                         reportReason === r
-                          ? 'bg-rose-600/10 text-rose-700 dark:text-rose-400 border-rose-500/45'
-                          : 'bg-slate-50 dark:bg-[#04160f] text-slate-600 dark:text-slate-400 border-slate-100 dark:border-emerald-900/30 hover:bg-slate-100 dark:hover:bg-[#0a231b]'
+                          ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-500 shadow-sm'
+                          : 'bg-slate-50 dark:bg-[#02100a] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-emerald-900/30 hover:bg-slate-100 dark:hover:bg-emerald-950/40'
                       }`}
                     >
                       {r}
@@ -1683,12 +1705,12 @@ export default function ChatPage() {
                   placeholder="Or enter a custom reason..."
                   value={reportReason}
                   onChange={(e) => setReportReason(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#03130d] border border-emerald-900/15 dark:border-emerald-500/25 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  className="w-full px-4 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-500/40 focus:border-rose-500 transition-all"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2.5">
+            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-200/80 dark:border-white/10">
               <button
                 type="button"
                 disabled={isSubmittingReport}
@@ -1696,7 +1718,7 @@ export default function ChatPage() {
                   setShowReportModal(false);
                   setMessageToReport(null);
                 }}
-                className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#0a231b] rounded-xl transition-all"
+                className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
               >
                 Cancel
               </button>
@@ -1704,7 +1726,7 @@ export default function ChatPage() {
                 type="button"
                 disabled={isSubmittingReport || !reportReason.trim()}
                 onClick={handleReportMessageSubmit}
-                className="px-5 py-2.5 text-xs font-bold bg-rose-600 hover:bg-rose-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl shadow-md transition-all flex items-center gap-2"
+                className="px-5 py-2.5 text-xs font-bold bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl shadow-md hover:shadow-rose-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
               >
                 {isSubmittingReport ? (
                   <>
@@ -1725,15 +1747,19 @@ export default function ChatPage() {
 
       {/* Admin Reported Messages Management Dashboard Modal */}
       {showReportDashboardModal && isCurrentUserAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in animate-duration-150">
-          <div className="w-full max-w-2xl bg-white dark:bg-[#051c14] border border-emerald-900/20 dark:border-emerald-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95 animate-duration-150">
-            <div className="flex items-center justify-between mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="relative w-full max-w-2xl bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] border border-slate-200 dark:border-emerald-500/30 rounded-3xl p-6 sm:p-7 shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] animate-in zoom-in-95 overflow-hidden">
+            
+            {/* Top Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 via-amber-500 to-emerald-500 rounded-t-3xl" />
+
+            <div className="flex items-center justify-between mb-4 pt-1">
               <div className="flex items-center gap-2.5 text-slate-900 dark:text-slate-100">
-                <div className="p-2.5 bg-rose-500/15 text-rose-600 dark:text-rose-400 rounded-xl border border-rose-500/25">
+                <div className="p-2.5 bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 rounded-xl border border-rose-200 dark:border-rose-900/40">
                   <Flag size={20} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-extrabold">
+                  <h3 className="text-lg font-extrabold tracking-tight">
                     Reported Messages Feed
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -1743,7 +1769,7 @@ export default function ChatPage() {
               </div>
               <button
                 onClick={() => setShowReportDashboardModal(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                className="p-2 rounded-full text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition-all cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -1758,7 +1784,7 @@ export default function ChatPage() {
                 </div>
               ) : (
                 reportedMessagesList.map((report) => (
-                  <div key={report.id} className="p-4 rounded-xl border border-slate-100 dark:border-rose-950/20 bg-slate-50 dark:bg-[#03130d] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-in fade-in animate-duration-150">
+                  <div key={report.id} className="p-4 rounded-xl border border-slate-200 dark:border-rose-950/30 bg-slate-50 dark:bg-[#02100a] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-in fade-in">
                     <div className="space-y-1.5 flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="font-bold text-xs text-slate-900 dark:text-slate-100">
@@ -1769,12 +1795,12 @@ export default function ChatPage() {
                             ({report.senderEmail})
                           </span>
                         )}
-                        <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-rose-500/10 text-rose-700 dark:text-rose-400 font-semibold border border-rose-500/20">
+                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 font-semibold border border-rose-200 dark:border-rose-900/40">
                           Reported Reason: {report.reason}
                         </span>
                       </div>
 
-                      <div className="p-2.5 rounded-lg bg-white dark:bg-[#041a12] border border-slate-100 dark:border-emerald-950 text-xs text-slate-700 dark:text-slate-300 italic break-words">
+                      <div className="p-2.5 rounded-lg bg-white dark:bg-[#041a12] border border-slate-200 dark:border-emerald-950 text-xs text-slate-700 dark:text-slate-300 italic break-words">
                         "{report.text}"
                       </div>
 
@@ -1814,11 +1840,11 @@ export default function ChatPage() {
               )}
             </div>
 
-            <div className="flex items-center justify-end">
+            <div className="flex items-center justify-end pt-3 border-t border-slate-200/80 dark:border-white/10">
               <button
                 type="button"
                 onClick={() => setShowReportDashboardModal(false)}
-                className="px-5 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-md transition-all"
+                className="px-5 py-2.5 text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl shadow-md transition-all cursor-pointer"
               >
                 Close
               </button>

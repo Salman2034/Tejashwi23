@@ -521,25 +521,36 @@ export default function PollingPage() {
 
       {/* Poll Creation Modal (Admin Only) */}
       {showCreateModal && isCurrentUserAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-lg bg-white dark:bg-[#051c14] border border-emerald-900/20 dark:border-emerald-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95 max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold">
-                <PlusCircle size={20} />
-                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
-                  Create Batch Poll
-                </h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] border border-slate-200 dark:border-emerald-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] animate-in zoom-in-95 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            
+            {/* Top Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 rounded-t-3xl" />
+
+            <div className="flex items-center justify-between mb-5 pb-4 border-b border-slate-200/80 dark:border-white/10 pt-1">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/50 shadow-sm">
+                  <PlusCircle size={22} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+                    Create Batch Poll
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Collect votes and feedback from batchmates
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                className="p-2 rounded-full text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition-all cursor-pointer"
               >
                 <X size={18} />
               </button>
             </div>
 
             {createError && (
-              <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-2">
+              <div className="mb-4 p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-xs font-semibold flex items-center gap-2">
                 <AlertCircle size={16} className="shrink-0" />
                 <span>{createError}</span>
               </div>
@@ -547,7 +558,7 @@ export default function PollingPage() {
 
             <form onSubmit={handleCreatePoll} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                   Poll Question / Topic *
                 </label>
                 <input
@@ -556,12 +567,12 @@ export default function PollingPage() {
                   onChange={(e) => setPollQuestion(e.target.value)}
                   placeholder="e.g., Which topic should we review in the next study session?"
                   required
-                  className="w-full px-3.5 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#03130d] border border-emerald-900/15 dark:border-emerald-500/25 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                   Context / Description (Optional)
                 </label>
                 <textarea
@@ -569,12 +580,12 @@ export default function PollingPage() {
                   onChange={(e) => setPollDescription(e.target.value)}
                   placeholder="Additional instructions or notes for batchmates..."
                   rows={2}
-                  className="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-[#03130d] border border-emerald-900/15 dark:border-emerald-500/25 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-4 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-2">
                   Voting Options (Minimum 2)
                 </label>
                 <div className="space-y-2">
@@ -593,13 +604,13 @@ export default function PollingPage() {
                         }}
                         placeholder={`Option ${idx + 1}`}
                         required
-                        className="flex-1 px-3.5 py-2 text-sm rounded-xl bg-slate-50 dark:bg-[#03130d] border border-emerald-900/15 dark:border-emerald-500/25 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="flex-1 px-4 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/50 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
                       />
                       {pollOptions.length > 2 && (
                         <button
                           type="button"
                           onClick={() => handleRemoveOptionField(idx)}
-                          className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                          className="p-2 text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -611,7 +622,7 @@ export default function PollingPage() {
                   <button
                     type="button"
                     onClick={handleAddOptionField}
-                    className="mt-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
+                    className="mt-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <PlusCircle size={14} /> Add Another Option
                   </button>
@@ -619,7 +630,7 @@ export default function PollingPage() {
               </div>
 
               {/* Timed Poll Setting */}
-              <div className="pt-2 border-t border-emerald-900/10 dark:border-emerald-500/15">
+              <div className="pt-3 border-t border-slate-200/80 dark:border-emerald-900/40">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <Clock size={16} className="text-emerald-600 dark:text-emerald-400" />
@@ -634,18 +645,18 @@ export default function PollingPage() {
                       onChange={(e) => setIsTimed(e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-slate-600 peer-checked:bg-emerald-600"></div>
+                    <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:bg-slate-800 peer-checked:bg-emerald-600"></div>
                   </label>
                 </div>
 
                 {isTimed && (
-                  <div className="p-3 bg-emerald-50/50 dark:bg-[#03140e] rounded-xl border border-emerald-500/20 space-y-2 animate-in fade-in">
-                    <p className="text-[11px] text-slate-600 dark:text-slate-400">
+                  <div className="p-3.5 bg-emerald-50/70 dark:bg-[#02140d] rounded-2xl border border-emerald-200 dark:border-emerald-800/40 space-y-2.5 animate-in fade-in">
+                    <p className="text-[11px] text-slate-600 dark:text-slate-300">
                       Poll will automatically close to new votes once the time limit expires.
                     </p>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-2.5">
                       <div>
-                        <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">
+                        <label className="block text-[10px] font-bold text-slate-600 dark:text-emerald-300/80 uppercase tracking-wider">
                           Standard Duration
                         </label>
                         <select
@@ -654,7 +665,7 @@ export default function PollingPage() {
                             setTimerDurationHours(e.target.value);
                             setCustomTimerMinutes('');
                           }}
-                          className="w-full mt-1 px-3 py-1.5 text-xs rounded-lg bg-white dark:bg-[#051c14] border border-emerald-900/15 dark:border-emerald-500/30 text-slate-800 dark:text-slate-200 focus:outline-none"
+                          className="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-white dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/50 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                         >
                           <option value="1">1 Hour</option>
                           <option value="3">3 Hours</option>
@@ -668,7 +679,7 @@ export default function PollingPage() {
                       </div>
 
                       <div>
-                        <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">
+                        <label className="block text-[10px] font-bold text-slate-600 dark:text-emerald-300/80 uppercase tracking-wider">
                           Or Custom Minutes
                         </label>
                         <input
@@ -677,7 +688,7 @@ export default function PollingPage() {
                           placeholder="e.g. 30"
                           value={customTimerMinutes}
                           onChange={(e) => setCustomTimerMinutes(e.target.value)}
-                          className="w-full mt-1 px-3 py-1.5 text-xs rounded-lg bg-white dark:bg-[#051c14] border border-emerald-900/15 dark:border-emerald-500/30 text-slate-800 dark:text-slate-200 focus:outline-none"
+                          className="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-white dark:bg-[#02100a] border border-slate-200 dark:border-emerald-900/50 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                         />
                       </div>
                     </div>
@@ -685,18 +696,18 @@ export default function PollingPage() {
                 )}
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3">
+              <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-200/80 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#0a231b] rounded-xl transition-all"
+                  className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isCreatingPoll}
-                  className="px-5 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-md transition-all flex items-center gap-1.5"
+                  className="px-6 py-2.5 text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl shadow-md hover:shadow-emerald-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   {isCreatingPoll ? (
                     <>
@@ -1001,29 +1012,33 @@ export default function PollingPage() {
 
       {/* Delete Poll Confirmation Modal */}
       {pollToDelete && isCurrentUserAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-md bg-white dark:bg-[#051c14] border border-rose-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95 text-center">
-            <div className="w-14 h-14 rounded-full bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-500/25">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="relative w-full max-w-md bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] border border-rose-500/30 rounded-3xl p-6 sm:p-7 shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] animate-in zoom-in-95 text-center overflow-hidden">
+            
+            {/* Top Red Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 via-red-500 to-rose-500 rounded-t-3xl" />
+
+            <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-200/80 dark:border-rose-900/40 shadow-sm mt-1">
               <Trash2 size={26} />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">
+            <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 mb-2 tracking-tight">
               Delete Poll?
             </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
-              Are you sure you want to permanently delete <strong className="text-slate-900 dark:text-slate-200">&quot;{pollToDelete.question}&quot;</strong> and all of its cast votes? This action cannot be undone.
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
+              Are you sure you want to permanently delete <strong className="text-slate-900 dark:text-slate-100">&quot;{pollToDelete.question}&quot;</strong> and all of its cast votes? This action cannot be undone.
             </p>
             <div className="flex items-center justify-center gap-3">
               <button
                 onClick={() => setPollToDelete(null)}
                 disabled={processingPollId === pollToDelete.id}
-                className="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                className="px-5 py-2.5 rounded-xl text-slate-600 dark:text-slate-300 text-xs sm:text-sm font-semibold hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleConfirmDeletePoll(pollToDelete.id)}
                 disabled={processingPollId === pollToDelete.id}
-                className="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white text-sm font-bold shadow-md transition-all flex items-center gap-2"
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 disabled:opacity-50 text-white text-xs sm:text-sm font-bold shadow-md hover:shadow-rose-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
               >
                 {processingPollId === pollToDelete.id ? (
                   <>
@@ -1031,7 +1046,10 @@ export default function PollingPage() {
                     <span>Deleting...</span>
                   </>
                 ) : (
-                  <span>Delete Poll</span>
+                  <>
+                    <Trash2 size={15} />
+                    <span>Delete Poll</span>
+                  </>
                 )}
               </button>
             </div>
