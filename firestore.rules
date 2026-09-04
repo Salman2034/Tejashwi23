@@ -12,6 +12,10 @@ service cloud.firestore {
         request.auth.token.email.lower() == 'cadetsalman2034@gmail.com';
     }
 
+    function isBanned() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/bannedUsers/$(request.auth.uid));
+    }
+
     // User profiles collection
     match /users/{userId} {
       allow read: if true;
@@ -19,10 +23,17 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // Banned users collection
+    match /bannedUsers/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
     // Chat messages collection
     match /chatMessages/{messageId} {
       allow read: if true;
-      allow create: if request.resource.data.text is string
+      allow create: if isAuthenticated() && !isBanned()
+                    && request.resource.data.text is string
                     && request.resource.data.text.size() > 0
                     && request.resource.data.text.size() <= 2000
                     && request.resource.data.senderName is string

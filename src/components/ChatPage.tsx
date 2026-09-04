@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { 
   Send, MessageSquare, Hash, LogOut, 
   Wifi, WifiOff, Lock, AlertCircle, ShieldCheck, User, ShieldAlert,
-  Edit2, Check, X, Trash2, Loader2
+  Edit2, Check, X, Trash2, Loader2, UserX
 } from 'lucide-react';
 import { 
   collection, query, orderBy, limit, onSnapshot, addDoc, doc, setDoc, getDoc, getDocs, where,
@@ -41,6 +41,7 @@ export default function ChatPage() {
 
   // Authentication State
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
+  const isCurrentUserAdmin = (currentUser?.email || '').toLowerCase() === ADMIN_EMAIL.toLowerCase();
   const [userProfile, setUserProfile] = useState<{ fullName?: string; rollNumber?: string; role?: string } | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
@@ -66,6 +67,15 @@ export default function ChatPage() {
   const [isClearingChat, setIsClearingChat] = useState(false);
   const [deletingMessageId, setDeletingMessageId] = useState<string | null>(null);
   const [adminActionNotice, setAdminActionNotice] = useState<string | null>(null);
+
+  // Ban / Unban States
+  const [isBanned, setIsBanned] = useState<boolean>(false);
+  const [bannedUsersList, setBannedUsersList] = useState<{uid: string, email?: string, name?: string, bannedByName?: string, bannedAt: number, reason?: string}[]>([]);
+  const [showBanManagementModal, setShowBanManagementModal] = useState(false);
+  const [showBanConfirmModal, setShowBanConfirmModal] = useState(false);
+  const [userToBan, setUserToBan] = useState<{uid: string, email: string, name: string} | null>(null);
+  const [banReason, setBanReason] = useState<string>('');
+  const [isBanningUser, setIsBanningUser] = useState<boolean>(false);
 
   // Chat message input
   const [inputText, setInputText] = useState('');
@@ -153,6 +163,38 @@ export default function ChatPage() {
 
     return () => unsubscribe();
   }, []);
+
+  // Monitor if the current logged-in user is banned in real-time
+  useEffect(() => {
+    if (!currentUser) {
+      setIsBanned(false);
+      return;
+    }
+    const unsubscribe = onSnapshot(doc(db, 'bannedUsers', currentUser.uid), (docSnap) => {
+      setIsBanned(docSnap.exists());
+    }, (error) => {
+      console.warn('Banned check subscription note:', error);
+    });
+    return () => unsubscribe();
+  }, [currentUser]);
+
+  // Subscribes to full banned list for Admins only
+  useEffect(() => {
+    if (!isCurrentUserAdmin) {
+      setBannedUsersList([]);
+      return;
+    }
+    const unsubscribe = onSnapshot(collection(db, 'bannedUsers'), (snapshot) => {
+      const list = snapshot.docs.map(d => ({
+        uid: d.id,
+        ...d.data()
+      })) as any[];
+      setBannedUsersList(list);
+    }, (error) => {
+      console.warn('Banned list subscription note:', error);
+    });
+    return () => unsubscribe();
+  }, [isCurrentUserAdmin]);
 
   // Real-time listener for Firestore collection across all users/devices
   useEffect(() => {
@@ -377,7 +419,7 @@ export default function ChatPage() {
 
   const handleSendMessage = async (e: FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim() || isSending || !currentUser) return;
+    if (!inputText.trim() || isSending || !currentUser || isBanned) return;
 
     const senderName = userProfile?.fullName || currentUser.displayName || currentUser.email?.split('@')[0] || 'EWMC Cadet';
     const senderEmail = currentUser.email || '';
@@ -479,7 +521,51 @@ export default function ChatPage() {
     }
   };
 
-  const isCurrentUserAdmin = (currentUser?.email || '').toLowerCase() === ADMIN_EMAIL.toLowerCase();
+  const handleBanUserClick = (uid: string, email: string, name: string) => {
+    setUserToBan({ uid, email, name });
+    setBanReason('');
+    setShowBanConfirmModal(true);
+  };
+
+  const handleConfirmBan = async () => {
+    if (!userToBan || !isCurrentUserAdmin || isBanningUser) return;
+    setIsBanningUser(true);
+    try {
+      await setDoc(doc(db, 'bannedUsers', userToBan.uid), {
+        uid: userToBan.uid,
+        email: userToBan.email || '',
+        name: userToBan.name,
+        bannedByName: userProfile?.fullName || currentUser?.displayName || 'Admin',
+        bannedAt: Date.now(),
+        reason: banReason.trim() || 'No reason provided'
+      });
+      setAdminActionNotice(`User ${userToBan.name} has been banned.`);
+      setShowBanConfirmModal(false);
+      setUserToBan(null);
+      setTimeout(() => setAdminActionNotice(null), 3000);
+    } catch (err) {
+      console.error('Failed to ban user:', err);
+      setAdminActionNotice('Failed to ban user. Check permissions.');
+      setTimeout(() => setAdminActionNotice(null), 4000);
+    } finally {
+      setIsBanningUser(false);
+    }
+  };
+
+  const handleUnbanUser = async (uid: string, name: string) => {
+    if (!isCurrentUserAdmin) return;
+    try {
+      await deleteDoc(doc(db, 'bannedUsers', uid));
+      setAdminActionNotice(`User ${name} has been unbanned.`);
+      setTimeout(() => setAdminActionNotice(null), 3000);
+    } catch (err) {
+      console.error('Failed to unban user:', err);
+      setAdminActionNotice('Failed to unban user.');
+      setTimeout(() => setAdminActionNotice(null), 4000);
+    }
+  };
+
+
   const currentChannelMessages = messages.filter((m) => (m.channel || 'batch') === activeChannel);
 
   return (
@@ -917,15 +1003,31 @@ export default function ChatPage() {
 
             {/* Admin Delete / Clear Chat Controls */}
             {isCurrentUserAdmin && (
-              <button
-                type="button"
-                onClick={() => setShowClearConfirmModal(true)}
-                title="Clear chat messages from database"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-400 border border-rose-500/25 text-xs font-bold transition-all shadow-xs"
-              >
-                <Trash2 size={14} />
-                <span className="hidden sm:inline">Clear Chat</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowBanManagementModal(true)}
+                  title="Manage banned users"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/25 text-xs font-bold transition-all shadow-xs"
+                >
+                  <UserX size={14} />
+                  <span className="hidden sm:inline">Banned Users</span>
+                  {bannedUsersList.length > 0 && (
+                    <span className="ml-1 px-1.5 py-0.2 rounded-full bg-amber-500 text-white text-[10px] font-extrabold">
+                      {bannedUsersList.length}
+                    </span>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowClearConfirmModal(true)}
+                  title="Clear chat messages from database"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-400 border border-rose-500/25 text-xs font-bold transition-all shadow-xs"
+                >
+                  <Trash2 size={14} />
+                  <span className="hidden sm:inline">Clear Chat</span>
+                </button>
+              </div>
             )}
           </div>
 
@@ -963,20 +1065,34 @@ export default function ChatPage() {
                       )}
                       <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">{formattedTime}</span>
 
-                      {/* Admin Message Delete Trigger */}
+                      {/* Admin Message Delete & Ban Triggers */}
                       {isCurrentUserAdmin && (
-                        <button
-                          onClick={() => handleDeleteMessage(msg.id)}
-                          disabled={deletingMessageId === msg.id}
-                          title="Delete message from database"
-                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-md text-slate-400 hover:text-rose-500 hover:bg-rose-500/10"
-                        >
-                          {deletingMessageId === msg.id ? (
-                            <Loader2 size={12} className="animate-spin text-rose-500" />
-                          ) : (
-                            <Trash2 size={12} />
+                        <div className="flex items-center gap-1.5 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity ml-2 shrink-0">
+                          <button
+                            onClick={() => handleDeleteMessage(msg.id)}
+                            disabled={deletingMessageId === msg.id}
+                            type="button"
+                            title="Delete message from database"
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-rose-500 hover:bg-rose-500/15 bg-slate-100/80 dark:bg-[#08291e] lg:bg-transparent border border-slate-200/50 dark:border-emerald-800/20 lg:border-none transition-all cursor-pointer active:scale-95"
+                          >
+                            {deletingMessageId === msg.id ? (
+                              <Loader2 size={13} className="animate-spin text-rose-500" />
+                            ) : (
+                              <Trash2 size={13} />
+                            )}
+                          </button>
+                          
+                          {!isMsgAdmin && (
+                            <button
+                              onClick={() => handleBanUserClick(msg.senderUid, msg.senderEmail || '', msg.senderName)}
+                              type="button"
+                              title={`Ban ${msg.senderName} from chat`}
+                              className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-amber-500 hover:bg-amber-500/15 bg-slate-100/80 dark:bg-[#08291e] lg:bg-transparent border border-slate-200/50 dark:border-emerald-800/20 lg:border-none transition-all cursor-pointer active:scale-95"
+                            >
+                              <UserX size={13} />
+                            </button>
                           )}
-                        </button>
+                        </div>
                       )}
                     </div>
 
@@ -997,24 +1113,36 @@ export default function ChatPage() {
 
           {/* Chat Message Input Field */}
           {currentUser ? (
-            <form onSubmit={handleSendMessage} className="p-3 sm:p-4 border-t border-emerald-900/10 dark:border-emerald-500/15 bg-white/70 dark:bg-[#04160f]/90">
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  placeholder={`Message #${CHANNELS.find((c) => c.id === activeChannel)?.name}...`}
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  className="flex-1 px-4 py-3 text-sm rounded-xl bg-slate-50 dark:bg-[#061e15] border border-emerald-900/15 dark:border-emerald-500/25 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
-                <button
-                  type="submit"
-                  disabled={!inputText.trim() || isSending}
-                  className="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center shrink-0"
-                >
-                  <Send size={18} />
-                </button>
+            isBanned ? (
+              <div className="p-4 border-t border-emerald-900/10 dark:border-emerald-500/15 bg-rose-50 dark:bg-rose-950/10 text-center flex flex-col items-center justify-center gap-1 animate-in fade-in">
+                <ShieldAlert size={20} className="text-rose-600 dark:text-rose-400" />
+                <p className="text-xs sm:text-sm font-bold text-rose-800 dark:text-rose-300">
+                  Your chat access has been restricted by an administrator.
+                </p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  You are currently banned from posting new messages in this batch portal.
+                </p>
               </div>
-            </form>
+            ) : (
+              <form onSubmit={handleSendMessage} className="p-3 sm:p-4 border-t border-emerald-900/10 dark:border-emerald-500/15 bg-white/70 dark:bg-[#04160f]/90">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    placeholder={`Message #${CHANNELS.find((c) => c.id === activeChannel)?.name}...`}
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                    className="flex-1 px-4 py-3 text-sm rounded-xl bg-slate-50 dark:bg-[#061e15] border border-emerald-900/15 dark:border-emerald-500/25 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                  <button
+                    type="submit"
+                    disabled={!inputText.trim() || isSending}
+                    className="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center shrink-0"
+                  >
+                    <Send size={18} />
+                  </button>
+                </div>
+              </form>
+            )
           ) : (
             <div className="p-4 border-t border-emerald-900/10 dark:border-emerald-500/15 bg-emerald-50/30 dark:bg-[#04160f]/70 text-center">
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
@@ -1024,6 +1152,154 @@ export default function ChatPage() {
           )}
         </div>
       </div>
+
+      {/* Admin Ban User Confirmation Modal */}
+      {showBanConfirmModal && isCurrentUserAdmin && userToBan && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in animate-duration-150">
+          <div className="w-full max-w-md bg-white dark:bg-[#051c14] border border-amber-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95 animate-duration-150">
+            <div className="flex items-center gap-3 text-amber-600 dark:text-amber-400 mb-3">
+              <div className="p-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+                <UserX size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
+                  Ban Chat Participant
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Admin Action • Chat Restriction
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4 mb-5">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                Are you sure you want to ban <strong className="text-slate-900 dark:text-slate-100">{userToBan.name}</strong> from the chat? This will immediately prevent them from sending messages in any channel.
+              </p>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                  Reason for Ban
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Spamming, inappropriate language, off-topic"
+                  value={banReason}
+                  onChange={(e) => setBanReason(e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#03130d] border border-emerald-900/15 dark:border-emerald-500/25 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                disabled={isBanningUser}
+                onClick={() => {
+                  setShowBanConfirmModal(false);
+                  setUserToBan(null);
+                }}
+                className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#0a231b] rounded-xl transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isBanningUser}
+                onClick={handleConfirmBan}
+                className="px-5 py-2.5 text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white rounded-xl shadow-md transition-all flex items-center gap-2"
+              >
+                {isBanningUser ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    <span>Banning User...</span>
+                  </>
+                ) : (
+                  <>
+                    <UserX size={14} />
+                    <span>Confirm Ban</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Banned Users Management Modal */}
+      {showBanManagementModal && isCurrentUserAdmin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in animate-duration-150">
+          <div className="w-full max-w-lg bg-white dark:bg-[#051c14] border border-emerald-900/20 dark:border-emerald-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95 animate-duration-150">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2.5 text-slate-900 dark:text-slate-100">
+                <div className="p-2.5 bg-amber-500/15 text-amber-600 dark:text-amber-400 rounded-xl border border-amber-500/25">
+                  <UserX size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold">
+                    Banned Chat Users
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Manage restricted accounts ({bannedUsersList.length})
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowBanManagementModal(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="max-h-[300px] overflow-y-auto mb-5 space-y-2.5 pr-1 custom-scrollbar">
+              {bannedUsersList.length === 0 ? (
+                <div className="py-8 text-center text-slate-400">
+                  <ShieldCheck size={32} className="mx-auto mb-2 text-emerald-500" />
+                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">No banned users!</p>
+                  <p className="text-xs text-slate-500 mt-1">Excellent! All batchmates currently have chat access.</p>
+                </div>
+              ) : (
+                bannedUsersList.map((user) => (
+                  <div key={user.uid} className="p-3.5 rounded-xl border border-slate-100 dark:border-emerald-900/30 bg-slate-50 dark:bg-[#03130d] flex items-start justify-between gap-3 animate-in fade-in animate-duration-150">
+                    <div className="space-y-1">
+                      <div className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                        {user.name || 'Anonymous User'}
+                      </div>
+                      {user.email && (
+                        <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-mono">
+                          {user.email}
+                        </p>
+                      )}
+                      <p className="text-[11px] text-slate-600 dark:text-slate-300">
+                        <span className="font-semibold text-amber-600 dark:text-amber-400">Reason:</span> {user.reason || 'No reason specified'}
+                      </p>
+                      <p className="text-[9px] text-slate-400 dark:text-slate-500">
+                        Banned by {user.bannedByName || 'Admin'} on {new Date(user.bannedAt).toLocaleString()}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleUnbanUser(user.uid, user.name || 'Anonymous User')}
+                      className="px-3 py-1.5 rounded-lg bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-700 dark:text-emerald-400 border border-emerald-600/20 text-xs font-bold transition-all shrink-0 cursor-pointer"
+                    >
+                      Unban
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="flex items-center justify-end">
+              <button
+                type="button"
+                onClick={() => setShowBanManagementModal(false)}
+                className="px-5 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-md transition-all"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

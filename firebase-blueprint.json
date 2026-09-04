@@ -14,6 +14,19 @@
       },
       "required": ["uid", "fullName", "email", "createdAt"]
     },
+    "bannedUser": {
+      "title": "Banned User",
+      "description": "Banned user entry that restricts user from sending messages in chat",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "bannedByName": { "type": "string" },
+        "bannedAt": { "type": "number" },
+        "reason": { "type": "string" }
+      },
+      "required": ["uid", "bannedAt"]
+    },
     "chatMessage": {
       "title": "Chat Message",
       "description": "Real-time messages sent by authenticated batchmates across devices",
@@ -166,6 +179,12 @@
         "$ref": "#/entities/userProfile"
       },
       "description": "User profile document keyed by Auth UID"
+    },
+    "/bannedUsers/{userId}": {
+      "schema": {
+        "$ref": "#/entities/bannedUser"
+      },
+      "description": "Users banned from utilizing the chat page"
     },
     "/chatMessages/{messageId}": {
       "schema": {
