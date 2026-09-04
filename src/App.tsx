@@ -54,24 +54,23 @@ export default function App() {
           )}
         </main>
 
-        <footer className="relative bg-[#03110b] text-emerald-200/70 pt-10 pb-28 lg:py-10 border-t border-emerald-500/20 mt-auto shadow-2xl transition-colors overflow-hidden">
-          {/* College building image background */}
-          <img 
-            src="/Ewmch-bg.png" 
-            alt="East West Medical College" 
-            className="absolute inset-0 w-full h-full object-cover object-bottom opacity-25 dark:opacity-30 pointer-events-none select-none -z-10" 
+        <footer className="relative bg-[#020d07] text-white min-h-[220px] sm:min-h-[200px] flex items-center justify-center pt-10 pb-28 lg:py-12 border-t border-emerald-500/30 mt-auto shadow-2xl overflow-hidden">
+          {/* College building image background - clear and visible */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-85 transition-opacity pointer-events-none"
+            style={{ backgroundImage: 'url(/Ewmch-bg.png)' }}
           />
-          {/* Subtle gradient overlay to guarantee contrast and deep emerald aesthetic */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#020b07]/95 via-[#03110b]/85 to-[#041910]/80 pointer-events-none -z-10" />
+          {/* Subtle gradient vignette to keep text easily readable while leaving the building clearly recognizable */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#010905]/95 via-[#021009]/60 to-[#021009]/75 pointer-events-none" />
 
-          <div className="relative max-w-7xl mx-auto px-4 text-center text-sm flex flex-col items-center justify-center gap-3 z-10">
-            <p className="font-semibold text-emerald-100 text-base drop-shadow-sm">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 text-center text-sm flex flex-col items-center justify-center gap-3">
+            <p className="font-bold text-white text-base md:text-lg tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
               © {new Date().getFullYear()} Tejashwi 23 - East West Medical College.
             </p>
-            <p className="flex items-center gap-1.5 justify-center text-emerald-300/90 font-medium">
-              Made with <Heart size={16} className="text-rose-500 fill-rose-500 animate-pulse" /> for the batch.
+            <p className="flex items-center gap-1.5 justify-center text-emerald-100 font-medium drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+              Made with <Heart size={16} className="text-rose-500 fill-rose-500 animate-pulse drop-shadow-sm inline" /> for the batch.
             </p>
-            <p className="text-emerald-400/70 mt-[-2px] text-xs font-mono tracking-wider">
+            <p className="text-emerald-300 font-mono text-xs tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
               by Salman Sami, Roll 01
             </p>
           </div>
