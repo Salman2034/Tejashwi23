@@ -59,7 +59,20 @@
         "role": { "type": "string", "enum": ["student", "cr", "admin"] },
         "text": { "type": "string" },
         "timestamp": { "type": "number" },
-        "channel": { "type": "string", "enum": ["batch", "academic", "casual"] }
+        "channel": { "type": "string", "enum": ["batch", "academic", "casual"] },
+        "replyTo": {
+          "type": "object",
+          "properties": {
+            "messageId": { "type": "string" },
+            "senderUid": { "type": "string" },
+            "senderName": { "type": "string" },
+            "text": { "type": "string" }
+          }
+        },
+        "mentions": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
       },
       "required": ["senderUid", "senderName", "text", "timestamp", "channel"]
     },

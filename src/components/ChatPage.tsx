@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, type FormEvent } from 'react';
+import { useState, useEffect, useRef, useMemo, type FormEvent } from 'react';
 import { 
   Send, MessageSquare, Hash, LogOut, 
   Wifi, WifiOff, Lock, AlertCircle, ShieldCheck, User, ShieldAlert,
-  Edit2, Check, X, Trash2, Loader2, UserX, Flag
+  Edit2, Check, X, Trash2, Loader2, UserX, Flag, CornerUpLeft
 } from 'lucide-react';
 import { 
   collection, query, orderBy, limit, onSnapshot, addDoc, doc, setDoc, getDoc, getDocs, where,
@@ -89,6 +89,10 @@ export default function ChatPage() {
 
   // Chat message input
   const [inputText, setInputText] = useState('');
+  const [replyingTo, setReplyingTo] = useState<any | null>(null);
+  const [showMentionDropdown, setShowMentionDropdown] = useState<boolean>(false);
+  const [mentionSearchQuery, setMentionSearchQuery] = useState<string>('');
+  const [mentionedUids, setMentionedUids] = useState<string[]>([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const isFirstRenderRef = useRef(true);
   const prevMessagesCountRef = useRef(0);
@@ -254,6 +258,8 @@ export default function ChatPage() {
                 text: data.text || '',
                 timestamp: data.timestamp || Date.now(),
                 channel: data.channel || 'batch',
+                replyTo: data.replyTo || undefined,
+                mentions: data.mentions || undefined,
               };
             });
             setMessages(firestoreMsgs);
@@ -459,7 +465,17 @@ export default function ChatPage() {
     const isAdmin = senderEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase();
     const textToSend = inputText.trim();
 
-    const newMsgData = {
+    // Compute mentions dynamically from input text to avoid state de-synchronization
+    const mentions: string[] = [];
+    chatParticipants.forEach((p) => {
+      const escapedName = p.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      const regex = new RegExp(`@${escapedName}\\b`, 'i');
+      if (regex.test(textToSend)) {
+        mentions.push(p.uid);
+      }
+    });
+
+    const newMsgData: any = {
       senderUid,
       senderName,
       senderEmail,
@@ -468,10 +484,21 @@ export default function ChatPage() {
       text: textToSend,
       timestamp: Date.now(),
       channel: activeChannel,
+      mentions,
     };
+
+    if (replyingTo) {
+      newMsgData.replyTo = {
+        messageId: replyingTo.id,
+        senderUid: replyingTo.senderUid,
+        senderName: replyingTo.senderName,
+        text: replyingTo.text,
+      };
+    }
 
     setIsSending(true);
     setInputText('');
+    setReplyingTo(null);
 
     try {
       await addDoc(collection(db, 'chatMessages'), newMsgData);
@@ -670,6 +697,44 @@ export default function ChatPage() {
     }
   };
 
+
+  // Selector for other chat participants
+  const chatParticipants = useMemo(() => {
+    const participantsMap = new Map<string, {uid: string, name: string, email?: string, rollNumber?: string}>();
+    messages.forEach((m) => {
+      if (m.senderUid && m.senderUid !== currentUser?.uid) {
+        participantsMap.set(m.senderUid, {
+          uid: m.senderUid,
+          name: m.senderName,
+          email: m.senderEmail || '',
+          rollNumber: m.rollNumber || ''
+        });
+      }
+    });
+    return Array.from(participantsMap.values());
+  }, [messages, currentUser]);
+
+  const handleInputChange = (text: string) => {
+    setInputText(text);
+    
+    // Check if the user is typing a mention
+    const lastWord = text.substring(text.lastIndexOf(' ') + 1);
+    if (lastWord.startsWith('@')) {
+      const query = lastWord.substring(1);
+      setMentionSearchQuery(query);
+      setShowMentionDropdown(true);
+    } else {
+      setShowMentionDropdown(false);
+    }
+  };
+
+  const handleSelectMention = (participantName: string) => {
+    const lastSpaceIdx = inputText.lastIndexOf(' ');
+    const prefix = lastSpaceIdx >= 0 ? inputText.substring(0, lastSpaceIdx + 1) : '';
+    const newText = `${prefix}@${participantName} `;
+    setInputText(newText);
+    setShowMentionDropdown(false);
+  };
 
   const currentChannelMessages = messages.filter((m) => (m.channel || 'batch') === activeChannel);
 
@@ -1191,6 +1256,20 @@ export default function ChatPage() {
                       )}
                       <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">{timestampDisplay}</span>
 
+                      {/* Universal Reply Trigger */}
+                      {currentUser && !isBanned && (
+                        <div className="flex items-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity ml-2 shrink-0">
+                          <button
+                            onClick={() => setReplyingTo(msg)}
+                            type="button"
+                            title="Reply to this message"
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-emerald-500 hover:bg-emerald-500/15 bg-slate-100/80 dark:bg-[#08291e] lg:bg-transparent border border-slate-200/50 dark:border-emerald-800/20 lg:border-none transition-all cursor-pointer active:scale-95"
+                          >
+                            <CornerUpLeft size={11} />
+                          </button>
+                        </div>
+                      )}
+
                       {/* Admin Message Delete & Ban Triggers */}
                       {isCurrentUserAdmin && (
                         <div className="flex items-center gap-1.5 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity ml-2 shrink-0">
@@ -1243,7 +1322,39 @@ export default function ChatPage() {
                           : 'bg-white dark:bg-[#07241a] text-slate-800 dark:text-slate-100 border border-emerald-900/10 dark:border-emerald-500/20 rounded-tl-xs'
                       }`}
                     >
-                      {msg.text}
+                      {msg.replyTo && (
+                        <div className={`mb-1.5 p-2 rounded-lg text-xs border-l-2 leading-tight flex flex-col gap-0.5 ${
+                          isMe 
+                            ? 'bg-emerald-700/40 border-emerald-300 text-emerald-100' 
+                            : 'bg-slate-50 dark:bg-[#041610] border-emerald-600 dark:border-emerald-500 text-slate-600 dark:text-slate-300'
+                        }`}>
+                          <span className="font-extrabold text-[10px] tracking-wide uppercase opacity-75">
+                            Replying to {msg.replyTo.senderName}
+                          </span>
+                          <span className="line-clamp-2 italic opacity-90">
+                            {msg.replyTo.text}
+                          </span>
+                        </div>
+                      )}
+                      <div>
+                        {msg.text ? msg.text.split(/(\s+)/).map((word: string, idx: number) => {
+                          if (word.startsWith('@')) {
+                            return (
+                              <span 
+                                key={idx} 
+                                className={`font-bold px-1 rounded-sm ${
+                                  isMe 
+                                    ? 'bg-emerald-800 text-emerald-100' 
+                                    : 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400'
+                                }`}
+                              >
+                                {word}
+                              </span>
+                            );
+                          }
+                          return word;
+                        }) : ''}
+                      </div>
                     </div>
                   </div>
                 );
@@ -1269,13 +1380,80 @@ export default function ChatPage() {
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSendMessage} className="p-3 sm:p-4 border-t border-emerald-900/10 dark:border-emerald-500/15 bg-white/70 dark:bg-[#04160f]/90">
+              <form onSubmit={handleSendMessage} className="relative p-3 sm:p-4 border-t border-emerald-900/10 dark:border-emerald-500/15 bg-white/70 dark:bg-[#04160f]/90">
+                {/* 1. @ Mention Selector Popup */}
+                {showMentionDropdown && chatParticipants.length > 0 && (
+                  <div className="absolute bottom-full left-4 z-40 mb-2 w-72 max-h-56 overflow-y-auto rounded-2xl bg-white dark:bg-[#051c14] border border-emerald-900/10 dark:border-emerald-500/25 shadow-2xl p-2 flex flex-col gap-1 scrollbar-thin">
+                    <div className="px-2 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      Mention Participant
+                    </div>
+                    {chatParticipants
+                      .filter((p) => {
+                        const search = mentionSearchQuery.toLowerCase();
+                        return (
+                          p.name.toLowerCase().includes(search) || 
+                          p.rollNumber?.toLowerCase().includes(search) ||
+                          p.email?.toLowerCase().includes(search)
+                        );
+                      })
+                      .map((p) => (
+                        <button
+                          key={p.uid}
+                          type="button"
+                          onClick={() => handleSelectMention(p.name)}
+                          className="w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between gap-2 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-300 transition-colors"
+                        >
+                          <span className="font-semibold flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            {p.name}
+                          </span>
+                          {p.rollNumber && (
+                            <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/5 px-1.5 py-0.5 rounded-md">
+                              Roll {p.rollNumber}
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    {chatParticipants.filter((p) => {
+                      const search = mentionSearchQuery.toLowerCase();
+                      return (
+                        p.name.toLowerCase().includes(search) || 
+                        p.rollNumber?.toLowerCase().includes(search) ||
+                        p.email?.toLowerCase().includes(search)
+                      );
+                    }).length === 0 && (
+                      <div className="text-center py-4 text-xs text-slate-400">
+                        No matches found
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 2. Replying Preview Bar */}
+                {replyingTo && (
+                  <div className="mb-2 px-3 py-2 rounded-xl bg-slate-50 dark:bg-[#061f16] border border-emerald-900/10 dark:border-emerald-500/20 flex items-center justify-between gap-3 animate-in slide-in-from-bottom-2 duration-150">
+                    <div className="flex-1 min-w-0 text-xs text-slate-600 dark:text-slate-300">
+                      <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                        Replying to {replyingTo.senderName}
+                      </span>
+                      <p className="truncate italic opacity-85 mt-0.5">"{replyingTo.text}"</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setReplyingTo(null)}
+                      className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                )}
+
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
-                    placeholder={`Message #${CHANNELS.find((c) => c.id === activeChannel)?.name}...`}
+                    placeholder={`Message #${CHANNELS.find((c) => c.id === activeChannel)?.name}... (Type @ to mention)`}
                     value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
+                    onChange={(e) => handleInputChange(e.target.value)}
                     className="flex-1 px-4 py-3 text-sm rounded-xl bg-slate-50 dark:bg-[#061e15] border border-emerald-900/15 dark:border-emerald-500/25 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                   <button

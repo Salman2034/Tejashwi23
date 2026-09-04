@@ -159,41 +159,6 @@ export function NotificationProvider({
     setActiveToast(null);
   }, []);
 
-  // Monitor in real-time if the current user is banned, and trigger a prominent notification
-  useEffect(() => {
-    if (!currentUser) return;
-    const unsub = onSnapshot(doc(db, 'bannedUsers', currentUser.uid), (snapshot) => {
-      if (snapshot.exists()) {
-        const banData = snapshot.data();
-        const banId = `ban-${currentUser.uid}-${banData.bannedAt || Date.now()}`;
-        
-        setNotifications((prev) => {
-          if (prev.some((n) => n.id === banId)) return prev;
-          
-          const banNotice: AppNotification = {
-            id: banId,
-            type: 'notice',
-            title: '⚠️ Chat Access Restricted',
-            message: `Your chat access has been suspended. Reason: ${banData.reason || 'No reason specified'}. Contact Admin at cadetsalman2034@gmail.com if you think this is a misunderstanding.`,
-            timestamp: banData.bannedAt || Date.now(),
-            read: false,
-            linkTab: 'chat',
-            isImportant: true,
-          };
-          
-          triggerToast(banNotice);
-          if (soundEnabledRef.current) {
-            playNoticeSound();
-          }
-          return [banNotice, ...prev.filter(n => !n.id.startsWith('ban-'))];
-        });
-      }
-    }, (error) => {
-      console.warn('Current user ban subscription note:', error);
-    });
-    return () => unsub();
-  }, [currentUser, triggerToast]);
-
   const sendBrowserNotification = useCallback((item: AppNotification) => {
     if (typeof window === 'undefined' || !('Notification' in window)) return;
     if (Notification.permission !== 'granted') return;
@@ -245,6 +210,42 @@ export function NotificationProvider({
       fallbackNotification(item);
     }
   }, [setActiveTab, setChatActiveChannel]);
+
+  // Monitor in real-time if the current user is banned, and trigger a prominent notification
+  useEffect(() => {
+    if (!currentUser) return;
+    const unsub = onSnapshot(doc(db, 'bannedUsers', currentUser.uid), (snapshot) => {
+      if (snapshot.exists()) {
+        const banData = snapshot.data();
+        const banId = `ban-${currentUser.uid}-${banData.bannedAt || Date.now()}`;
+        
+        setNotifications((prev) => {
+          if (prev.some((n) => n.id === banId)) return prev;
+          
+          const banNotice: AppNotification = {
+            id: banId,
+            type: 'notice',
+            title: '⚠️ Chat Access Restricted',
+            message: `Your chat access has been suspended. Reason: ${banData.reason || 'No reason specified'}. Contact Admin at cadetsalman2034@gmail.com if you think this is a misunderstanding.`,
+            timestamp: banData.bannedAt || Date.now(),
+            read: false,
+            linkTab: 'chat',
+            isImportant: true,
+          };
+          
+          triggerToast(banNotice);
+          sendBrowserNotification(banNotice);
+          if (soundEnabledRef.current) {
+            playNoticeSound();
+          }
+          return [banNotice, ...prev.filter(n => !n.id.startsWith('ban-'))];
+        });
+      }
+    }, (error) => {
+      console.warn('Current user ban subscription note:', error);
+    });
+    return () => unsub();
+  }, [currentUser, triggerToast, sendBrowserNotification]);
 
   const activeTabRef = useRef(activeTab);
   activeTabRef.current = activeTab;
@@ -373,11 +374,25 @@ export function NotificationProvider({
               const senderDisplay = data.senderName || 'Cadet';
               const roleDisplay = data.role === 'admin' ? ' (Admin)' : (data.rollNumber ? ` (Roll ${data.rollNumber})` : '');
 
+              const isReplyToMe = data.replyTo && data.replyTo.senderUid === currentU.uid;
+              const isMentionOfMe = data.mentions && Array.isArray(data.mentions) && data.mentions.includes(currentU.uid);
+
+              let notifTitle = `💬 #${channelName}: ${senderDisplay}${roleDisplay}`;
+              let notifMsg = data.text ? (data.text.length > 110 ? `${data.text.substring(0, 107)}...` : data.text) : 'Sent a message in chat.';
+
+              if (isReplyToMe) {
+                notifTitle = `💬 ${senderDisplay} replied to you`;
+                notifMsg = data.text ? `"${data.text}"` : 'Replied to your message.';
+              } else if (isMentionOfMe) {
+                notifTitle = `💬 ${senderDisplay} mentioned you in #${channelName}`;
+                notifMsg = data.text ? data.text : 'Mentioned you in chat.';
+              }
+
               const newMsgNotification: AppNotification = {
                 id: `msg-${change.doc.id}-${docTs}`,
                 type: 'message',
-                title: `💬 #${channelName}: ${senderDisplay}${roleDisplay}`,
-                message: data.text ? (data.text.length > 110 ? `${data.text.substring(0, 107)}...` : data.text) : 'Sent a message in chat.',
+                title: notifTitle,
+                message: notifMsg,
                 timestamp: docTs,
                 read: false,
                 linkTab: 'chat',
@@ -392,9 +407,13 @@ export function NotificationProvider({
               // If user is not currently in this specific chat channel, ring chime and toast
               const isLookingAtThisChannel = activeTabRef.current === 'chat' && chatActiveChannelRef.current === (data.channel || 'batch') && document.visibilityState === 'visible';
 
-              if (!isLookingAtThisChannel) {
+              if (!isLookingAtThisChannel || isReplyToMe || isMentionOfMe) {
                 if (soundEnabledRef.current) {
-                  playMessageSound();
+                  if (isReplyToMe || isMentionOfMe) {
+                    playNoticeSound(); // Play more prominent chime for replies/mentions
+                  } else {
+                    playMessageSound();
+                  }
                 }
                 triggerToast(newMsgNotification);
                 sendBrowserNotification(newMsgNotification);

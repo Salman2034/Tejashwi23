@@ -8,6 +8,13 @@ export interface ChatMessage {
   text: string;
   timestamp: number;
   channel: 'batch' | 'academic' | 'casual';
+  replyTo?: {
+    messageId: string;
+    senderUid: string;
+    senderName: string;
+    text: string;
+  };
+  mentions?: string[];
 }
 
 export const INITIAL_CHAT_MESSAGES: ChatMessage[] = [
