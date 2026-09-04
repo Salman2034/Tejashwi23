@@ -56,6 +56,37 @@ export const resources: Resource[] = [
     phase: '1st Phase',
     subject: 'Physiology'
   },
+  // BMDC Curriculums for Medical Textbooks section
+  {
+    id: 'book-curriculum-biochemistry',
+    title: 'Biochemistry BMDC Curriculum',
+    description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Biochemistry.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/5.Biochemistry.pdf',
+    phase: '1st Phase',
+    subject: 'Biochemistry'
+  },
+  {
+    id: 'book-curriculum-anatomy',
+    title: 'Anatomy BMDC Curriculum',
+    description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Anatomy.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
+    phase: '1st Phase',
+    subject: 'Anatomy'
+  },
+  {
+    id: 'book-curriculum-physiology',
+    title: 'Physiology BMDC Curriculum',
+    description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Physiology.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/4.Physiology.pdf',
+    phase: '1st Phase',
+    subject: 'Physiology'
+  },
 
   // 1st Term Card 01 Lectures
   {
