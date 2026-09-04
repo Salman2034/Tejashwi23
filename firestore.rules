@@ -29,6 +29,12 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // Reported messages collection
+    match /reportedMessages/{reportId} {
+      allow read, update, delete: if isAdmin();
+      allow create: if isAuthenticated() && !isBanned();
+    }
+
     // Chat messages collection
     match /chatMessages/{messageId} {
       allow read: if true;

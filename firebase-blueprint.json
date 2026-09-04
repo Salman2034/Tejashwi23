@@ -27,6 +27,25 @@
       },
       "required": ["uid", "bannedAt"]
     },
+    "reportedMessage": {
+      "title": "Reported Message",
+      "description": "Inappropriate message flagged by users for admin review",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "messageId": { "type": "string" },
+        "text": { "type": "string" },
+        "senderUid": { "type": "string" },
+        "senderName": { "type": "string" },
+        "senderEmail": { "type": "string" },
+        "reportedByUid": { "type": "string" },
+        "reportedByName": { "type": "string" },
+        "reportedAt": { "type": "number" },
+        "reason": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "dismissed", "resolved"] }
+      },
+      "required": ["messageId", "text", "senderUid", "senderName", "reportedByUid", "reportedByName", "reportedAt", "reason", "status"]
+    },
     "chatMessage": {
       "title": "Chat Message",
       "description": "Real-time messages sent by authenticated batchmates across devices",
@@ -185,6 +204,12 @@
         "$ref": "#/entities/bannedUser"
       },
       "description": "Users banned from utilizing the chat page"
+    },
+    "/reportedMessages/{reportId}": {
+      "schema": {
+        "$ref": "#/entities/reportedMessage"
+      },
+      "description": "Messages reported by students for admin review"
     },
     "/chatMessages/{messageId}": {
       "schema": {

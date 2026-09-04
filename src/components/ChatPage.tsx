@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { 
   Send, MessageSquare, Hash, LogOut, 
   Wifi, WifiOff, Lock, AlertCircle, ShieldCheck, User, ShieldAlert,
-  Edit2, Check, X, Trash2, Loader2, UserX
+  Edit2, Check, X, Trash2, Loader2, UserX, Flag
 } from 'lucide-react';
 import { 
   collection, query, orderBy, limit, onSnapshot, addDoc, doc, setDoc, getDoc, getDocs, where,
@@ -76,6 +76,15 @@ export default function ChatPage() {
   const [userToBan, setUserToBan] = useState<{uid: string, email: string, name: string} | null>(null);
   const [banReason, setBanReason] = useState<string>('');
   const [isBanningUser, setIsBanningUser] = useState<boolean>(false);
+
+  // Reporting States
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [messageToReport, setMessageToReport] = useState<any | null>(null);
+  const [reportReason, setReportReason] = useState<string>('');
+  const [isSubmittingReport, setIsSubmittingReport] = useState<boolean>(false);
+  const [showReportDashboardModal, setShowReportDashboardModal] = useState(false);
+  const [reportedMessagesList, setReportedMessagesList] = useState<any[]>([]);
+  const [resolvingReportId, setResolvingReportId] = useState<string | null>(null);
 
   // Chat message input
   const [inputText, setInputText] = useState('');
@@ -192,6 +201,25 @@ export default function ChatPage() {
       setBannedUsersList(list);
     }, (error) => {
       console.warn('Banned list subscription note:', error);
+    });
+    return () => unsubscribe();
+  }, [isCurrentUserAdmin]);
+
+  // Subscribes to reported messages for Admins only
+  useEffect(() => {
+    if (!isCurrentUserAdmin) {
+      setReportedMessagesList([]);
+      return;
+    }
+    const q = query(collection(db, 'reportedMessages'), orderBy('reportedAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const list = snapshot.docs.map(d => ({
+        id: d.id,
+        ...d.data()
+      })) as any[];
+      setReportedMessagesList(list);
+    }, (error) => {
+      console.warn('Reported list subscription note:', error);
     });
     return () => unsubscribe();
   }, [isCurrentUserAdmin]);
@@ -562,6 +590,80 @@ export default function ChatPage() {
       console.error('Failed to unban user:', err);
       setAdminActionNotice('Failed to unban user.');
       setTimeout(() => setAdminActionNotice(null), 4000);
+    }
+  };
+
+  // Reporting Logic
+  const handleReportMessageClick = (msg: any) => {
+    setMessageToReport(msg);
+    setReportReason('');
+    setShowReportModal(true);
+  };
+
+  const handleReportMessageSubmit = async () => {
+    if (!currentUser || !messageToReport || isSubmittingReport) return;
+    setIsSubmittingReport(true);
+    try {
+      const reporterName = userProfile?.fullName || currentUser.displayName || currentUser.email?.split('@')[0] || 'EWMC Cadet';
+      await addDoc(collection(db, 'reportedMessages'), {
+        messageId: messageToReport.id,
+        text: messageToReport.text,
+        senderUid: messageToReport.senderUid,
+        senderName: messageToReport.senderName,
+        senderEmail: messageToReport.senderEmail || '',
+        reportedByUid: currentUser.uid,
+        reportedByName: reporterName,
+        reportedAt: Date.now(),
+        reason: reportReason.trim() || 'Inappropriate content',
+        status: 'pending'
+      });
+      
+      setAdminActionNotice('Message reported successfully. Thank you.');
+      setShowReportModal(false);
+      setMessageToReport(null);
+      setTimeout(() => setAdminActionNotice(null), 3000);
+    } catch (err) {
+      console.error('Failed to submit message report:', err);
+      setAdminActionNotice('Failed to submit report. Please try again.');
+      setTimeout(() => setAdminActionNotice(null), 4000);
+    } finally {
+      setIsSubmittingReport(false);
+    }
+  };
+
+  const handleDismissReport = async (reportId: string) => {
+    if (!isCurrentUserAdmin) return;
+    setResolvingReportId(reportId);
+    try {
+      await deleteDoc(doc(db, 'reportedMessages', reportId));
+      setAdminActionNotice('Report dismissed.');
+      setTimeout(() => setAdminActionNotice(null), 2500);
+    } catch (err) {
+      console.error('Failed to dismiss report:', err);
+      setAdminActionNotice('Error dismissing report.');
+      setTimeout(() => setAdminActionNotice(null), 4000);
+    } finally {
+      setResolvingReportId(null);
+    }
+  };
+
+  const handleDeleteReportAndMessage = async (reportId: string, messageId: string) => {
+    if (!isCurrentUserAdmin) return;
+    setResolvingReportId(reportId);
+    try {
+      // Delete reported message
+      await deleteDoc(doc(db, 'chatMessages', messageId));
+      // Delete report
+      await deleteDoc(doc(db, 'reportedMessages', reportId));
+      
+      setAdminActionNotice('Report resolved. Message deleted.');
+      setTimeout(() => setAdminActionNotice(null), 3000);
+    } catch (err) {
+      console.error('Failed to resolve report:', err);
+      setAdminActionNotice('Error resolving report.');
+      setTimeout(() => setAdminActionNotice(null), 4000);
+    } finally {
+      setResolvingReportId(null);
     }
   };
 
@@ -1006,6 +1108,20 @@ export default function ChatPage() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
+                  onClick={() => setShowReportDashboardModal(true)}
+                  title="Review reported messages"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-400 border border-rose-500/25 text-xs font-bold transition-all shadow-xs"
+                >
+                  <Flag size={14} />
+                  <span className="hidden sm:inline">Reports</span>
+                  {reportedMessagesList.length > 0 && (
+                    <span className="ml-1 px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px] font-extrabold animate-pulse">
+                      {reportedMessagesList.length}
+                    </span>
+                  )}
+                </button>
+                <button
+                  type="button"
                   onClick={() => setShowBanManagementModal(true)}
                   title="Manage banned users"
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/25 text-xs font-bold transition-all shadow-xs"
@@ -1099,6 +1215,20 @@ export default function ChatPage() {
                               <UserX size={13} />
                             </button>
                           )}
+                        </div>
+                      )}
+
+                      {/* Student Message Report Trigger */}
+                      {!isCurrentUserAdmin && !isMe && currentUser && (
+                        <div className="flex items-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity ml-2 shrink-0">
+                          <button
+                            onClick={() => handleReportMessageClick(msg)}
+                            type="button"
+                            title="Report inappropriate message"
+                            className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/15 bg-slate-100/80 dark:bg-[#08291e] lg:bg-transparent border border-slate-200/50 dark:border-emerald-800/20 lg:border-none transition-all cursor-pointer active:scale-95"
+                          >
+                            <Flag size={12} />
+                          </button>
                         </div>
                       )}
                     </div>
@@ -1299,6 +1429,209 @@ export default function ChatPage() {
               <button
                 type="button"
                 onClick={() => setShowBanManagementModal(false)}
+                className="px-5 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-md transition-all"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Student Report Message Modal */}
+      {showReportModal && messageToReport && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in animate-duration-150">
+          <div className="w-full max-w-md bg-white dark:bg-[#051c14] border border-rose-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95 animate-duration-150">
+            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3">
+              <div className="p-2.5 rounded-2xl bg-rose-500/10 border border-rose-500/20">
+                <Flag size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
+                  Report Message
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Flag inappropriate content to Admin
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4 mb-5">
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#03130d] border border-slate-100 dark:border-emerald-950/40">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">
+                  Message by {messageToReport.senderName}
+                </p>
+                <p className="text-xs text-slate-600 dark:text-slate-300 italic line-clamp-3">
+                  "{messageToReport.text}"
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                  Select Reason for Flagging
+                </label>
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  {[
+                    'Spam or Ads',
+                    'Harassment',
+                    'Abusive Language',
+                    'Off-Topic/Noise',
+                  ].map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setReportReason(r)}
+                      className={`px-3 py-2 rounded-xl text-xs font-semibold text-center border transition-all ${
+                        reportReason === r
+                          ? 'bg-rose-600/10 text-rose-700 dark:text-rose-400 border-rose-500/45'
+                          : 'bg-slate-50 dark:bg-[#04160f] text-slate-600 dark:text-slate-400 border-slate-100 dark:border-emerald-900/30 hover:bg-slate-100 dark:hover:bg-[#0a231b]'
+                      }`}
+                    >
+                      {r}
+                    </button>
+                  ))}
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Or enter a custom reason..."
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-sm rounded-xl bg-slate-50 dark:bg-[#03130d] border border-emerald-900/15 dark:border-emerald-500/25 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                disabled={isSubmittingReport}
+                onClick={() => {
+                  setShowReportModal(false);
+                  setMessageToReport(null);
+                }}
+                className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#0a231b] rounded-xl transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isSubmittingReport || !reportReason.trim()}
+                onClick={handleReportMessageSubmit}
+                className="px-5 py-2.5 text-xs font-bold bg-rose-600 hover:bg-rose-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl shadow-md transition-all flex items-center gap-2"
+              >
+                {isSubmittingReport ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    <span>Submitting...</span>
+                  </>
+                ) : (
+                  <>
+                    <Flag size={14} />
+                    <span>Submit Report</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Reported Messages Management Dashboard Modal */}
+      {showReportDashboardModal && isCurrentUserAdmin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in animate-duration-150">
+          <div className="w-full max-w-2xl bg-white dark:bg-[#051c14] border border-emerald-900/20 dark:border-emerald-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95 animate-duration-150">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2.5 text-slate-900 dark:text-slate-100">
+                <div className="p-2.5 bg-rose-500/15 text-rose-600 dark:text-rose-400 rounded-xl border border-rose-500/25">
+                  <Flag size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold">
+                    Reported Messages Feed
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Review and act on student complaints ({reportedMessagesList.length})
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowReportDashboardModal(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="max-h-[380px] overflow-y-auto mb-5 space-y-3.5 pr-1 custom-scrollbar">
+              {reportedMessagesList.length === 0 ? (
+                <div className="py-12 text-center text-slate-400">
+                  <ShieldCheck size={36} className="mx-auto mb-2 text-emerald-500 animate-bounce" />
+                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Clean slate!</p>
+                  <p className="text-xs text-slate-500 mt-1">Excellent! No reported messages currently pending review.</p>
+                </div>
+              ) : (
+                reportedMessagesList.map((report) => (
+                  <div key={report.id} className="p-4 rounded-xl border border-slate-100 dark:border-rose-950/20 bg-slate-50 dark:bg-[#03130d] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-in fade-in animate-duration-150">
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-bold text-xs text-slate-900 dark:text-slate-100">
+                          {report.senderName || 'Anonymous'}
+                        </span>
+                        {report.senderEmail && (
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
+                            ({report.senderEmail})
+                          </span>
+                        )}
+                        <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-rose-500/10 text-rose-700 dark:text-rose-400 font-semibold border border-rose-500/20">
+                          Reported Reason: {report.reason}
+                        </span>
+                      </div>
+
+                      <div className="p-2.5 rounded-lg bg-white dark:bg-[#041a12] border border-slate-100 dark:border-emerald-950 text-xs text-slate-700 dark:text-slate-300 italic break-words">
+                        "{report.text}"
+                      </div>
+
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500">
+                        Reported by <span className="font-semibold text-slate-600 dark:text-slate-300">{report.reportedByName}</span> on {new Date(report.reportedAt).toLocaleString()}
+                      </p>
+                    </div>
+
+                    <div className="flex sm:flex-col gap-2 shrink-0 w-full sm:w-auto">
+                      <button
+                        disabled={resolvingReportId === report.id}
+                        onClick={() => handleDeleteReportAndMessage(report.id, report.messageId)}
+                        className="flex-1 sm:flex-none text-center px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                      >
+                        Delete Message
+                      </button>
+                      <button
+                        disabled={resolvingReportId === report.id}
+                        onClick={() => handleDismissReport(report.id)}
+                        className="flex-1 sm:flex-none text-center px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-[#0c2e21] text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-[#124230] text-xs font-bold transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                      >
+                        Dismiss
+                      </button>
+                      <button
+                        disabled={resolvingReportId === report.id}
+                        onClick={() => {
+                          setShowReportDashboardModal(false);
+                          handleBanUserClick(report.senderUid, report.senderEmail || '', report.senderName);
+                        }}
+                        className="flex-1 sm:flex-none text-center px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                      >
+                        Ban Sender
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="flex items-center justify-end">
+              <button
+                type="button"
+                onClick={() => setShowReportDashboardModal(false)}
                 className="px-5 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-md transition-all"
               >
                 Close

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { collection, query, orderBy, limit, onSnapshot, doc } from 'firebase/firestore';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { db, auth } from '../firebase';
 import { AppNotification } from '../types';
@@ -158,6 +158,41 @@ export function NotificationProvider({
     }
     setActiveToast(null);
   }, []);
+
+  // Monitor in real-time if the current user is banned, and trigger a prominent notification
+  useEffect(() => {
+    if (!currentUser) return;
+    const unsub = onSnapshot(doc(db, 'bannedUsers', currentUser.uid), (snapshot) => {
+      if (snapshot.exists()) {
+        const banData = snapshot.data();
+        const banId = `ban-${currentUser.uid}-${banData.bannedAt || Date.now()}`;
+        
+        setNotifications((prev) => {
+          if (prev.some((n) => n.id === banId)) return prev;
+          
+          const banNotice: AppNotification = {
+            id: banId,
+            type: 'notice',
+            title: '⚠️ Chat Access Restricted',
+            message: `Your chat access has been suspended. Reason: ${banData.reason || 'No reason specified'}. Contact Admin at cadetsalman2034@gmail.com if you think this is a misunderstanding.`,
+            timestamp: banData.bannedAt || Date.now(),
+            read: false,
+            linkTab: 'chat',
+            isImportant: true,
+          };
+          
+          triggerToast(banNotice);
+          if (soundEnabledRef.current) {
+            playNoticeSound();
+          }
+          return [banNotice, ...prev.filter(n => !n.id.startsWith('ban-'))];
+        });
+      }
+    }, (error) => {
+      console.warn('Current user ban subscription note:', error);
+    });
+    return () => unsub();
+  }, [currentUser, triggerToast]);
 
   const sendBrowserNotification = useCallback((item: AppNotification) => {
     if (typeof window === 'undefined' || !('Notification' in window)) return;
