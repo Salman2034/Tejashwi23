@@ -3,8 +3,17 @@ import RoutineWidget from './RoutineWidget';
 import CalendarWidget from './CalendarWidget';
 import GalleryWidget from './GalleryWidget';
 import StatsWidget from './StatsWidget';
+import { GalleryGroup } from '../types';
 
-export default function Home({ setActiveTab, setActiveAlbumId }: { setActiveTab: (t: string) => void, setActiveAlbumId: (id: string | null) => void }) {
+export default function Home({ 
+  setActiveTab, 
+  setActiveAlbumId,
+  galleryGroups
+}: { 
+  setActiveTab: (t: string) => void; 
+  setActiveAlbumId: (id: string | null) => void;
+  galleryGroups?: GalleryGroup[];
+}) {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
@@ -107,7 +116,7 @@ export default function Home({ setActiveTab, setActiveAlbumId }: { setActiveTab:
       </section>
 
       {/* Gallery Widget Section */}
-      <GalleryWidget setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />
+      <GalleryWidget setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} galleryGroups={galleryGroups} />
 
       {/* Contact Section */}
       <section id="contact-section" className="mt-12 lg:mt-16 scroll-mt-24 bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-8 md:p-12 rounded-[2rem] border border-emerald-900/10 dark:border-emerald-500/20 text-center flex flex-col items-center justify-center shadow-[0_4px_20px_rgba(4,40,24,0.04)] dark:shadow-none animate-in slide-in-from-bottom-4 duration-700 delay-300">

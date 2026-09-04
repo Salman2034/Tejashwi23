@@ -112,7 +112,7 @@
     },
     "resourceFolder": {
       "title": "ResourceFolder",
-      "description": "Folder or subject categorization under academic phase",
+      "description": "Folders or subjects categorization under academic phase",
       "type": "object",
       "properties": {
         "id": { "type": "string" },
@@ -129,6 +129,35 @@
         "createdBy": { "type": "string" }
       },
       "required": ["name", "phase"]
+    },
+    "galleryGroup": {
+      "title": "GalleryGroup",
+      "description": "Album or photo group managed by Admin",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "coverImage": { "type": "string" },
+        "phase": { "type": "string" },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "src": { "type": "string" },
+              "alt": { "type": "string" },
+              "caption": { "type": "string" },
+              "createdTimestamp": { "type": "number" }
+            }
+          }
+        },
+        "createdTimestamp": { "type": "number" },
+        "updatedTimestamp": { "type": "number" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["title", "coverImage", "phase", "images"]
     }
   },
   "firestore": {
@@ -173,6 +202,12 @@
         "$ref": "#/entities/resourceFolder"
       },
       "description": "Folders and subjects created and managed by Admin"
+    },
+    "/galleryGroups/{groupId}": {
+      "schema": {
+        "$ref": "#/entities/galleryGroup"
+      },
+      "description": "Gallery groups and photos collection managed by Admin"
     }
   }
 }

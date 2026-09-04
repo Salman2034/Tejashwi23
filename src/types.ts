@@ -74,3 +74,24 @@ export interface PollVote {
   optionId: string;
   timestamp: number;
 }
+
+export interface GalleryImage {
+  id: string;
+  src: string;
+  alt: string;
+  caption?: string;
+  createdTimestamp?: number;
+}
+
+export interface GalleryGroup {
+  id: string;
+  title: string;
+  description: string;
+  coverImage: string;
+  phase: Phase;
+  images: GalleryImage[];
+  createdTimestamp?: number;
+  updatedTimestamp?: number;
+  createdBy?: string;
+}
+

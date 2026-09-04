@@ -1,20 +1,6 @@
-import { Phase } from '../types';
+import { Phase, GalleryGroup, GalleryImage } from '../types';
 
-export interface GalleryImage {
-  id: string;
-  src: string;
-  alt: string;
-  caption?: string;
-}
-
-export interface GalleryGroup {
-  id: string;
-  title: string;
-  description: string;
-  coverImage: string;
-  phase: Phase;
-  images: GalleryImage[];
-}
+export type { GalleryGroup, GalleryImage };
 
 export const galleryGroups: GalleryGroup[] = [
   {

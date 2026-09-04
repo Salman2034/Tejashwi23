@@ -74,5 +74,13 @@ service cloud.firestore {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
+
+    // Gallery Groups collection (Albums and photos):
+    // Anyone can read albums and photos
+    // Only Admin can create, update, or delete albums and photos
+    match /galleryGroups/{groupId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
   }
 }

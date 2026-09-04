@@ -1,7 +1,17 @@
 import { Image, ArrowRight } from 'lucide-react';
-import { galleryGroups } from '../data/gallery';
+import { galleryGroups as defaultGalleryGroups, GalleryGroup } from '../data/gallery';
 
-export default function GalleryWidget({ setActiveTab, setActiveAlbumId }: { setActiveTab: (t: string) => void, setActiveAlbumId: (id: string | null) => void }) {
+export default function GalleryWidget({ 
+  setActiveTab, 
+  setActiveAlbumId,
+  galleryGroups = defaultGalleryGroups
+}: { 
+  setActiveTab: (t: string) => void; 
+  setActiveAlbumId: (id: string | null) => void;
+  galleryGroups?: GalleryGroup[];
+}) {
+  const groupsToDisplay = galleryGroups && galleryGroups.length > 0 ? galleryGroups : defaultGalleryGroups;
+
   return (
     <div className="bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-8 rounded-[2rem] border border-emerald-900/10 dark:border-emerald-500/20 relative overflow-hidden mt-8 lg:mt-12 shadow-[0_4px_20px_rgba(4,40,24,0.04)] dark:shadow-none">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
@@ -27,7 +37,7 @@ export default function GalleryWidget({ setActiveTab, setActiveAlbumId }: { setA
       </div>
 
       <div className="flex gap-4 overflow-x-auto pb-4 snap-x custom-scrollbar">
-        {galleryGroups.slice(0, 4).map((group) => (
+        {groupsToDisplay.slice(0, 4).map((group) => (
           <div 
             key={group.id} 
             className="snap-start shrink-0 w-[280px] h-[200px] rounded-2xl overflow-hidden relative group cursor-pointer shadow-md"
@@ -48,7 +58,7 @@ export default function GalleryWidget({ setActiveTab, setActiveAlbumId }: { setA
                   {group.title}
                 </div>
                 <div className="text-xs text-emerald-300/90 mt-0.5 font-semibold flex items-center gap-1.5">
-                  <span>{group.images.length} Photos</span>
+                  <span>{group.images?.length || 0} Photos</span>
                 </div>
               </div>
               <span className="shrink-0 text-[10px] uppercase font-bold bg-white/20 dark:bg-emerald-950/60 backdrop-blur-md px-2 py-0.5 rounded text-emerald-200 border border-white/20">
@@ -73,3 +83,4 @@ export default function GalleryWidget({ setActiveTab, setActiveAlbumId }: { setA
     </div>
   );
 }
+

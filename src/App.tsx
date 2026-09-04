@@ -12,7 +12,8 @@ import GalleryPage from './components/GalleryPage';
 import ChatPage from './components/ChatPage';
 import PollingPage from './components/PollingPage';
 import { resources as defaultResources, notices as defaultNotices } from './data';
-import { Notice, Resource } from './types';
+import { galleryGroups as defaultGalleryGroups } from './data/gallery';
+import { Notice, Resource, GalleryGroup } from './types';
 import { Heart } from 'lucide-react';
 import { ThemeProvider } from './context/ThemeContext';
 
@@ -21,6 +22,7 @@ export default function App() {
   const [activeAlbumId, setActiveAlbumId] = useState<string | null>(null);
   const [noticesList, setNoticesList] = useState<Notice[]>(defaultNotices);
   const [resourcesList, setResourcesList] = useState<Resource[]>(defaultResources);
+  const [galleryList, setGalleryList] = useState<GalleryGroup[]>(defaultGalleryGroups);
 
   // Synchronize notices real-time with Firebase Firestore
   useEffect(() => {
@@ -47,6 +49,34 @@ export default function App() {
       return () => unsubscribe();
     } catch (e) {
       console.warn('Error initiating notices listener:', e);
+    }
+  }, []);
+
+  // Synchronize gallery groups real-time with Firebase Firestore
+  useEffect(() => {
+    try {
+      const q = query(collection(db, 'galleryGroups'));
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          if (!snapshot.empty) {
+            const fetched: GalleryGroup[] = snapshot.docs.map((docSnap) => ({
+              id: docSnap.id,
+              ...(docSnap.data() as Omit<GalleryGroup, 'id'>),
+            }));
+            setGalleryList(fetched);
+          } else {
+            setGalleryList(defaultGalleryGroups);
+          }
+        },
+        (err) => {
+          console.warn('Firestore galleryGroups onSnapshot note:', err);
+          setGalleryList(defaultGalleryGroups);
+        }
+      );
+      return () => unsubscribe();
+    } catch (e) {
+      console.warn('Error initiating gallery listener:', e);
     }
   }, []);
 
@@ -92,10 +122,22 @@ export default function App() {
         <NoticeTicker notices={noticesList} setActiveTab={setActiveTab} />
 
         <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 lg:pt-6 lg:pb-12">
-          {(activeTab === 'home' || activeTab === 'contact') && <Home setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />}
+          {(activeTab === 'home' || activeTab === 'contact') && (
+            <Home 
+              setActiveTab={setActiveTab} 
+              setActiveAlbumId={setActiveAlbumId} 
+              galleryGroups={galleryList} 
+            />
+          )}
           {activeTab === 'routine' && <Routine />}
           {activeTab === 'calendar' && <CalendarPage />}
-          {activeTab === 'gallery' && <GalleryPage activeAlbumId={activeAlbumId} setActiveAlbumId={setActiveAlbumId} />}
+          {activeTab === 'gallery' && (
+            <GalleryPage 
+              activeAlbumId={activeAlbumId} 
+              setActiveAlbumId={setActiveAlbumId} 
+              galleryGroupsList={galleryList}
+            />
+          )}
           {activeTab === 'lectures' && (
             <ResourceList
               title="Class Lectures"

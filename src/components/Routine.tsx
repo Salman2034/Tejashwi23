@@ -144,7 +144,7 @@ export default function Routine() {
           </div>
           
           <div className="mt-8 text-center text-slate-600 dark:text-slate-400 text-sm bg-white/80 dark:bg-[#0a231b]/60 py-4 px-6 rounded-xl border border-emerald-900/10 dark:border-white/5 shadow-sm">
-            <p>* No change in this routine is allowed without the permission of principal</p>
+            <p className="text-red-600 dark:text-red-400 font-semibold">* No change in this routine is allowed without the permission of principal</p>
             <p className="mt-2 font-semibold bg-emerald-50 dark:bg-[#082218] text-emerald-900 dark:text-emerald-300 inline-block px-4 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-500/20">*A Batch: 1-25, B Batch: 26-50, C Batch: 51-75, D Batch: 76-100, E Batch: 101-127.</p>
           </div>
         </>
