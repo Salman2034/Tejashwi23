@@ -1,6 +1,7 @@
 import { 
   Download, File, Search, Folder, ChevronRight, ArrowLeft, Layers, ExternalLink, 
-  PlusCircle, FolderPlus, Edit3, Trash2, X, Check, Loader2, ShieldCheck, AlertCircle 
+  PlusCircle, FolderPlus, Edit3, Trash2, X, Check, Loader2, ShieldCheck, AlertCircle,
+  BookOpen, Bookmark
 } from 'lucide-react';
 import { Resource, ResourceFolder, Phase, Term, Card, ResourceType } from '../types';
 import { useState, useMemo, useEffect, FormEvent } from 'react';
@@ -62,6 +63,7 @@ export default function ResourceList({
   const [activeSubject, setActiveSubject] = useState<string | null>(null);
   const [activeTerm, setActiveTerm] = useState<Term | null>(null);
   const [activeCard, setActiveCard] = useState<Card | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   // Authentication & Admin state
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
@@ -86,6 +88,7 @@ export default function ResourceList({
   const [resFormPhase, setResFormPhase] = useState<Phase>('1st Phase');
   const [resFormSubject, setResFormSubject] = useState('');
   const [resFormCustomSubject, setResFormCustomSubject] = useState('');
+  const [resFormCategory, setResFormCategory] = useState<string>('Textbooks');
   const [resFormTerm, setResFormTerm] = useState<string>('');
   const [resFormCard, setResFormCard] = useState<string>('');
   const [isSubmittingResource, setIsSubmittingResource] = useState(false);
@@ -210,11 +213,37 @@ export default function ResourceList({
     return TERMS_CONFIG.find((t) => t.term === activeTerm);
   }, [activeTerm]);
 
-  // Subject-level resources (like curriculum PDFs) that do not belong to any specific term
+  // Compute book category counts inside the active subject
+  const textbooksCount = useMemo(() => {
+    if (!activePhase || !activeSubject) return 0;
+    return resources.filter(
+      (r) =>
+        r.phase === activePhase &&
+        r.subject.toLowerCase() === activeSubject.toLowerCase() &&
+        r.category?.toLowerCase() === 'textbooks'
+    ).length;
+  }, [resources, activePhase, activeSubject]);
+
+  const guidesCount = useMemo(() => {
+    if (!activePhase || !activeSubject) return 0;
+    return resources.filter(
+      (r) =>
+        r.phase === activePhase &&
+        r.subject.toLowerCase() === activeSubject.toLowerCase() &&
+        r.category?.toLowerCase() === 'guides'
+    ).length;
+  }, [resources, activePhase, activeSubject]);
+
+  // Subject-level resources (like curriculum PDFs) that do not belong to any specific term or subfolder
   const subjectLevelResources = useMemo(() => {
     if (!activePhase || !activeSubject) return [];
     return resources.filter(
-      (r) => r.phase === activePhase && r.subject.toLowerCase() === activeSubject.toLowerCase() && !r.term
+      (r) =>
+        r.phase === activePhase &&
+        r.subject.toLowerCase() === activeSubject.toLowerCase() &&
+        !r.term &&
+        !r.card &&
+        !r.category
     );
   }, [resources, activePhase, activeSubject]);
 
@@ -226,15 +255,20 @@ export default function ResourceList({
           r.title.toLowerCase().includes(search.toLowerCase()) ||
           r.description.toLowerCase().includes(search.toLowerCase()) ||
           r.subject.toLowerCase().includes(search.toLowerCase()) ||
+          (r.category && r.category.toLowerCase().includes(search.toLowerCase())) ||
           (r.term && r.term.toLowerCase().includes(search.toLowerCase())) ||
           (r.card && r.card.toLowerCase().includes(search.toLowerCase()))
       );
     }
 
-    if (!showHierarchy) {
-      if (activePhase && activeSubject) {
+    if (sectionType === 'book') {
+      if (activePhase && activeSubject && activeCategory) {
         return resources.filter(
-          (r) => r.phase === activePhase && r.subject.toLowerCase() === activeSubject.toLowerCase()
+          (r) =>
+            r.phase === activePhase &&
+            r.subject.toLowerCase() === activeSubject.toLowerCase() &&
+            (r.category?.toLowerCase() === activeCategory.toLowerCase() ||
+              (!r.category && activeCategory === 'Textbooks'))
         );
       }
       return [];
@@ -252,7 +286,7 @@ export default function ResourceList({
     }
 
     return [];
-  }, [resources, search, showHierarchy, activePhase, activeSubject, activeTerm, activeCard]);
+  }, [resources, search, sectionType, activePhase, activeSubject, activeTerm, activeCard, activeCategory]);
 
   // Reset breadcrumbs helpers
   const resetToPhases = () => {
@@ -260,12 +294,18 @@ export default function ResourceList({
     setActiveSubject(null);
     setActiveTerm(null);
     setActiveCard(null);
+    setActiveCategory(null);
   };
 
   const resetToSubjects = () => {
     setActiveSubject(null);
     setActiveTerm(null);
     setActiveCard(null);
+    setActiveCategory(null);
+  };
+
+  const resetToCategories = () => {
+    setActiveCategory(null);
   };
 
   const resetToTerms = () => {
@@ -278,7 +318,7 @@ export default function ResourceList({
   };
 
   // Open Add Resource Modal
-  const handleOpenAddResource = (defaultFolder?: string) => {
+  const handleOpenAddResource = (defaultFolder?: string, defaultCategory?: string) => {
     setResourceModalMode('add');
     setEditingResourceId(null);
     setResFormTitle('');
@@ -290,6 +330,7 @@ export default function ResourceList({
     setResFormPhase(activePhase || '1st Phase');
     setResFormSubject(defaultFolder || activeSubject || (availableSubjects[0] || 'Anatomy'));
     setResFormCustomSubject('');
+    setResFormCategory(defaultCategory || activeCategory || 'Textbooks');
     setResFormTerm(activeTerm || '');
     setResFormCard(activeCard || '');
     setResFormError(null);
@@ -309,6 +350,7 @@ export default function ResourceList({
     setResFormPhase(res.phase);
     setResFormSubject(res.subject);
     setResFormCustomSubject('');
+    setResFormCategory(res.category || 'Textbooks');
     setResFormTerm(res.term || '');
     setResFormCard(res.card || '');
     setResFormError(null);
@@ -375,7 +417,21 @@ export default function ResourceList({
         payload.fileSize = deleteField();
       }
 
-      if (resFormType === 'lecture') {
+      if (resFormType === 'book') {
+        if (resFormCategory === 'Curriculum' || !resFormCategory) {
+          if (resourceModalMode === 'edit') {
+            payload.category = deleteField();
+            payload.term = deleteField();
+            payload.card = deleteField();
+          }
+        } else {
+          payload.category = resFormCategory;
+          if (resourceModalMode === 'edit') {
+            payload.term = deleteField();
+            payload.card = deleteField();
+          }
+        }
+      } else if (resFormType === 'lecture') {
         if (resFormTerm) {
           payload.term = resFormTerm;
         } else if (resourceModalMode === 'edit') {
@@ -387,9 +443,10 @@ export default function ResourceList({
         } else if (resourceModalMode === 'edit') {
           payload.card = deleteField();
         }
-      } else if (resourceModalMode === 'edit') {
-        payload.term = deleteField();
-        payload.card = deleteField();
+
+        if (resourceModalMode === 'edit') {
+          payload.category = deleteField();
+        }
       }
 
       if (resourceModalMode === 'add') {
@@ -661,15 +718,25 @@ export default function ResourceList({
             <>
               <ChevronRight size={14} className="text-slate-400" />
               <button
-                onClick={showHierarchy ? resetToTerms : undefined}
+                onClick={sectionType === 'book' ? resetToCategories : resetToTerms}
                 className={`transition-colors ${
-                  !showHierarchy || !activeTerm
+                  (sectionType === 'book' && !activeCategory) || (sectionType === 'lecture' && !activeTerm)
                     ? 'text-emerald-700 dark:text-emerald-400 font-bold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-300'
                 }`}
               >
                 {activeSubject}
               </button>
+            </>
+          )}
+
+          {/* Book Section: Active Category (Textbooks / Guides) */}
+          {sectionType === 'book' && activePhase && activeSubject && activeCategory && (
+            <>
+              <ChevronRight size={14} className="text-slate-400" />
+              <span className="text-emerald-700 dark:text-emerald-400 font-bold">
+                {activeCategory}
+              </span>
             </>
           )}
 
@@ -1015,19 +1082,196 @@ export default function ResourceList({
         </div>
       )}
 
-      {/* LEVEL 5: Lecture Files (Inside Card) or Plain Subject Files (Books) */}
-      {!search && activePhase && activeSubject && (!showHierarchy || (showHierarchy && activeTerm && activeCard)) && (
-        <div className="animate-in slide-in-from-bottom-4 duration-500 space-y-4">
-          <div className="flex items-center justify-between mb-4 px-2 flex-wrap gap-3">
+      {/* LEVEL 3 (BOOKS): Textbooks & Guides Folders in each Subject */}
+      {!search && sectionType === 'book' && activePhase && activeSubject && !activeCategory && (
+        <div className="animate-in slide-in-from-bottom-4 duration-500 space-y-8">
+          <div className="flex items-center justify-between px-2 flex-wrap gap-3">
             <button
-              onClick={showHierarchy ? resetToCards : resetToSubjects}
+              onClick={resetToSubjects}
               className="flex items-center gap-2 text-emerald-800 dark:text-slate-400 hover:text-emerald-950 dark:hover:text-slate-200 transition-colors font-medium"
             >
-              <ArrowLeft size={18} /> {showHierarchy ? 'Back to Cards' : 'Back to Subjects'}
+              <ArrowLeft size={18} /> Back to Subjects
             </button>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/25">
-                {activeSubject} {showHierarchy ? `• ${activeTerm} • ${activeCard}` : ''}
+                {activePhase} • {activeSubject}
+              </span>
+              {isCurrentUserAdmin && (
+                <button
+                  onClick={() => handleOpenAddResource(activeSubject, 'Textbooks')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all"
+                >
+                  <PlusCircle size={14} />
+                  <span>Add Book</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Official Subject BMDC Curriculum (Rendered directly OUTSIDE the folders) */}
+          {subjectLevelResources.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 px-2 text-slate-800 dark:text-slate-300 font-bold text-sm">
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Official BMDC Curriculum</span>
+              </div>
+              <FileList 
+                resources={subjectLevelResources} 
+                showPath={false} 
+                isCurrentUserAdmin={isCurrentUserAdmin}
+                onEdit={handleOpenEditResource}
+                onDelete={setResourceToDelete}
+              />
+            </div>
+          )}
+
+          <div>
+            <div className="flex items-center gap-2 px-2 mb-4 text-slate-800 dark:text-slate-300 font-bold text-sm">
+              <Folder size={16} className="text-emerald-600 dark:text-emerald-400" />
+              <span>{activeSubject} Folders</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl">
+              {/* Textbooks Folder Card */}
+              <button
+                onClick={() => setActiveCategory('Textbooks')}
+                className="group bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-6 sm:p-7 rounded-3xl border border-emerald-900/10 dark:border-white/5 hover:border-emerald-500/30 hover:bg-emerald-50/80 dark:hover:bg-[#0b281f]/70 shadow-sm hover:shadow-[0_4px_20px_rgba(5,150,105,0.15)] transition-all text-left flex flex-col items-start gap-5 hover:-translate-y-1 cursor-pointer"
+              >
+                <div className="p-4 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 rounded-2xl group-hover:scale-110 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-500/20 transition-all ring-1 ring-emerald-300/60 dark:ring-emerald-500/20 shadow-inner">
+                  <BookOpen size={36} className="opacity-90" strokeWidth={1.5} />
+                </div>
+                <div className="w-full">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">
+                      Textbooks
+                    </h3>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1.5 font-medium leading-relaxed">
+                    Standard reference textbooks, author volumes & recommended study editions.
+                  </p>
+                  <div className="mt-5 pt-3.5 border-t border-emerald-900/10 dark:border-white/5 flex items-center justify-between text-xs sm:text-sm text-emerald-700 dark:text-emerald-400 font-bold">
+                    <span>
+                      {textbooksCount} {textbooksCount === 1 ? 'Textbook' : 'Textbooks'}
+                    </span>
+                    <div className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                      <span>Explore</span>
+                      <ChevronRight size={16} />
+                    </div>
+                  </div>
+                </div>
+              </button>
+
+              {/* Guides Folder Card */}
+              <button
+                onClick={() => setActiveCategory('Guides')}
+                className="group bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-6 sm:p-7 rounded-3xl border border-emerald-900/10 dark:border-white/5 hover:border-emerald-500/30 hover:bg-emerald-50/80 dark:hover:bg-[#0b281f]/70 shadow-sm hover:shadow-[0_4px_20px_rgba(5,150,105,0.15)] transition-all text-left flex flex-col items-start gap-5 hover:-translate-y-1 cursor-pointer"
+              >
+                <div className="p-4 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 rounded-2xl group-hover:scale-110 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-500/20 transition-all ring-1 ring-emerald-300/60 dark:ring-emerald-500/20 shadow-inner">
+                  <Bookmark size={36} className="opacity-90" strokeWidth={1.5} />
+                </div>
+                <div className="w-full">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">
+                      Guides
+                    </h3>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1.5 font-medium leading-relaxed">
+                    Exam review guides, item notes, viva question banks & OSPE manuals.
+                  </p>
+                  <div className="mt-5 pt-3.5 border-t border-emerald-900/10 dark:border-white/5 flex items-center justify-between text-xs sm:text-sm text-emerald-700 dark:text-emerald-400 font-bold">
+                    <span>
+                      {guidesCount} {guidesCount === 1 ? 'Guide' : 'Guides'}
+                    </span>
+                    <div className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                      <span>Explore</span>
+                      <ChevronRight size={16} />
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* LEVEL 4 (BOOKS): Book Files inside Textbooks or Guides Folder */}
+      {!search && sectionType === 'book' && activePhase && activeSubject && activeCategory && (
+        <div className="animate-in slide-in-from-bottom-4 duration-500 space-y-4">
+          <div className="flex items-center justify-between mb-4 px-2 flex-wrap gap-3">
+            <button
+              onClick={resetToCategories}
+              className="flex items-center gap-2 text-emerald-800 dark:text-slate-400 hover:text-emerald-950 dark:hover:text-slate-200 transition-colors font-medium"
+            >
+              <ArrowLeft size={18} /> Back to {activeSubject} Folders
+            </button>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/25">
+                {activeSubject} • {activeCategory}
+              </span>
+              {isCurrentUserAdmin && (
+                <button
+                  onClick={() => handleOpenAddResource(activeSubject, activeCategory)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all"
+                >
+                  <PlusCircle size={15} />
+                  <span>Add {activeCategory === 'Textbooks' ? 'Textbook' : 'Guide'}</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {filteredResources.length === 0 ? (
+            <div className="bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-md shadow-lg border border-emerald-900/10 dark:border-white/5 rounded-[2rem] p-16 text-center flex flex-col items-center justify-center">
+              <div className="w-20 h-20 bg-emerald-100 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-6 border border-emerald-200 dark:border-white/5">
+                {activeCategory === 'Textbooks' ? (
+                  <BookOpen size={32} className="text-emerald-700/60 dark:text-slate-600" strokeWidth={1.5} />
+                ) : (
+                  <Bookmark size={32} className="text-emerald-700/60 dark:text-slate-600" strokeWidth={1.5} />
+                )}
+              </div>
+              <p className="text-xl font-bold text-slate-900 dark:text-slate-300">
+                No {activeCategory.toLowerCase()} uploaded yet
+              </p>
+              <p className="text-slate-600 dark:text-slate-500 mt-2 font-light max-w-md">
+                {activeCategory === 'Textbooks'
+                  ? `Standard textbooks for ${activeSubject} will be listed here.`
+                  : `Revision guides and question banks for ${activeSubject} will be listed here.`}
+              </p>
+              {isCurrentUserAdmin && (
+                <button
+                  onClick={() => handleOpenAddResource(activeSubject, activeCategory)}
+                  className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md transition-all text-sm"
+                >
+                  <PlusCircle size={18} />
+                  <span>Upload First {activeCategory === 'Textbooks' ? 'Textbook' : 'Guide'}</span>
+                </button>
+              )}
+            </div>
+          ) : (
+            <FileList 
+              resources={filteredResources} 
+              showPath={false} 
+              isCurrentUserAdmin={isCurrentUserAdmin}
+              onEdit={handleOpenEditResource}
+              onDelete={setResourceToDelete}
+            />
+          )}
+        </div>
+      )}
+
+      {/* LEVEL 5 (LECTURES): Lecture Files (Inside Card) */}
+      {!search && sectionType === 'lecture' && activePhase && activeSubject && showHierarchy && activeTerm && activeCard && (
+        <div className="animate-in slide-in-from-bottom-4 duration-500 space-y-4">
+          <div className="flex items-center justify-between mb-4 px-2 flex-wrap gap-3">
+            <button
+              onClick={resetToCards}
+              className="flex items-center gap-2 text-emerald-800 dark:text-slate-400 hover:text-emerald-950 dark:hover:text-slate-200 transition-colors font-medium"
+            >
+              <ArrowLeft size={18} /> Back to Cards
+            </button>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/25">
+                {activeSubject} • {activeTerm} • {activeCard}
               </span>
               {isCurrentUserAdmin && (
                 <button
@@ -1035,7 +1279,7 @@ export default function ResourceList({
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all"
                 >
                   <PlusCircle size={15} />
-                  <span>{sectionType === 'lecture' ? 'Add Lecture Here' : 'Add Book Here'}</span>
+                  <span>Add Lecture Here</span>
                 </button>
               )}
             </div>
@@ -1046,11 +1290,9 @@ export default function ResourceList({
               <div className="w-20 h-20 bg-emerald-100 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-6 border border-emerald-200 dark:border-white/5">
                 <File size={32} className="text-emerald-700/60 dark:text-slate-600" strokeWidth={1.5} />
               </div>
-              <p className="text-xl font-bold text-slate-900 dark:text-slate-300">No files uploaded yet</p>
+              <p className="text-xl font-bold text-slate-900 dark:text-slate-300">No lectures uploaded yet</p>
               <p className="text-slate-600 dark:text-slate-500 mt-2 font-light max-w-md">
-                {showHierarchy
-                  ? `Lectures for ${activeSubject} • ${activeTerm} (${activeCard}) will be listed here.`
-                  : `Textbooks for ${activeSubject} will be added here.`}
+                Lectures for {activeSubject} • {activeTerm} ({activeCard}) will be listed here.
               </p>
               {isCurrentUserAdmin && (
                 <button
@@ -1431,6 +1673,53 @@ export default function ResourceList({
                 </div>
               )}
 
+              {/* If Book: Category selection (Textbooks vs Guides vs Curriculum) */}
+              {resFormType === 'book' && (
+                <div className="p-3 rounded-2xl bg-emerald-500/5 border border-emerald-500/20">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                    Placement / Folder *
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setResFormCategory('Textbooks')}
+                      className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        resFormCategory === 'Textbooks'
+                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <BookOpen size={13} />
+                      <span>Textbooks</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setResFormCategory('Guides')}
+                      className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        resFormCategory === 'Guides'
+                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <Bookmark size={13} />
+                      <span>Guides</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setResFormCategory('Curriculum')}
+                      className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        resFormCategory === 'Curriculum'
+                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <File size={13} />
+                      <span>Curriculum (Outside)</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* If Lecture: Term and Card dropdowns */}
               {resFormType === 'lecture' && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-2xl bg-emerald-500/5 border border-emerald-500/20">
@@ -1615,14 +1904,22 @@ function FileList({
                 {showPath ? (
                   <span className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-500/10 px-2.5 py-0.5 rounded-md border border-emerald-300 dark:border-emerald-500/20 text-xs font-semibold">
                     <Folder size={12} /> {resource.phase} / {resource.subject}{' '}
+                    {resource.category ? ` / ${resource.category}` : ''}{' '}
                     {resource.term ? ` / ${resource.term}` : ''} {resource.card ? ` / ${resource.card}` : ''}
                   </span>
                 ) : (
-                  resource.card && (
-                    <span className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-500/10 px-2.5 py-0.5 rounded-md border border-emerald-300 dark:border-emerald-500/20 text-xs font-semibold">
-                      {resource.card}
-                    </span>
-                  )
+                  <>
+                    {resource.category && (
+                      <span className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-500/10 px-2.5 py-0.5 rounded-md border border-emerald-300 dark:border-emerald-500/20 text-xs font-semibold">
+                        <Bookmark size={11} /> {resource.category}
+                      </span>
+                    )}
+                    {resource.card && (
+                      <span className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-500/10 px-2.5 py-0.5 rounded-md border border-emerald-300 dark:border-emerald-500/20 text-xs font-semibold">
+                        {resource.card}
+                      </span>
+                    )}
+                  </>
                 )}
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>

@@ -180,6 +180,8 @@ export default function App() {
               setActiveTab={setActiveTab} 
               setActiveAlbumId={setActiveAlbumId} 
               galleryGroups={galleryList} 
+              resourcesList={resourcesList}
+              noticesList={noticesList}
             />
           )}
           {activeTab === 'routine' && <Routine />}

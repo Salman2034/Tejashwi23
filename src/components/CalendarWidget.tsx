@@ -68,14 +68,14 @@ export default function CalendarWidget({ setActiveTab }: { setActiveTab: (t: str
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-emerald-900/10 dark:border-white/5">
         <div className="flex items-center gap-3.5">
-          <div className="p-3 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-2xl border border-emerald-500/25 shadow-inner">
+          <div className="p-3 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-2xl border border-emerald-500/25 shadow-inner shrink-0">
             <CalendarIcon size={24} />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-xl tracking-tight">Academic Timeline</h3>
-              <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-500/15 border border-emerald-300/60 dark:border-emerald-500/25 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                Phase-1
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="font-bold text-slate-900 dark:text-slate-100 text-lg sm:text-xl tracking-tight">Academic Timeline</h3>
+              <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-500/15 border border-emerald-300/60 dark:border-emerald-500/25 px-2.5 py-0.5 rounded-full uppercase tracking-wider whitespace-nowrap shrink-0">
+                1st Phase
               </span>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">Upcoming examinations, term deadlines & scheduled leaves</p>
@@ -84,7 +84,7 @@ export default function CalendarWidget({ setActiveTab }: { setActiveTab: (t: str
 
         <button 
           onClick={() => setActiveTab('calendar')}
-          className="self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 hover:bg-emerald-200/80 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20 border border-emerald-300/60 dark:border-emerald-500/25 transition-all group"
+          className="self-start sm:self-auto inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 hover:bg-emerald-200/80 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20 border border-emerald-300/60 dark:border-emerald-500/25 transition-all group shrink-0"
         >
           <span>Full Schedule</span>
           <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />

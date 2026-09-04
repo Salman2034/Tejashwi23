@@ -3,16 +3,20 @@ import RoutineWidget from './RoutineWidget';
 import CalendarWidget from './CalendarWidget';
 import GalleryWidget from './GalleryWidget';
 import StatsWidget from './StatsWidget';
-import { GalleryGroup } from '../types';
+import { GalleryGroup, Resource, Notice } from '../types';
 
 export default function Home({ 
   setActiveTab, 
   setActiveAlbumId,
-  galleryGroups
+  galleryGroups,
+  resourcesList,
+  noticesList,
 }: { 
   setActiveTab: (t: string) => void; 
   setActiveAlbumId: (id: string | null) => void;
   galleryGroups?: GalleryGroup[];
+  resourcesList?: Resource[];
+  noticesList?: Notice[];
 }) {
   return (
     <div className="space-y-12">
@@ -69,7 +73,12 @@ export default function Home({
       </div>
 
       {/* Live Academic & Visitor Statistics */}
-      <StatsWidget setActiveTab={setActiveTab} />
+      <StatsWidget 
+        setActiveTab={setActiveTab} 
+        galleryGroups={galleryGroups}
+        resourcesList={resourcesList}
+        noticesList={noticesList}
+      />
 
       {/* Quick Access Cards */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">

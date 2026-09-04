@@ -114,8 +114,19 @@ export default function RoutineWidget({ setActiveTab }: { setActiveTab: (t: stri
 
       <div className="flex-grow flex items-center justify-center min-h-[140px]">
         {currentDay.isHoliday ? (
-          <div className="text-center text-emerald-600 dark:text-emerald-400 font-semibold tracking-widest text-sm">
-            W E E K L Y <br /> H O L I D A Y
+          <div className="text-center py-6 px-4">
+            <div className="inline-flex items-center justify-center p-3 bg-emerald-100/80 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl mb-2.5 border border-emerald-200 dark:border-emerald-500/20">
+              <CalendarDays size={22} />
+            </div>
+            <div className="text-xs font-semibold tracking-wider text-emerald-800 dark:text-emerald-400 uppercase">
+              Weekly Off-Day
+            </div>
+            <div className="text-lg font-bold text-emerald-950 dark:text-emerald-300 tracking-wide mt-0.5 whitespace-nowrap">
+              Weekly Holiday
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              No classes scheduled
+            </p>
           </div>
         ) : (
           <div className="w-full relative px-8">

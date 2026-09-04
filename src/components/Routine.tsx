@@ -80,9 +80,19 @@ export default function Routine() {
               
               <div className="p-6">
                 {currentDay.isHoliday ? (
-                  <div className="text-center py-12 text-emerald-700 dark:text-emerald-400 font-medium bg-emerald-50 dark:bg-emerald-500/5 rounded-xl border border-emerald-200 dark:border-emerald-500/10">
-                    <div className="text-lg tracking-[0.2em] mb-2 font-semibold">W E E K L Y</div>
-                    <div className="text-3xl font-bold tracking-[0.4em] text-emerald-800/50 dark:text-emerald-500/40">H O L I D A Y</div>
+                  <div className="text-center py-12 sm:py-16 px-4 text-emerald-700 dark:text-emerald-400 bg-emerald-50/70 dark:bg-emerald-500/5 rounded-2xl border border-emerald-200/80 dark:border-emerald-500/15 shadow-inner">
+                    <div className="inline-flex items-center justify-center p-4 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-2xl mb-4 border border-emerald-200 dark:border-emerald-500/20">
+                      <CalendarDays size={32} />
+                    </div>
+                    <div className="text-xs sm:text-sm font-semibold tracking-widest text-emerald-800 dark:text-emerald-400 uppercase mb-1.5">
+                      Weekly Off-Day
+                    </div>
+                    <h3 className="text-2xl sm:text-3xl font-extrabold text-emerald-900 dark:text-emerald-300 tracking-wider uppercase whitespace-nowrap">
+                      Weekly Holiday
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 max-w-sm mx-auto">
+                      No academic classes or clinical sessions scheduled for today.
+                    </p>
                   </div>
                 ) : (
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">

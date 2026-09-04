@@ -1,35 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import { BookOpen, FileText, Users, Eye, Image as ImageIcon, Bell, ArrowUpRight, Activity } from 'lucide-react';
-import { resources, notices } from '../data';
-import { galleryGroups } from '../data/gallery';
+import { useEffect, useState, useMemo } from 'react';
+import { BookOpen, FileText, Users, Eye, Image as ImageIcon, Bell, Activity } from 'lucide-react';
+import { resources as defaultResources, notices as defaultNotices } from '../data';
+import { galleryGroups as defaultGalleryGroups } from '../data/gallery';
+import { GalleryGroup, Resource, Notice } from '../types';
 
-interface StatsData {
-  totalLectures: number;
-  totalBooks: number;
-  totalGalleryPhotos: number;
-  totalNotices: number;
-  totalVisits: number | null;
-  todayVisits: number | null;
-  isLoadingVisitors: boolean;
+interface StatsWidgetProps {
+  setActiveTab: (tab: string) => void;
+  galleryGroups?: GalleryGroup[];
+  resourcesList?: Resource[];
+  noticesList?: Notice[];
 }
 
-export default function StatsWidget({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
-  const [stats, setStats] = useState<StatsData>(() => {
-    // 1. Calculate static resources metrics directly from data models
-    const totalLectures = resources.filter(r => r.type === 'lecture').length;
-    const totalBooks = resources.filter(r => r.type === 'book').length;
-    const totalGalleryPhotos = galleryGroups.reduce((acc, g) => acc + g.images.length, 0);
-    const totalNotices = notices.length;
+export default function StatsWidget({ 
+  setActiveTab,
+  galleryGroups: propGalleryGroups,
+  resourcesList: propResourcesList,
+  noticesList: propNoticesList,
+}: StatsWidgetProps) {
+  // Live reactive counts from real-time database props
+  const currentResources = propResourcesList && propResourcesList.length > 0 ? propResourcesList : defaultResources;
+  const currentNotices = propNoticesList && propNoticesList.length > 0 ? propNoticesList : defaultNotices;
+  const currentGallery = propGalleryGroups && propGalleryGroups.length > 0 ? propGalleryGroups : defaultGalleryGroups;
 
-    return {
-      totalLectures,
-      totalBooks,
-      totalGalleryPhotos,
-      totalNotices,
-      totalVisits: null,
-      todayVisits: null,
-      isLoadingVisitors: true,
-    };
+  const totalLectures = useMemo(() => {
+    return currentResources.filter(r => r.type === 'lecture').length;
+  }, [currentResources]);
+
+  const totalBooks = useMemo(() => {
+    return currentResources.filter(r => r.type === 'book').length;
+  }, [currentResources]);
+
+  const totalGalleryPhotos = useMemo(() => {
+    return currentGallery.reduce((acc, g) => acc + (g.images ? g.images.length : 0), 0);
+  }, [currentGallery]);
+
+  const totalNotices = useMemo(() => {
+    return currentNotices.length;
+  }, [currentNotices]);
+
+  // Visitor analytics state
+  const [visitorStats, setVisitorStats] = useState<{
+    totalVisits: number | null;
+    todayVisits: number | null;
+    isLoadingVisitors: boolean;
+  }>({
+    totalVisits: null,
+    todayVisits: null,
+    isLoadingVisitors: true,
   });
 
   useEffect(() => {
@@ -91,16 +108,15 @@ export default function StatsWidget({ setActiveTab }: { setActiveTab: (tab: stri
             sessionStorage.setItem(sessionKey, 'true');
           }
 
-          setStats(prev => ({
-            ...prev,
+          setVisitorStats({
             totalVisits: totalVal ?? 1,
             todayVisits: todayVal ?? 1,
             isLoadingVisitors: false,
-          }));
+          });
         }
       } catch (err) {
         if (isMounted) {
-          setStats(prev => ({
+          setVisitorStats(prev => ({
             ...prev,
             totalVisits: prev.totalVisits ?? 1,
             todayVisits: prev.todayVisits ?? 1,
@@ -150,7 +166,7 @@ export default function StatsWidget({ setActiveTab }: { setActiveTab: (tab: stri
               <FileText size={14} />
             </div>
             <div className="flex items-baseline gap-1">
-              <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-none">{stats.totalLectures}</span>
+              <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-none">{totalLectures}</span>
               <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-none">Lectures</span>
             </div>
           </button>
@@ -166,7 +182,7 @@ export default function StatsWidget({ setActiveTab }: { setActiveTab: (tab: stri
               <BookOpen size={14} />
             </div>
             <div className="flex items-baseline gap-1">
-              <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-none">{stats.totalBooks}</span>
+              <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-none">{totalBooks}</span>
               <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-none">Books</span>
             </div>
           </button>
@@ -182,7 +198,7 @@ export default function StatsWidget({ setActiveTab }: { setActiveTab: (tab: stri
               <ImageIcon size={14} />
             </div>
             <div className="flex items-baseline gap-1">
-              <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-none">{stats.totalGalleryPhotos}</span>
+              <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-none">{totalGalleryPhotos}</span>
               <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-none">Photos</span>
             </div>
           </button>
@@ -198,7 +214,7 @@ export default function StatsWidget({ setActiveTab }: { setActiveTab: (tab: stri
               <Bell size={14} />
             </div>
             <div className="flex items-baseline gap-1">
-              <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-none">{stats.totalNotices}</span>
+              <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-none">{totalNotices}</span>
               <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-none">Notices</span>
             </div>
           </button>
@@ -210,7 +226,7 @@ export default function StatsWidget({ setActiveTab }: { setActiveTab: (tab: stri
             </div>
             <div className="flex items-baseline gap-1">
               <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-none">
-                {stats.isLoadingVisitors ? '...' : (stats.todayVisits?.toLocaleString() ?? '--')}
+                {visitorStats.isLoadingVisitors ? '...' : (visitorStats.todayVisits?.toLocaleString() ?? '--')}
               </span>
               <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-none">Today</span>
             </div>
@@ -223,7 +239,7 @@ export default function StatsWidget({ setActiveTab }: { setActiveTab: (tab: stri
             </div>
             <div className="flex items-baseline gap-1">
               <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-none">
-                {stats.isLoadingVisitors ? '...' : (stats.totalVisits?.toLocaleString() ?? '--')}
+                {visitorStats.isLoadingVisitors ? '...' : (visitorStats.totalVisits?.toLocaleString() ?? '--')}
               </span>
               <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-none">Total</span>
             </div>

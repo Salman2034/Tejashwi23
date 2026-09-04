@@ -25,23 +25,13 @@ export const notices: Notice[] = [
 ];
 
 export const resources: Resource[] = [
-  // BMDC Curriculums (Subject level - not in any term folder)
-  {
-    id: 'curriculum-biochemistry',
-    title: 'Curriculum',
-    description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Biochemistry.',
-    date: '2026-09-03',
-    type: 'lecture',
-    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/5.Biochemistry.pdf',
-    phase: '1st Phase',
-    subject: 'Biochemistry'
-  },
+  // BMDC Curriculums (Kept outside subfolders at the subject level)
   {
     id: 'curriculum-anatomy',
     title: 'Curriculum',
     description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Anatomy.',
     date: '2026-09-03',
-    type: 'lecture',
+    type: 'book',
     fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
     phase: '1st Phase',
     subject: 'Anatomy'
@@ -51,14 +41,13 @@ export const resources: Resource[] = [
     title: 'Curriculum',
     description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Physiology.',
     date: '2026-09-03',
-    type: 'lecture',
+    type: 'book',
     fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/4.Physiology.pdf',
     phase: '1st Phase',
     subject: 'Physiology'
   },
-  // BMDC Curriculums for Medical Textbooks section
   {
-    id: 'book-curriculum-biochemistry',
+    id: 'curriculum-biochemistry',
     title: 'Curriculum',
     description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Biochemistry.',
     date: '2026-09-03',
@@ -67,25 +56,75 @@ export const resources: Resource[] = [
     phase: '1st Phase',
     subject: 'Biochemistry'
   },
+
+  // Standard Textbooks for 1st Phase (Inside Textbooks Folder)
   {
-    id: 'book-curriculum-anatomy',
-    title: 'Curriculum',
-    description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Anatomy.',
+    id: 'book-bd-chaurasia-anatomy',
+    title: "BD Chaurasia's Human Anatomy (Regional & Applied)",
+    description: 'Gold standard anatomy textbook for gross anatomy, osteology and clinical correlations.',
     date: '2026-09-03',
     type: 'book',
     fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
     phase: '1st Phase',
-    subject: 'Anatomy'
+    subject: 'Anatomy',
+    category: 'Textbooks'
   },
   {
-    id: 'book-curriculum-physiology',
-    title: 'Curriculum',
-    description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Physiology.',
+    id: 'book-guyton-physiology',
+    title: 'Guyton and Hall Textbook of Medical Physiology',
+    description: 'Authoritative physiology reference covering cellular, organ system and regulatory physiology.',
     date: '2026-09-03',
     type: 'book',
     fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/4.Physiology.pdf',
     phase: '1st Phase',
-    subject: 'Physiology'
+    subject: 'Physiology',
+    category: 'Textbooks'
+  },
+  {
+    id: 'book-lippincott-biochemistry',
+    title: 'Lippincott Illustrated Reviews: Biochemistry',
+    description: 'Essential illustrated biochemistry review with high-yield clinical vignettes and diagrams.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/5.Biochemistry.pdf',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    category: 'Textbooks'
+  },
+
+  // Study Guides & Review Books (Inside Guides Folder)
+  {
+    id: 'guide-anatomy-item-ospe',
+    title: 'Anatomy Card & OSPE Revision Guide',
+    description: 'Comprehensive high-yield viva questions, viscera identification & surface marking guide.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
+    phase: '1st Phase',
+    subject: 'Anatomy',
+    category: 'Guides'
+  },
+  {
+    id: 'guide-physiology-viva-prep',
+    title: 'Physiology Quick Review & Viva Guide',
+    description: 'Rapid recall questions, flowchart summaries and clinical correlations for term exams.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/4.Physiology.pdf',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    category: 'Guides'
+  },
+  {
+    id: 'guide-biochemistry-cycle-pathways',
+    title: 'Biochemistry Pathways & Item Guide',
+    description: 'Metabolic pathway diagrams, clinical enzymology notes, and viva item questions.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/5.Biochemistry.pdf',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    category: 'Guides'
   },
 
   // 1st Term Card 01 Lectures
