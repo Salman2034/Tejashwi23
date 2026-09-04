@@ -43,24 +43,30 @@ export default function LoadingScreen({
     }
 
     const t1 = setTimeout(() => {
-      setProgress(40);
-      setStatusMessage('Loading Academic Archives & Notes...');
-    }, 200);
+      setProgress(25);
+      setStatusMessage('Initializing Medical Portal...');
+    }, 600);
 
     const t2 = setTimeout(() => {
-      setProgress(75);
-      setStatusMessage('Connecting Firestore Cloud Sync...');
-    }, 550);
+      setProgress(55);
+      setStatusMessage('Loading Academic Archives & Notes...');
+    }, 1600);
 
     const t3 = setTimeout(() => {
-      setProgress(95);
+      setProgress(80);
+      setStatusMessage('Connecting Firestore Cloud Sync...');
+    }, 2800);
+
+    const t4 = setTimeout(() => {
+      setProgress(98);
       setStatusMessage('Preparing Tejashwi-23 Experience...');
-    }, 900);
+    }, 3900);
 
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
+      clearTimeout(t4);
     };
   }, [isInitialLoading]);
 
@@ -129,20 +135,19 @@ export default function LoadingScreen({
             {/* Logo Emblem Container with Radial Breathing Ring */}
             <div className="relative mb-6">
               <div className="absolute -inset-3 rounded-full bg-gradient-to-tr from-emerald-500/30 via-teal-400/20 to-emerald-600/30 blur-md animate-pulse" />
-              <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-3xl p-3 bg-white/80 dark:bg-[#072419]/90 backdrop-blur-2xl border border-emerald-500/30 shadow-2xl shadow-emerald-950/20 dark:shadow-emerald-900/40 flex items-center justify-center">
+              <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-3xl p-3 bg-white/95 dark:bg-[#072419]/90 backdrop-blur-2xl border border-emerald-500/30 shadow-2xl shadow-emerald-950/20 dark:shadow-emerald-900/40 flex items-center justify-center overflow-hidden">
                 <img 
-                  src="/Ewmch-bg.png" 
-                  alt="EWMC Logo" 
+                  src="/logo.png" 
+                  alt="Tejashwi 23 Logo" 
                   className="w-full h-full object-contain filter drop-shadow-sm transition-transform duration-500 hover:scale-105"
                   onError={(e) => {
-                    // Fallback to stethoscope icon if logo image fails
                     e.currentTarget.style.display = 'none';
                     const fallback = e.currentTarget.parentElement?.querySelector('.logo-fallback');
                     if (fallback) fallback.classList.remove('hidden');
                   }}
                 />
                 <div className="logo-fallback hidden w-full h-full flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                  <Stethoscope size={44} />
+                  <Stethoscope size={48} className="animate-pulse" />
                 </div>
               </div>
 

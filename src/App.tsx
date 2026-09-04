@@ -55,11 +55,11 @@ export default function App() {
     }, 320);
   }, [activeTab]);
 
-  // Complete initial loading after app mounts
+  // Complete initial loading after app mounts (Extended to 4.5s for a rich, premium loading experience)
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsInitialLoading(false);
-    }, 950);
+    }, 4500);
     return () => clearTimeout(timer);
   }, []);
 

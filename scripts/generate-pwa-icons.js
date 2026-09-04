@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import sharp from 'sharp';
 
-const srcImage = './src/assets/images/pwa_app_icon_1788542609376.jpg';
+const srcImage = './public/logo.png';
 
 async function generateIcons() {
   if (!fs.existsSync(srcImage)) {

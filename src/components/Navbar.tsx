@@ -2,13 +2,14 @@ import { useState, useRef, useEffect } from 'react';
 import { Stethoscope, BookOpen, FileText, Bell, MessageCircle, MessageSquare, CalendarDays, Image as ImageIcon, Vote, ChevronLeft, ChevronRight } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import NotificationCenter from './NotificationCenter';
-import { PWAInstallButton } from './PWAInstallButton';
+import { useNotifications } from '../context/NotificationContext';
 
 export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { activeTab: string, setActiveTab: (t: string) => void, setActiveAlbumId: (id: string | null) => void }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const { unreadCount } = useNotifications();
 
   const navItems = [
     { id: 'home', label: 'Home', icon: Stethoscope },
@@ -95,8 +96,20 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
               className="flex items-center gap-2 cursor-pointer group shrink-0" 
               onClick={() => handleNavClick('home')}
             >
-              <div className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 p-1 rounded-lg group-hover:bg-emerald-500/25 group-hover:scale-105 transition-all shadow-xs ring-1 ring-emerald-500/25 shrink-0">
-                <Stethoscope size={18} strokeWidth={2.5} />
+              <div className="w-8 h-8 rounded-lg overflow-hidden border border-emerald-500/20 shadow-xs group-hover:scale-105 transition-all bg-white dark:bg-emerald-950/20 flex items-center justify-center shrink-0">
+                <img 
+                  src="/logo.png" 
+                  alt="Tejashwi 23 Logo" 
+                  className="w-full h-full object-contain filter drop-shadow-sm"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    const fallback = e.currentTarget.parentElement?.querySelector('.nav-logo-fallback');
+                    if (fallback) fallback.classList.remove('hidden');
+                  }}
+                />
+                <div className="nav-logo-fallback hidden text-emerald-600 dark:text-emerald-400">
+                  <Stethoscope size={18} strokeWidth={2.5} />
+                </div>
               </div>
               <div className="shrink-0 leading-none">
                 <div className="flex items-center gap-1.5">
@@ -132,26 +145,27 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
 
               <div className="h-5 w-px bg-emerald-900/10 dark:bg-white/10 mx-0.5 shrink-0" />
 
-              {/* Native App Install Button */}
-              <PWAInstallButton variant="navbar" />
-
               {/* Notification Bell Button */}
               <button
                 type="button"
                 onClick={() => setIsNotificationOpen(true)}
-                title="Notifications"
-                className="w-8 h-8 rounded-lg flex items-center justify-center transition-all border cursor-pointer bg-slate-100/80 dark:bg-black/20 text-slate-700 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-white border-emerald-900/10 dark:border-emerald-500/15 hover:bg-slate-200/60 dark:hover:bg-white/10"
+                title={unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : "Notifications"}
+                className="relative w-8 h-8 rounded-lg flex items-center justify-center transition-all border cursor-pointer bg-slate-100/80 dark:bg-black/20 text-slate-700 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-white border-emerald-900/10 dark:border-emerald-500/15 hover:bg-slate-200/60 dark:hover:bg-white/10"
               >
                 <Bell size={15} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border-2 border-white dark:border-[#04130d]"></span>
+                  </span>
+                )}
               </button>
 
               <ThemeToggle compact={true} className="!w-8 !h-8 !rounded-lg" />
             </div>
 
-            {/* Mobile & Tablet Header Active View Indicator + PWA Install + Notification Bell + Theme Toggle */}
+            {/* Mobile & Tablet Header Active View Indicator + Notification Bell + Theme Toggle */}
             <div className="lg:hidden flex items-center gap-1.5">
-              <PWAInstallButton variant="navbar" />
-
               <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100/80 dark:bg-white/5 backdrop-blur-xl text-emerald-900 dark:text-emerald-400 border border-emerald-300/60 dark:border-emerald-500/30 capitalize">
                 {navItems.find(i => i.id === activeTab)?.label || activeTab}
               </span>
@@ -160,10 +174,16 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
               <button
                 type="button"
                 onClick={() => setIsNotificationOpen(true)}
-                title="Notifications"
-                className="w-7 h-7 rounded-lg flex items-center justify-center transition-all border cursor-pointer bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 border-emerald-900/10 dark:border-emerald-500/20 hover:bg-slate-200/60 dark:hover:bg-white/10"
+                title={unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : "Notifications"}
+                className="relative w-7 h-7 rounded-lg flex items-center justify-center transition-all border cursor-pointer bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 border-emerald-900/10 dark:border-emerald-500/20 hover:bg-slate-200/60 dark:hover:bg-white/10"
               >
                 <Bell size={14} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500 border-2 border-white dark:border-[#04130d]"></span>
+                  </span>
+                )}
               </button>
 
               <ThemeToggle compact={true} className="!w-7 !h-7 !rounded-lg" />
