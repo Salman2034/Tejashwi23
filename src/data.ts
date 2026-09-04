@@ -177,6 +177,104 @@ export const resources: Resource[] = [
     subject: 'Biochemistry',
     term: '1st Term',
     card: '1st Card'
+  },
+
+  // 1st Term Card 02 Lectures
+  {
+    id: 'bio-t1-c2-item01',
+    title: 'Item 01',
+    description: 'Biochemistry 1st Term Card-02 lecture material & item study resources.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/biochem2ewmc/2',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'bio-t1-c2-item02',
+    title: 'Item 02',
+    description: 'Biochemistry 1st Term Card-02 lecture material & item study resources.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/biochem2ewmc/3',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'bio-t1-c2-item03',
+    title: 'Item 03',
+    description: 'Biochemistry 1st Term Card-02 lecture material & item study resources.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/biochem2ewmc/4',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'bio-t1-c2-item04',
+    title: 'Item 04',
+    description: 'Biochemistry 1st Term Card-02 lecture material & item study resources.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/biochem2ewmc/5',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'bio-t1-c2-item05',
+    title: 'Item 05',
+    description: 'Biochemistry 1st Term Card-02 lecture material & item study resources.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/biochem2ewmc/6',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'bio-t1-c2-item06',
+    title: 'Item 06',
+    description: 'Biochemistry 1st Term Card-02 lecture material & item study resources.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/biochem2ewmc/7',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'bio-t1-c2-viva',
+    title: 'Card viva questions',
+    description: 'Biochemistry 1st Term Card-02 viva questions and examiner high-yield topics.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/biochem2ewmc/8',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'bio-t1-c2-written',
+    title: 'Card written questions',
+    description: 'Biochemistry 1st Term Card-02 written questions and question bank.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/biochem2ewmc/9',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    term: '1st Term',
+    card: '2nd Card'
   }
 ];
 
