@@ -42,9 +42,14 @@ export default function GalleryWidget({ setActiveTab, setActiveAlbumId }: { setA
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
-            <div className="absolute bottom-4 left-4 text-white font-medium drop-shadow-md translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
-              {group.title}
-              <div className="text-xs text-teal-300 mt-1 font-semibold">{group.images.length} Photos</div>
+            <div className="absolute bottom-4 left-4 right-4 text-white font-medium drop-shadow-md translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all flex items-end justify-between">
+              <div>
+                <div>{group.title}</div>
+                <div className="text-xs text-teal-300 mt-0.5 font-semibold">{group.images.length} Photos</div>
+              </div>
+              <span className="text-[10px] uppercase font-bold bg-white/10 backdrop-blur-md px-2 py-0.5 rounded text-slate-300 border border-white/10">
+                {group.phase}
+              </span>
             </div>
           </div>
         ))}
