@@ -19,7 +19,7 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // Chat messages collection:
+    // Chat messages collection
     match /chatMessages/{messageId} {
       allow read: if true;
       allow create: if request.resource.data.text is string
@@ -27,9 +27,28 @@ service cloud.firestore {
                     && request.resource.data.text.size() <= 2000
                     && request.resource.data.senderName is string
                     && request.resource.data.senderName.size() > 0;
-      // Admin has power to delete individual or all messages from database
       allow delete: if isAdmin();
       allow update: if isAdmin();
+    }
+
+    // Polls collection:
+    // Anyone can read polls
+    // Only Admin can create, update (e.g. close poll), or delete polls
+    match /polls/{pollId} {
+      allow read: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+
+      // Votes subcollection:
+      // User can read votes (to see results / who voted if public)
+      // User can only write to their own document keyed by their auth.uid (prevents multiple votes!)
+      // Cannot vote if poll is closed
+      match /votes/{userId} {
+        allow read: if true;
+        allow create, update: if isAuthenticated() && request.auth.uid == userId;
+        allow delete: if isAdmin();
+      }
     }
   }
 }

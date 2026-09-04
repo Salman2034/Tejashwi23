@@ -24,3 +24,30 @@ export interface Notice {
   date: string;
   isImportant: boolean;
 }
+
+export interface PollOption {
+  id: string;
+  text: string;
+}
+
+export interface Poll {
+  id: string;
+  question: string;
+  description?: string;
+  options: PollOption[];
+  createdTimestamp: number;
+  expiresTimestamp?: number; // Timed polls
+  status: 'active' | 'closed';
+  createdBy: string;
+  isTimed: boolean;
+}
+
+export interface PollVote {
+  pollId: string;
+  uid: string;
+  voterName: string;
+  voterEmail?: string;
+  voterRoll?: string;
+  optionId: string;
+  timestamp: number;
+}

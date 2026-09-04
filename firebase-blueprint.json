@@ -30,6 +30,47 @@
         "channel": { "type": "string", "enum": ["batch", "academic", "casual"] }
       },
       "required": ["senderUid", "senderName", "text", "timestamp", "channel"]
+    },
+    "poll": {
+      "title": "Poll",
+      "description": "Batch voting poll created by Admin",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "question": { "type": "string" },
+        "description": { "type": "string" },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "text": { "type": "string" }
+            }
+          }
+        },
+        "createdTimestamp": { "type": "number" },
+        "expiresTimestamp": { "type": "number" },
+        "status": { "type": "string", "enum": ["active", "closed"] },
+        "createdBy": { "type": "string" },
+        "isTimed": { "type": "boolean" }
+      },
+      "required": ["question", "options", "createdTimestamp", "status"]
+    },
+    "pollVote": {
+      "title": "Poll Vote",
+      "description": "Single vote cast by an authenticated student on a poll",
+      "type": "object",
+      "properties": {
+        "pollId": { "type": "string" },
+        "uid": { "type": "string" },
+        "voterName": { "type": "string" },
+        "voterEmail": { "type": "string" },
+        "voterRoll": { "type": "string" },
+        "optionId": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["pollId", "uid", "optionId", "timestamp"]
     }
   },
   "firestore": {
@@ -44,6 +85,18 @@
         "$ref": "#/entities/chatMessage"
       },
       "description": "Batch chat messages ordered by timestamp"
+    },
+    "/polls/{pollId}": {
+      "schema": {
+        "$ref": "#/entities/poll"
+      },
+      "description": "Batch polls created and managed by Admin"
+    },
+    "/polls/{pollId}/votes/{userId}": {
+      "schema": {
+        "$ref": "#/entities/pollVote"
+      },
+      "description": "Subcollection storing one vote per authenticated student"
     }
   }
 }
