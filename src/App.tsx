@@ -22,7 +22,7 @@ export default function App() {
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />
       <NoticeTicker notices={notices} setActiveTab={setActiveTab} />
 
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 md:pt-6 md:pb-12">
+      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 lg:pt-6 lg:pb-12">
         {(activeTab === 'home' || activeTab === 'contact') && <Home setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />}
         {activeTab === 'routine' && <Routine />}
         {activeTab === 'calendar' && <CalendarPage />}
@@ -48,7 +48,7 @@ export default function App() {
         )}
       </main>
 
-      <footer className="bg-slate-950 text-slate-400 py-8 border-t border-white/5 mt-auto">
+      <footer className="bg-slate-950 text-slate-400 pt-8 pb-28 lg:py-8 border-t border-white/5 mt-auto">
         <div className="max-w-7xl mx-auto px-4 text-center text-sm flex flex-col items-center justify-center gap-3">
           <p className="font-medium text-slate-300 text-base">
             © {new Date().getFullYear()} Tejashwi 23 - East West Medical College.
