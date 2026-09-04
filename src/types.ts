@@ -13,8 +13,28 @@ export interface Resource {
   fileSize?: string;
   phase: Phase;
   subject: string;
-  term?: Term;
-  card?: Card;
+  term?: string;
+  card?: string;
+  createdTimestamp?: number;
+  updatedTimestamp?: number;
+  createdBy?: string;
+}
+
+export type FolderLevel = 'subject' | 'term' | 'card';
+
+export interface ResourceFolder {
+  id: string;
+  name: string;
+  phase: Phase;
+  subject?: string;
+  term?: string;
+  level?: FolderLevel;
+  description?: string;
+  section?: 'lecture' | 'book' | 'all';
+  isDeleted?: boolean;
+  createdTimestamp?: number;
+  updatedTimestamp?: number;
+  createdBy?: string;
 }
 
 export interface Notice {

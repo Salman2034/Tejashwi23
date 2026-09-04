@@ -87,6 +87,48 @@
         "createdBy": { "type": "string" }
       },
       "required": ["title", "content", "date", "createdTimestamp"]
+    },
+    "resource": {
+      "title": "Resource",
+      "description": "Study resource such as lecture slides or textbook",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "date": { "type": "string" },
+        "type": { "type": "string", "enum": ["lecture", "book"] },
+        "fileUrl": { "type": "string" },
+        "fileSize": { "type": "string" },
+        "phase": { "type": "string" },
+        "subject": { "type": "string" },
+        "term": { "type": "string" },
+        "card": { "type": "string" },
+        "createdTimestamp": { "type": "number" },
+        "updatedTimestamp": { "type": "number" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["title", "type", "fileUrl", "phase", "subject"]
+    },
+    "resourceFolder": {
+      "title": "ResourceFolder",
+      "description": "Folder or subject categorization under academic phase",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "phase": { "type": "string" },
+        "subject": { "type": "string" },
+        "term": { "type": "string" },
+        "level": { "type": "string", "enum": ["subject", "term", "card"] },
+        "description": { "type": "string" },
+        "section": { "type": "string", "enum": ["lecture", "book", "all"] },
+        "isDeleted": { "type": "boolean" },
+        "createdTimestamp": { "type": "number" },
+        "updatedTimestamp": { "type": "number" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["name", "phase"]
     }
   },
   "firestore": {
@@ -119,6 +161,18 @@
         "$ref": "#/entities/notice"
       },
       "description": "Batch announcements managed by Admin"
+    },
+    "/resources/{resourceId}": {
+      "schema": {
+        "$ref": "#/entities/resource"
+      },
+      "description": "Lectures and textbooks collection managed by Admin"
+    },
+    "/resourceFolders/{folderId}": {
+      "schema": {
+        "$ref": "#/entities/resourceFolder"
+      },
+      "description": "Folders and subjects created and managed by Admin"
     }
   }
 }

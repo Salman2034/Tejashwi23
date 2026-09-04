@@ -11,8 +11,8 @@ import CalendarPage from './components/Calendar';
 import GalleryPage from './components/GalleryPage';
 import ChatPage from './components/ChatPage';
 import PollingPage from './components/PollingPage';
-import { resources, notices as defaultNotices } from './data';
-import { Notice } from './types';
+import { resources as defaultResources, notices as defaultNotices } from './data';
+import { Notice, Resource } from './types';
 import { Heart } from 'lucide-react';
 import { ThemeProvider } from './context/ThemeContext';
 
@@ -20,6 +20,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [activeAlbumId, setActiveAlbumId] = useState<string | null>(null);
   const [noticesList, setNoticesList] = useState<Notice[]>(defaultNotices);
+  const [resourcesList, setResourcesList] = useState<Resource[]>(defaultResources);
 
   // Synchronize notices real-time with Firebase Firestore
   useEffect(() => {
@@ -49,8 +50,36 @@ export default function App() {
     }
   }, []);
 
-  const lectures = resources.filter(r => r.type === 'lecture');
-  const books = resources.filter(r => r.type === 'book');
+  // Synchronize resources (lectures and textbooks) real-time with Firebase Firestore
+  useEffect(() => {
+    try {
+      const q = query(collection(db, 'resources'));
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          if (!snapshot.empty) {
+            const fetched: Resource[] = snapshot.docs.map((docSnap) => ({
+              id: docSnap.id,
+              ...(docSnap.data() as Omit<Resource, 'id'>),
+            }));
+            setResourcesList(fetched);
+          } else {
+            setResourcesList(defaultResources);
+          }
+        },
+        (err) => {
+          console.warn('Firestore resources onSnapshot note:', err);
+          setResourcesList(defaultResources);
+        }
+      );
+      return () => unsubscribe();
+    } catch (e) {
+      console.warn('Error initiating resources listener:', e);
+    }
+  }, []);
+
+  const lectures = resourcesList.filter(r => r.type === 'lecture');
+  const books = resourcesList.filter(r => r.type === 'book');
 
   return (
     <ThemeProvider>
@@ -73,6 +102,7 @@ export default function App() {
               description="Download PDF slides, handwritten notes, and presentations from our classes."
               resources={lectures}
               showHierarchy={true}
+              sectionType="lecture"
             />
           )}
           {activeTab === 'books' && (
@@ -81,6 +111,7 @@ export default function App() {
               description="Digital copies of reference books and study materials for the current academic year."
               resources={books}
               showHierarchy={false}
+              sectionType="book"
             />
           )}
           {activeTab === 'notices' && (

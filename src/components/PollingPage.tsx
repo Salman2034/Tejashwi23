@@ -998,6 +998,46 @@ export default function PollingPage() {
           })}
         </div>
       )}
+
+      {/* Delete Poll Confirmation Modal */}
+      {pollToDelete && isCurrentUserAdmin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
+          <div className="w-full max-w-md bg-white dark:bg-[#051c14] border border-rose-500/30 rounded-3xl p-6 shadow-2xl animate-in zoom-in-95 text-center">
+            <div className="w-14 h-14 rounded-full bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-500/25">
+              <Trash2 size={26} />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">
+              Delete Poll?
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+              Are you sure you want to permanently delete <strong className="text-slate-900 dark:text-slate-200">&quot;{pollToDelete.question}&quot;</strong> and all of its cast votes? This action cannot be undone.
+            </p>
+            <div className="flex items-center justify-center gap-3">
+              <button
+                onClick={() => setPollToDelete(null)}
+                disabled={processingPollId === pollToDelete.id}
+                className="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleConfirmDeletePoll(pollToDelete.id)}
+                disabled={processingPollId === pollToDelete.id}
+                className="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white text-sm font-bold shadow-md transition-all flex items-center gap-2"
+              >
+                {processingPollId === pollToDelete.id ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  <span>Delete Poll</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
