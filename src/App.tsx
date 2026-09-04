@@ -21,6 +21,7 @@ import { NotificationProvider } from './context/NotificationContext';
 import NotificationToast from './components/NotificationToast';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { PWAInstallButton } from './components/PWAInstallButton';
+import DailyReminderModal from './components/DailyReminderModal';
 
 export default function App() {
   const [activeTab, setActiveTabState] = useState('home');
@@ -181,6 +182,9 @@ export default function App() {
 
           <Navbar activeTab={activeTab} setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />
           <NoticeTicker notices={noticesList} setActiveTab={setActiveTab} />
+
+          {/* Random Quran & Hadith Daily Reminder Modal */}
+          <DailyReminderModal isAppReady={!isInitialLoading} />
 
         <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 lg:pt-6 lg:pb-12">
           {(activeTab === 'home' || activeTab === 'contact') && (
