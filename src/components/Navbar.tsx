@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Stethoscope, BookOpen, FileText, Bell, MessageCircle, MessageSquare, CalendarDays, Image as ImageIcon, Vote, ChevronLeft, ChevronRight } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import NotificationCenter from './NotificationCenter';
+import { PWAInstallButton } from './PWAInstallButton';
 
 export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { activeTab: string, setActiveTab: (t: string) => void, setActiveAlbumId: (id: string | null) => void }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -131,6 +132,9 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
 
               <div className="h-5 w-px bg-emerald-900/10 dark:bg-white/10 mx-0.5 shrink-0" />
 
+              {/* Native App Install Button */}
+              <PWAInstallButton variant="navbar" />
+
               {/* Notification Bell Button */}
               <button
                 type="button"
@@ -144,8 +148,10 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
               <ThemeToggle compact={true} className="!w-8 !h-8 !rounded-lg" />
             </div>
 
-            {/* Mobile & Tablet Header Active View Indicator + Notification Bell + Theme Toggle */}
+            {/* Mobile & Tablet Header Active View Indicator + PWA Install + Notification Bell + Theme Toggle */}
             <div className="lg:hidden flex items-center gap-1.5">
+              <PWAInstallButton variant="navbar" />
+
               <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100/80 dark:bg-white/5 backdrop-blur-xl text-emerald-900 dark:text-emerald-400 border border-emerald-300/60 dark:border-emerald-500/30 capitalize">
                 {navItems.find(i => i.id === activeTab)?.label || activeTab}
               </span>

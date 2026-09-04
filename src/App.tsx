@@ -19,6 +19,8 @@ import { Heart } from 'lucide-react';
 import { ThemeProvider } from './context/ThemeContext';
 import { NotificationProvider } from './context/NotificationContext';
 import NotificationToast from './components/NotificationToast';
+import { OfflineIndicator } from './components/OfflineIndicator';
+import { PWAInstallButton } from './components/PWAInstallButton';
 
 export default function App() {
   const [activeTab, setActiveTabState] = useState('home');
@@ -170,6 +172,12 @@ export default function App() {
 
           {/* Toast Notification Alert Overlay */}
           <NotificationToast />
+
+          {/* Native PWA Offline Indicator */}
+          <OfflineIndicator />
+
+          {/* Floating Native App Install Button */}
+          <PWAInstallButton variant="floating" />
 
           <Navbar activeTab={activeTab} setActiveTab={setActiveTab} setActiveAlbumId={setActiveAlbumId} />
           <NoticeTicker notices={noticesList} setActiveTab={setActiveTab} />

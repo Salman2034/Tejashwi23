@@ -4,6 +4,7 @@ import CalendarWidget from './CalendarWidget';
 import GalleryWidget from './GalleryWidget';
 import StatsWidget from './StatsWidget';
 import { GalleryGroup, Resource, Notice } from '../types';
+import { PWAInstallButton } from './PWAInstallButton';
 
 export default function Home({ 
   setActiveTab, 
@@ -44,21 +45,22 @@ export default function Home({
             <p className="text-base sm:text-lg text-emerald-100/80 mb-8 max-w-2xl mx-auto md:mx-0 leading-relaxed font-light">
               The official digital hub for the 23rd batch of East West Medical College. Access class routines, lecture notes, textbooks, and batch notices all in one place.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <div className="flex flex-col sm:flex-row gap-3.5 justify-center md:justify-start items-center">
               <button 
                 onClick={() => setActiveTab('lectures')} 
-                className="px-6 py-3.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_30px_rgba(16,185,129,0.55)] hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_30px_rgba(16,185,129,0.55)] hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2"
               >
                 <FileText size={20} className="text-slate-900" />
                 View Lectures
               </button>
               <button 
                 onClick={() => setActiveTab('notices')} 
-                className="px-6 py-3.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-semibold rounded-xl hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-semibold rounded-xl hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2"
               >
                 <Bell size={20} className="text-emerald-300" />
                 Notices
               </button>
+              <PWAInstallButton variant="hero" />
             </div>
           </div>
           <div className="hidden md:block md:w-5/12 lg:w-1/3 mt-8 md:mt-0">
