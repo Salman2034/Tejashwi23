@@ -17,6 +17,13 @@ const TERMS_CONFIG: { term: Term; cards: Card[]; description: string }[] = [
   { term: '3rd Term', cards: ['5th Card', '6th Card'], description: 'Card 5 & Card 6 curriculum' }
 ];
 
+const DEFAULT_PHASE_SUBJECTS: Record<Phase, string[]> = {
+  '1st Phase': ['Anatomy', 'Physiology', 'Biochemistry'],
+  '2nd Phase': ['Community Medicine', 'Forensic Medicine'],
+  '3rd Phase': ['Pharmacology', 'Pathology', 'Microbiology'],
+  '4th Phase': ['Medicine', 'Surgery', 'Obstetrics & Gynaecology', 'Pediatrics']
+};
+
 export default function ResourceList({ title, description, resources, showHierarchy = true }: ResourceListProps) {
   const [search, setSearch] = useState('');
   const [activePhase, setActivePhase] = useState<Phase | null>(null);
@@ -26,13 +33,13 @@ export default function ResourceList({ title, description, resources, showHierar
 
   const availableSubjects = useMemo(() => {
     if (!activePhase) return [];
-    const subjects = new Set<string>();
+    const subjects = new Set<string>(DEFAULT_PHASE_SUBJECTS[activePhase] || []);
     resources.forEach(r => {
       if (r.phase === activePhase) {
         subjects.add(r.subject);
       }
     });
-    return Array.from(subjects).sort();
+    return Array.from(subjects);
   }, [resources, activePhase]);
 
   // Current cards available under the active term
@@ -380,7 +387,12 @@ export default function ResourceList({ title, description, resources, showHierar
                 <File size={32} className="text-slate-600" strokeWidth={1.5} />
               </div>
               <p className="text-xl font-medium text-slate-300">No files uploaded yet</p>
-              <p className="text-slate-500 mt-2 font-light">Lectures for {showHierarchy ? `${activeTerm} (${activeCard})` : activeSubject} will appear here.</p>
+              <p className="text-slate-500 mt-2 font-light">
+                {showHierarchy 
+                  ? `Lectures for ${activeSubject} • ${activeTerm} (${activeCard}) will be uploaded here.`
+                  : `Textbooks for ${activeSubject} will be added here.`
+                }
+              </p>
             </div>
           ) : (
             <FileList resources={filteredResources} showPath={false} />
