@@ -440,6 +440,102 @@ export const resources: Resource[] = [
     subject: 'Physiology',
     term: '1st Term',
     card: '1st Card'
+  },
+  {
+    id: 'phy-t1-c2-co-hr-pulse',
+    title: 'CO, HR, PULSE',
+    description: 'Physiology 1st Term Card-02 lecture material & notes on Cardiac Output, Heart Rate & Arterial Pulse.',
+    date: '2026-09-04',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology2ewmc/2',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'phy-t1-c2-heart',
+    title: 'Heart',
+    description: 'Physiology 1st Term Card-02 lecture material & notes on Functional anatomy & properties of Cardiac Muscle.',
+    date: '2026-09-04',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology2ewmc/3',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'phy-t1-c2-microcirculation',
+    title: 'Microcirculation',
+    description: 'Physiology 1st Term Card-02 lecture material & notes on Microcirculation, Capillary exchange & Lymphatics.',
+    date: '2026-09-04',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology2ewmc/4',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'phy-t1-c2-cardiac-cycle',
+    title: 'Cardiac cycle',
+    description: 'Physiology 1st Term Card-02 lecture material & notes on Cardiac Cycle phases, pressure-volume changes & Heart sounds.',
+    date: '2026-09-04',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology2ewmc/5',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'phy-t1-c2-co-sv-vr',
+    title: 'CO, SV, VR',
+    description: 'Physiology 1st Term Card-02 lecture material & notes on Cardiac Output, Stroke Volume & Venous Return regulation.',
+    date: '2026-09-04',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology2ewmc/6',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'phy-t1-c2-cardiovascular-physiology',
+    title: 'Cardiovascular physiology',
+    description: 'Physiology 1st Term Card-02 comprehensive lecture notes on Cardiovascular Physiology & Hemodynamics.',
+    date: '2026-09-04',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology2ewmc/7',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'phy-t1-c2-circulatory-adjustment',
+    title: 'Circulatory adjustment',
+    description: 'Physiology 1st Term Card-02 lecture material on Circulatory adjustments during exercise, posture changes & stress.',
+    date: '2026-09-04',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology2ewmc/8',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+  {
+    id: 'phy-t1-c2-heart-block',
+    title: 'Heart block',
+    description: 'Physiology 1st Term Card-02 lecture material & notes on Heart Block, Cardiac Arrhythmias & Conduction disorders.',
+    date: '2026-09-04',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology2ewmc/9',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '2nd Card'
   }
 ];
 
