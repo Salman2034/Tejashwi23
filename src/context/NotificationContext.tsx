@@ -185,20 +185,36 @@ export function NotificationProvider({
     }
   }, [setActiveTab, setChatActiveChannel]);
 
+  const activeTabRef = useRef(activeTab);
+  activeTabRef.current = activeTab;
+
+  const chatActiveChannelRef = useRef(chatActiveChannel);
+  chatActiveChannelRef.current = chatActiveChannel;
+
+  const soundEnabledRef = useRef(soundEnabled);
+  soundEnabledRef.current = soundEnabled;
+
+  const currentUserRef = useRef(currentUser);
+  currentUserRef.current = currentUser;
+
   // 1. Realtime Listener for New Notices
   useEffect(() => {
+    let isFirstSnapshot = true;
     try {
       const q = query(collection(db, 'notices'), orderBy('createdTimestamp', 'desc'), limit(15));
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        if (isInitialNoticesLoad.current) {
-          isInitialNoticesLoad.current = false;
+        if (isFirstSnapshot) {
+          isFirstSnapshot = false;
+          // Initial snapshot on load: record the latest timestamp, DO NOT fire notifications for existing records
           if (!snapshot.empty) {
             const newest = snapshot.docs[0].data();
             const ts = newest.createdTimestamp || Date.now();
-            latestNoticeTsRef.current = Math.max(latestNoticeTsRef.current, ts);
-            try {
-              localStorage.setItem(LAST_NOTICE_TS_KEY, String(latestNoticeTsRef.current));
-            } catch {}
+            if (ts > latestNoticeTsRef.current) {
+              latestNoticeTsRef.current = ts;
+              try {
+                localStorage.setItem(LAST_NOTICE_TS_KEY, String(latestNoticeTsRef.current));
+              } catch {}
+            }
           }
           return;
         }
@@ -208,9 +224,9 @@ export function NotificationProvider({
             const data = change.doc.data();
             const docTs = data.createdTimestamp || Date.now();
             
-            // Only notify if newer than our tracked timestamp
-            if (docTs > latestNoticeTsRef.current - 5000) {
-              latestNoticeTsRef.current = Math.max(latestNoticeTsRef.current, docTs);
+            // Only notify for notices created after the listener was established
+            if (docTs > latestNoticeTsRef.current) {
+              latestNoticeTsRef.current = docTs;
               try {
                 localStorage.setItem(LAST_NOTICE_TS_KEY, String(latestNoticeTsRef.current));
               } catch {}
@@ -229,7 +245,7 @@ export function NotificationProvider({
 
               setNotifications((prev) => [newNoticeNotification, ...prev.filter(p => p.id !== newNoticeNotification.id)]);
 
-              if (soundEnabled) {
+              if (soundEnabledRef.current) {
                 playNoticeSound();
               }
 
@@ -244,22 +260,26 @@ export function NotificationProvider({
     } catch (e) {
       console.warn('Notice notification listener error:', e);
     }
-  }, [soundEnabled, triggerToast, sendBrowserNotification]);
+  }, [triggerToast, sendBrowserNotification]);
 
   // 2. Realtime Listener for New Messages
   useEffect(() => {
+    let isFirstSnapshot = true;
     try {
       const q = query(collection(db, 'chatMessages'), orderBy('timestamp', 'desc'), limit(15));
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        if (isInitialChatLoad.current) {
-          isInitialChatLoad.current = false;
+        if (isFirstSnapshot) {
+          isFirstSnapshot = false;
+          // Initial snapshot on load: record the latest timestamp, DO NOT fire notifications for existing records
           if (!snapshot.empty) {
             const newest = snapshot.docs[0].data();
             const ts = newest.timestamp || Date.now();
-            latestMsgTsRef.current = Math.max(latestMsgTsRef.current, ts);
-            try {
-              localStorage.setItem(LAST_MSG_TS_KEY, String(latestMsgTsRef.current));
-            } catch {}
+            if (ts > latestMsgTsRef.current) {
+              latestMsgTsRef.current = ts;
+              try {
+                localStorage.setItem(LAST_MSG_TS_KEY, String(latestMsgTsRef.current));
+              } catch {}
+            }
           }
           return;
         }
@@ -270,13 +290,17 @@ export function NotificationProvider({
             const docTs = data.timestamp || Date.now();
 
             // Do not notify if it's user's own sent message
-            if (currentUser && data.senderUid === currentUser.uid) {
-              latestMsgTsRef.current = Math.max(latestMsgTsRef.current, docTs);
+            const currentU = currentUserRef.current;
+            if (currentU && data.senderUid === currentU.uid) {
+              if (docTs > latestMsgTsRef.current) {
+                latestMsgTsRef.current = docTs;
+              }
               return;
             }
 
-            if (docTs > latestMsgTsRef.current - 5000) {
-              latestMsgTsRef.current = Math.max(latestMsgTsRef.current, docTs);
+            // Only notify for messages created after the listener was established
+            if (docTs > latestMsgTsRef.current) {
+              latestMsgTsRef.current = docTs;
               try {
                 localStorage.setItem(LAST_MSG_TS_KEY, String(latestMsgTsRef.current));
               } catch {}
@@ -305,10 +329,10 @@ export function NotificationProvider({
               setNotifications((prev) => [newMsgNotification, ...prev.filter(p => p.id !== newMsgNotification.id)]);
 
               // If user is not currently in this specific chat channel, ring chime and toast
-              const isLookingAtThisChannel = activeTab === 'chat' && chatActiveChannel === (data.channel || 'batch') && document.visibilityState === 'visible';
+              const isLookingAtThisChannel = activeTabRef.current === 'chat' && chatActiveChannelRef.current === (data.channel || 'batch') && document.visibilityState === 'visible';
 
               if (!isLookingAtThisChannel) {
-                if (soundEnabled) {
+                if (soundEnabledRef.current) {
                   playMessageSound();
                 }
                 triggerToast(newMsgNotification);
@@ -323,7 +347,7 @@ export function NotificationProvider({
     } catch (e) {
       console.warn('Chat notification listener error:', e);
     }
-  }, [currentUser, soundEnabled, activeTab, chatActiveChannel, triggerToast, sendBrowserNotification]);
+  }, [triggerToast, sendBrowserNotification]);
 
   const markAsRead = useCallback((id: string) => {
     setNotifications((prev) => {
