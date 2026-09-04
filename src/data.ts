@@ -306,6 +306,140 @@ export const resources: Resource[] = [
     subject: 'Biochemistry',
     term: '1st Term',
     card: '2nd Card'
+  },
+
+  // PHYSIOLOGY - 1st Term Card 01 Lectures
+  {
+    id: 'phy-t1-c1-homeostasis',
+    title: 'Homeostasis',
+    description: 'Physiology 1st Term Card-01 lecture material & notes on Homeostasis.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology1ewmc/2',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '1st Card'
+  },
+  {
+    id: 'phy-t1-c1-cell',
+    title: 'Cell',
+    description: 'Physiology 1st Term Card-01 lecture material & notes on Cell physiology.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology1ewmc/3',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '1st Card'
+  },
+  {
+    id: 'phy-t1-c1-membrane-potential',
+    title: 'Membrane potential',
+    description: 'Physiology 1st Term Card-01 lecture material & notes on Resting & Action Membrane Potential.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology1ewmc/4',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '1st Card'
+  },
+  {
+    id: 'phy-t1-c1-membrane-transport',
+    title: 'Membrane transport',
+    description: 'Physiology 1st Term Card-01 lecture material & notes on Membrane Transport mechanisms.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology1ewmc/5',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '1st Card'
+  },
+  {
+    id: 'phy-t1-c1-blood',
+    title: 'Blood',
+    description: 'Physiology 1st Term Card-01 lecture material & notes on Blood composition & functions.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology1ewmc/6',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '1st Card'
+  },
+  {
+    id: 'phy-t1-c1-rbc',
+    title: 'RBC',
+    description: 'Physiology 1st Term Card-01 lecture material & notes on Red Blood Cells & Erythropoiesis.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology1ewmc/7',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '1st Card'
+  },
+  {
+    id: 'phy-t1-c1-wbc',
+    title: 'WBC',
+    description: 'Physiology 1st Term Card-01 lecture material & notes on White Blood Cells & Leukopoiesis.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology1ewmc/8',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '1st Card'
+  },
+  {
+    id: 'phy-t1-c1-platelet',
+    title: 'Platelet',
+    description: 'Physiology 1st Term Card-01 lecture material & notes on Platelets & Hemostasis.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology1ewmc/9',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '1st Card'
+  },
+  {
+    id: 'phy-t1-c1-anemia',
+    title: 'Anemia',
+    description: 'Physiology 1st Term Card-01 lecture material & notes on Anemia classification & pathophysiology.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology1ewmc/10',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '1st Card'
+  },
+  {
+    id: 'phy-t1-c1-nmj',
+    title: 'Neuromuscular junction',
+    description: 'Physiology 1st Term Card-01 lecture material & notes on Neuromuscular Junction transmission.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology1ewmc/11',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '1st Card'
+  },
+  {
+    id: 'phy-t1-c1-blood-grouping',
+    title: 'Blood grouping',
+    description: 'Physiology 1st Term Card-01 lecture material & notes on ABO & Rh Blood Grouping.',
+    date: '2026-09-03',
+    type: 'lecture',
+    fileUrl: 'https://t.me/physiology1ewmc/12',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '1st Card'
   }
 ];
 
