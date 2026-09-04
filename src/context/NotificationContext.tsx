@@ -198,25 +198,51 @@ export function NotificationProvider({
     if (typeof window === 'undefined' || !('Notification' in window)) return;
     if (Notification.permission !== 'granted') return;
 
-    try {
-      const n = new Notification(item.title, {
-        body: item.message,
-        icon: '/Ewmch-bg.png',
-        tag: item.id,
-      });
+    const fallbackNotification = (notifItem: AppNotification) => {
+      try {
+        const n = new Notification(notifItem.title, {
+          body: notifItem.message,
+          icon: '/Ewmch-bg.png',
+          tag: notifItem.id,
+        });
 
-      n.onclick = () => {
-        window.focus();
-        if (item.linkTab === 'notices') {
-          setActiveTab('notices');
-        } else if (item.linkTab === 'chat') {
-          if (item.channelId) setChatActiveChannel(item.channelId);
-          setActiveTab('chat');
-        }
-        n.close();
-      };
-    } catch (e) {
-      console.warn('Browser notification error:', e);
+        n.onclick = () => {
+          window.focus();
+          if (notifItem.linkTab === 'notices') {
+            setActiveTab('notices');
+          } else if (notifItem.linkTab === 'chat') {
+            if (notifItem.channelId) setChatActiveChannel(notifItem.channelId);
+            setActiveTab('chat');
+          }
+          n.close();
+        };
+      } catch (e) {
+        console.warn('Classic browser notification error:', e);
+      }
+    };
+
+    // Mobile platforms (Android/iOS) restrict standard standard Notification constructors.
+    // They must be dispatched through the active Service Worker registration to appear in the pull-down shade.
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then((registration) => {
+        const options: any = {
+          body: item.message,
+          icon: '/Ewmch-bg.png',
+          badge: '/favicon.svg',
+          tag: item.id,
+          vibrate: [100, 50, 100],
+          data: {
+            linkTab: item.linkTab,
+            channelId: item.channelId,
+          }
+        };
+        registration.showNotification(item.title, options);
+      }).catch((e) => {
+        console.warn('SW registration notification failed, falling back:', e);
+        fallbackNotification(item);
+      });
+    } else {
+      fallbackNotification(item);
     }
   }, [setActiveTab, setChatActiveChannel]);
 

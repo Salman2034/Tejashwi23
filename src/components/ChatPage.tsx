@@ -70,6 +70,7 @@ export default function ChatPage() {
 
   // Ban / Unban States
   const [isBanned, setIsBanned] = useState<boolean>(false);
+  const [banDetails, setBanDetails] = useState<any | null>(null);
   const [bannedUsersList, setBannedUsersList] = useState<{uid: string, email?: string, name?: string, bannedByName?: string, bannedAt: number, reason?: string}[]>([]);
   const [showBanManagementModal, setShowBanManagementModal] = useState(false);
   const [showBanConfirmModal, setShowBanConfirmModal] = useState(false);
@@ -177,10 +178,12 @@ export default function ChatPage() {
   useEffect(() => {
     if (!currentUser) {
       setIsBanned(false);
+      setBanDetails(null);
       return;
     }
     const unsubscribe = onSnapshot(doc(db, 'bannedUsers', currentUser.uid), (docSnap) => {
       setIsBanned(docSnap.exists());
+      setBanDetails(docSnap.exists() ? docSnap.data() : null);
     }, (error) => {
       console.warn('Banned check subscription note:', error);
     });
@@ -1251,13 +1254,18 @@ export default function ChatPage() {
           {/* Chat Message Input Field */}
           {currentUser ? (
             isBanned ? (
-              <div className="p-4 border-t border-emerald-900/10 dark:border-emerald-500/15 bg-rose-50 dark:bg-rose-950/10 text-center flex flex-col items-center justify-center gap-1 animate-in fade-in">
+              <div className="p-4 border-t border-emerald-900/10 dark:border-emerald-500/15 bg-rose-50 dark:bg-rose-950/10 text-center flex flex-col items-center justify-center gap-1.5 animate-in fade-in">
                 <ShieldAlert size={20} className="text-rose-600 dark:text-rose-400" />
                 <p className="text-xs sm:text-sm font-bold text-rose-800 dark:text-rose-300">
                   Your chat access has been restricted by an administrator.
                 </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  You are currently banned from posting new messages in this batch portal.
+                {banDetails?.reason && (
+                  <p className="text-xs text-rose-700 dark:text-rose-400 font-semibold max-w-lg bg-rose-100/50 dark:bg-rose-950/30 px-3 py-1 rounded-lg border border-rose-500/15">
+                    Reason: "{banDetails.reason}"
+                  </p>
+                )}
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 max-w-md">
+                  You are currently banned from posting new messages in this batch portal. If you think this is a mistake, please contact administration at <strong className="text-emerald-700 dark:text-emerald-400 font-semibold font-mono">cadetsalman2034@gmail.com</strong>.
                 </p>
               </div>
             ) : (
