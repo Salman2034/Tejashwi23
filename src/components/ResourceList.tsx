@@ -17,11 +17,8 @@ const TERMS_CONFIG: { term: Term; cards: Card[]; description: string }[] = [
   { term: '3rd Term', cards: ['5th Card', '6th Card'], description: 'Card 5 & Card 6 curriculum' }
 ];
 
-const DEFAULT_PHASE_SUBJECTS: Record<Phase, string[]> = {
-  '1st Phase': ['Anatomy', 'Physiology', 'Biochemistry'],
-  '2nd Phase': ['Community Medicine', 'Forensic Medicine'],
-  '3rd Phase': ['Pharmacology', 'Pathology', 'Microbiology'],
-  '4th Phase': ['Medicine', 'Surgery', 'Obstetrics & Gynaecology', 'Pediatrics']
+const DEFAULT_PHASE_SUBJECTS: Partial<Record<Phase, string[]>> = {
+  '1st Phase': ['Anatomy', 'Physiology', 'Biochemistry']
 };
 
 export default function ResourceList({ title, description, resources, showHierarchy = true }: ResourceListProps) {
@@ -236,8 +233,8 @@ export default function ResourceList({ title, description, resources, showHierar
               <div className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mb-6 border border-white/5">
                 <Folder size={32} className="text-slate-600" strokeWidth={1.5} />
               </div>
-              <p className="text-xl font-medium text-slate-300">Folder is empty</p>
-              <p className="text-slate-500 mt-2 font-light">No subjects found in {activePhase}.</p>
+              <p className="text-xl font-medium text-slate-300">Phase folder is empty</p>
+              <p className="text-slate-500 mt-2 font-light">Subject curriculum, folders, and resources for {activePhase} will be added in upcoming academic sessions.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
