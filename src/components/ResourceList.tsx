@@ -1,4 +1,4 @@
-import { Download, File, Search, Folder, ChevronRight, ArrowLeft, Layers } from 'lucide-react';
+import { Download, File, Search, Folder, ChevronRight, ArrowLeft, Layers, ExternalLink } from 'lucide-react';
 import { Resource, Phase, Term, Card } from '../types';
 import { useState, useMemo } from 'react';
 
@@ -439,11 +439,22 @@ function FileList({ resources, showPath = true }: { resources: Resource[], showP
             </div>
             <a
               href={resource.fileUrl}
+              target={resource.fileUrl.startsWith('http') ? '_blank' : undefined}
+              rel={resource.fileUrl.startsWith('http') ? 'noopener noreferrer' : undefined}
               className="inline-flex items-center justify-center p-3.5 md:px-5 md:py-2.5 rounded-xl text-emerald-400 font-semibold hover:text-emerald-300 bg-emerald-500/5 hover:bg-emerald-500/10 focus:outline-none transition-all border border-emerald-500/20 hover:border-emerald-500/40 shrink-0 mt-2 md:mt-1 gap-2 shadow-sm"
-              title="Download PDF"
+              title={resource.fileUrl.startsWith('http') ? 'Open resource link' : 'Download file'}
             >
-              <Download size={20} />
-              <span className="hidden md:inline">Download</span>
+              {resource.fileUrl.startsWith('http') ? (
+                <>
+                  <ExternalLink size={18} />
+                  <span className="hidden md:inline">Open</span>
+                </>
+              ) : (
+                <>
+                  <Download size={18} />
+                  <span className="hidden md:inline">Download</span>
+                </>
+              )}
             </a>
           </li>
         ))}
