@@ -1,22 +1,44 @@
 {
   "entities": {
+    "userProfile": {
+      "title": "User Profile",
+      "description": "Verified student account profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "rollNumber": { "type": "string" },
+        "role": { "type": "string", "enum": ["student", "cr", "admin"] },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["uid", "fullName", "email", "createdAt"]
+    },
     "chatMessage": {
       "title": "Chat Message",
-      "description": "Real-time messages sent by Tejashwi 23 batchmates across devices",
+      "description": "Real-time messages sent by authenticated batchmates across devices",
       "type": "object",
       "properties": {
         "id": { "type": "string" },
+        "senderUid": { "type": "string" },
         "senderName": { "type": "string" },
+        "senderEmail": { "type": "string" },
         "rollNumber": { "type": "string" },
         "role": { "type": "string", "enum": ["student", "cr", "admin"] },
         "text": { "type": "string" },
         "timestamp": { "type": "number" },
         "channel": { "type": "string", "enum": ["batch", "academic", "casual"] }
       },
-      "required": ["senderName", "text", "timestamp", "channel"]
+      "required": ["senderUid", "senderName", "text", "timestamp", "channel"]
     }
   },
   "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/userProfile"
+      },
+      "description": "User profile document keyed by Auth UID"
+    },
     "/chatMessages/{messageId}": {
       "schema": {
         "$ref": "#/entities/chatMessage"

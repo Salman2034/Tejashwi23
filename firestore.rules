@@ -1,6 +1,25 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        request.auth.token.email.lower() == 'cadetsalman2034@gmail.com';
+    }
+
+    // User profiles collection
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Chat messages collection:
     match /chatMessages/{messageId} {
       allow read: if true;
       allow create: if request.resource.data.text is string
@@ -8,7 +27,9 @@ service cloud.firestore {
                     && request.resource.data.text.size() <= 2000
                     && request.resource.data.senderName is string
                     && request.resource.data.senderName.size() > 0;
-      allow update, delete: if false;
+      // Admin has power to delete individual or all messages from database
+      allow delete: if isAdmin();
+      allow update: if isAdmin();
     }
   }
 }
