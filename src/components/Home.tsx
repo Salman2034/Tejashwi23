@@ -1,4 +1,4 @@
-import { BookOpen, FileText, Bell, HeartPulse, ArrowRight, MessageCircle } from 'lucide-react';
+import { BookOpen, FileText, Bell, HeartPulse, ArrowRight, MessageCircle, MessageSquare } from 'lucide-react';
 import RoutineWidget from './RoutineWidget';
 import CalendarWidget from './CalendarWidget';
 import GalleryWidget from './GalleryWidget';
@@ -118,15 +118,27 @@ export default function Home({ setActiveTab, setActiveAlbumId }: { setActiveTab:
         <p className="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-2xl font-light leading-relaxed">
           Reach out directly if you need specific resources, have questions about the curriculum, or need to discuss any batch-related matters.
         </p>
-        <a 
-          href="https://wa.me/8801678052561" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-3 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold px-8 py-4 rounded-xl transition-all hover:scale-105 shadow-[0_4px_16px_rgba(5,150,105,0.3)] dark:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
-        >
-          <MessageCircle size={24} />
-          Message on WhatsApp
-        </a>
+        <div className="flex flex-col sm:flex-row items-center gap-3 justify-center">
+          <button
+            onClick={() => {
+              setActiveTab('chat');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="inline-flex items-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-slate-950 font-bold px-7 py-3.5 rounded-xl transition-all hover:scale-105 shadow-[0_4px_16px_rgba(5,150,105,0.3)] dark:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+          >
+            <MessageSquare size={20} />
+            Open Batch Chat
+          </button>
+          <a 
+            href="https://wa.me/8801678052561" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2.5 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 text-emerald-950 dark:text-white font-semibold px-7 py-3.5 rounded-xl border border-emerald-900/15 dark:border-white/15 transition-all hover:scale-105 shadow-sm"
+          >
+            <MessageCircle size={20} className="text-emerald-600 dark:text-emerald-400" />
+            Message on WhatsApp
+          </a>
+        </div>
       </section>
     </div>
   );

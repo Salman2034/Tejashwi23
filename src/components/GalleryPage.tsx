@@ -103,11 +103,22 @@ export default function GalleryPage({ activeAlbumId, setActiveAlbumId }: { activ
                   <img 
                     src={img.src} 
                     alt={img.alt} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-slate-950/0 group-hover:bg-slate-950/40 transition-colors flex items-center justify-center">
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all scale-75 group-hover:scale-100 shadow-xl">
-                      <ZoomIn size={24} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent opacity-90 transition-opacity" />
+                  
+                  {/* Photo Title & Caption Overlay styled like the home GalleryWidget */}
+                  <div className="absolute bottom-3 left-3.5 right-3.5 text-white font-medium drop-shadow-md flex items-end justify-between gap-2 z-10">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-bold text-sm leading-snug text-white drop-shadow-sm truncate group-hover:text-emerald-300 transition-colors">
+                        {img.caption || img.alt}
+                      </div>
+                      <div className="text-xs text-emerald-300/90 mt-0.5 font-semibold flex items-center gap-1.5">
+                        <span>{activeGroup.title}</span>
+                      </div>
+                    </div>
+                    <div className="w-8 h-8 rounded-lg bg-white/20 dark:bg-emerald-950/60 backdrop-blur-md flex items-center justify-center text-emerald-200 border border-white/20 shrink-0 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors">
+                      <ZoomIn size={16} />
                     </div>
                   </div>
                 </div>
@@ -136,18 +147,23 @@ export default function GalleryPage({ activeAlbumId, setActiveAlbumId }: { activ
               <img 
                 src={group.coverImage} 
                 alt={group.title} 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent opacity-90 transition-opacity" />
               
-              <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-white font-bold text-xl leading-tight">{group.title}</h3>
-                  <span className="text-xs font-bold bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-md border border-emerald-500/30">
-                    {group.images.length} Photos
-                  </span>
+              {/* Album Card Overlay styled consistently with the GalleryWidget */}
+              <div className="absolute bottom-3 left-3.5 right-3.5 text-white font-medium drop-shadow-md flex items-end justify-between gap-2 z-10">
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold text-sm sm:text-base leading-snug text-white drop-shadow-sm truncate group-hover:text-emerald-300 transition-colors">
+                    {group.title}
+                  </div>
+                  <div className="text-xs text-emerald-300/90 mt-0.5 font-semibold flex items-center gap-1.5">
+                    <span>{group.images.length} Photos</span>
+                  </div>
                 </div>
-                <p className="text-slate-300 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">{group.description}</p>
+                <span className="shrink-0 text-[10px] uppercase font-bold bg-white/20 dark:bg-emerald-950/60 backdrop-blur-md px-2.5 py-1 rounded text-emerald-200 border border-white/20">
+                  {group.phase}
+                </span>
               </div>
             </div>
           ))}

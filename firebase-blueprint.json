@@ -1,0 +1,27 @@
+{
+  "entities": {
+    "chatMessage": {
+      "title": "Chat Message",
+      "description": "Real-time messages sent by Tejashwi 23 batchmates across devices",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "senderName": { "type": "string" },
+        "rollNumber": { "type": "string" },
+        "role": { "type": "string", "enum": ["student", "cr", "admin"] },
+        "text": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "channel": { "type": "string", "enum": ["batch", "academic", "casual"] }
+      },
+      "required": ["senderName", "text", "timestamp", "channel"]
+    }
+  },
+  "firestore": {
+    "/chatMessages/{messageId}": {
+      "schema": {
+        "$ref": "#/entities/chatMessage"
+      },
+      "description": "Batch chat messages ordered by timestamp"
+    }
+  }
+}

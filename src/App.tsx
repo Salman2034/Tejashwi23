@@ -7,6 +7,7 @@ import Notices from './components/Notices';
 import Routine from './components/Routine';
 import CalendarPage from './components/Calendar';
 import GalleryPage from './components/GalleryPage';
+import ChatPage from './components/ChatPage';
 import { resources, notices } from './data';
 import { Heart } from 'lucide-react';
 import { ThemeProvider } from './context/ThemeContext';
@@ -52,6 +53,7 @@ export default function App() {
           {activeTab === 'notices' && (
             <Notices notices={notices} />
           )}
+          {activeTab === 'chat' && <ChatPage />}
         </main>
 
         <footer className="relative bg-[#020d07] text-white min-h-[220px] sm:min-h-[200px] flex items-center justify-center pt-10 pb-28 lg:py-12 border-t border-emerald-500/30 mt-auto shadow-2xl overflow-hidden">

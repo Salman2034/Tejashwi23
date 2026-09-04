@@ -1,4 +1,4 @@
-import { Stethoscope, BookOpen, FileText, Bell, MessageCircle, CalendarDays, Image as ImageIcon } from 'lucide-react';
+import { Stethoscope, BookOpen, FileText, Bell, MessageCircle, MessageSquare, CalendarDays, Image as ImageIcon } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
 export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { activeTab: string, setActiveTab: (t: string) => void, setActiveAlbumId: (id: string | null) => void }) {
@@ -10,6 +10,7 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
     { id: 'notices', label: 'Notices', icon: Bell },
     { id: 'calendar', label: 'Calendar', icon: CalendarDays },
     { id: 'gallery', label: 'Gallery', icon: ImageIcon },
+    { id: 'chat', label: 'Chat', icon: MessageSquare },
     { id: 'contact', label: 'Contact', icon: MessageCircle },
   ];
 

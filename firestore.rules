@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /chatMessages/{messageId} {
+      allow read: if true;
+      allow create: if request.resource.data.text is string
+                    && request.resource.data.text.size() > 0
+                    && request.resource.data.text.size() <= 2000
+                    && request.resource.data.senderName is string
+                    && request.resource.data.senderName.size() > 0;
+      allow update, delete: if false;
+    }
+  }
+}
