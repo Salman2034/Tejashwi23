@@ -2,6 +2,7 @@ import { BookOpen, FileText, Bell, HeartPulse, ArrowRight, MessageCircle } from 
 import RoutineWidget from './RoutineWidget';
 import CalendarWidget from './CalendarWidget';
 import GalleryWidget from './GalleryWidget';
+import StatsWidget from './StatsWidget';
 
 export default function Home({ setActiveTab, setActiveAlbumId }: { setActiveTab: (t: string) => void, setActiveAlbumId: (id: string | null) => void }) {
   return (
@@ -68,6 +69,9 @@ export default function Home({ setActiveTab, setActiveAlbumId }: { setActiveTab:
       <div className="md:hidden">
         <RoutineWidget setActiveTab={setActiveTab} />
       </div>
+
+      {/* Live Academic & Visitor Statistics */}
+      <StatsWidget setActiveTab={setActiveTab} />
 
       {/* Quick Access Cards */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">

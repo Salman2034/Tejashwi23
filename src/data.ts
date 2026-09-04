@@ -28,7 +28,7 @@ export const resources: Resource[] = [
   // BMDC Curriculums (Subject level - not in any term folder)
   {
     id: 'curriculum-biochemistry',
-    title: 'Biochemistry BMDC Curriculum',
+    title: 'Curriculum',
     description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Biochemistry.',
     date: '2026-09-03',
     type: 'lecture',
@@ -38,7 +38,7 @@ export const resources: Resource[] = [
   },
   {
     id: 'curriculum-anatomy',
-    title: 'Anatomy BMDC Curriculum',
+    title: 'Curriculum',
     description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Anatomy.',
     date: '2026-09-03',
     type: 'lecture',
@@ -48,7 +48,7 @@ export const resources: Resource[] = [
   },
   {
     id: 'curriculum-physiology',
-    title: 'Physiology BMDC Curriculum',
+    title: 'Curriculum',
     description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Physiology.',
     date: '2026-09-03',
     type: 'lecture',
@@ -59,7 +59,7 @@ export const resources: Resource[] = [
   // BMDC Curriculums for Medical Textbooks section
   {
     id: 'book-curriculum-biochemistry',
-    title: 'Biochemistry BMDC Curriculum',
+    title: 'Curriculum',
     description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Biochemistry.',
     date: '2026-09-03',
     type: 'book',
@@ -69,7 +69,7 @@ export const resources: Resource[] = [
   },
   {
     id: 'book-curriculum-anatomy',
-    title: 'Anatomy BMDC Curriculum',
+    title: 'Curriculum',
     description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Anatomy.',
     date: '2026-09-03',
     type: 'book',
@@ -79,7 +79,7 @@ export const resources: Resource[] = [
   },
   {
     id: 'book-curriculum-physiology',
-    title: 'Physiology BMDC Curriculum',
+    title: 'Curriculum',
     description: 'Official Bangladesh Medical and Dental Council (BMDC) curriculum for 1st Phase MBBS Physiology.',
     date: '2026-09-03',
     type: 'book',
