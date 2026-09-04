@@ -32,6 +32,7 @@ export default function App() {
             title="Class Lectures"
             description="Download PDF slides, handwritten notes, and presentations from our classes."
             resources={lectures}
+            showHierarchy={true}
           />
         )}
         {activeTab === 'books' && (
@@ -39,6 +40,7 @@ export default function App() {
             title="Medical Textbooks"
             description="Digital copies of reference books and study materials for the current academic year."
             resources={books}
+            showHierarchy={false}
           />
         )}
         {activeTab === 'notices' && (
