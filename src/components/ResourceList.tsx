@@ -50,6 +50,217 @@ const DEFAULT_PHASE_SUBJECTS: Partial<Record<Phase, string[]>> = {
   '4th Phase': ['Medicine', 'Surgery', 'Gynae & Obs']
 };
 
+export interface BookCategoryFolder {
+  id: string;
+  name: string;
+  description: string;
+  icon: 'book' | 'bookmark' | 'layers' | 'file';
+  aliases?: string[];
+}
+
+export const SUBJECT_BOOK_CATEGORIES: Record<string, BookCategoryFolder[]> = {
+  Biochemistry: [
+    {
+      id: '01. Biochemistry Viva, Practical',
+      name: '01. Biochemistry Viva, Practical',
+      description: 'Viva voice preparation, practical manuals, spotters, OSPE & lab guides.',
+      icon: 'layers',
+      aliases: ['viva', 'practical', 'ospe']
+    },
+    {
+      id: '02. Biochemistry Guides',
+      name: '02. Biochemistry Guides',
+      description: 'Exam review guides, item notes & metabolic pathway study cards.',
+      icon: 'bookmark',
+      aliases: ['guides', 'guide']
+    },
+    {
+      id: '03. Biochemistry Clinical Books',
+      name: '03. Biochemistry Clinical Books',
+      description: 'Clinical biochemistry, diagnostic case studies & medical correlation books.',
+      icon: 'book',
+      aliases: ['clinical']
+    },
+    {
+      id: '04. Biochemistry Textbooks',
+      name: '04. Biochemistry Textbooks',
+      description: 'Standard reference textbooks, Lippincott, Harper & recommended editions.',
+      icon: 'book',
+      aliases: ['textbooks', 'textbook']
+    }
+  ],
+  Physiology: [
+    {
+      id: '01. Physiology Viva, Practical',
+      name: '01. Physiology Viva, Practical',
+      description: 'Viva voce preparation, practical physiology manuals, hematology experiments, OSPE & lab guides.',
+      icon: 'layers',
+      aliases: ['viva', 'practical', 'ospe']
+    },
+    {
+      id: '02. Physiology Guides',
+      name: '02. Physiology Guides',
+      description: 'Exam review guides, item notes, system summaries & quick revision cards.',
+      icon: 'bookmark',
+      aliases: ['guides', 'guide']
+    },
+    {
+      id: '03. Physiology Clinical Books',
+      name: '03. Physiology Clinical Books',
+      description: 'Clinical physiology, pathophysiological correlations & diagnostic case studies.',
+      icon: 'book',
+      aliases: ['clinical']
+    },
+    {
+      id: '04. Physiology Textbooks',
+      name: '04. Physiology Textbooks',
+      description: 'Standard reference textbooks, Guyton and Hall, Ganong, Sembulingam & recommended editions.',
+      icon: 'book',
+      aliases: ['textbooks', 'textbook']
+    }
+  ],
+  Anatomy: [
+    {
+      id: '01. Anatomy Viva & Practical',
+      name: '01. Anatomy Viva & Practical',
+      description: 'Viva voce preparation, cadaver dissection manuals, viscera spotters & OSPE guides.',
+      icon: 'layers',
+      aliases: ['viva', 'practical', 'ospe']
+    },
+    {
+      id: '02. Anatomy Guide',
+      name: '02. Anatomy Guide',
+      description: 'Exam review guides, card notes, surface marking & high-yield revision summaries.',
+      icon: 'bookmark',
+      aliases: ['guide', 'guides']
+    },
+    {
+      id: '03. Anatomy Clinical Books',
+      name: '03. Anatomy Clinical Books',
+      description: 'Clinical anatomy, surgical anatomy correlations & clinical case studies.',
+      icon: 'book',
+      aliases: ['clinical']
+    },
+    {
+      id: '04. General Anatomy Books',
+      name: '04. General Anatomy Books',
+      description: 'Fundamentals of general anatomy, tissues, bones, joints, fascia & terminology.',
+      icon: 'book',
+      aliases: ['general anatomy', 'general']
+    },
+    {
+      id: '05. Gross Anatomy Books',
+      name: '05. Gross Anatomy Books',
+      description: 'Regional gross anatomy reference books, BD Chaurasia, Snell & Cunningham guides.',
+      icon: 'book',
+      aliases: ['gross anatomy', 'gross', 'textbooks', 'textbook']
+    },
+    {
+      id: '06. Histology Books',
+      name: '06. Histology Books',
+      description: 'Microscopic anatomy, tissue histology atlases, Inderbir Singh & Junqueira.',
+      icon: 'book',
+      aliases: ['histology']
+    },
+    {
+      id: '07. Embryology Books',
+      name: '07. Embryology Books',
+      description: 'Developmental anatomy, human embryology, Langman & Inderbir Singh embryology.',
+      icon: 'book',
+      aliases: ['embryology']
+    },
+    {
+      id: '08. Anatomy Atlas App',
+      name: '08. Anatomy Atlas App',
+      description: '3D anatomical atlases, Netter atlas, visual plates & interactive anatomy apps.',
+      icon: 'book',
+      aliases: ['atlas', 'app']
+    }
+  ]
+};
+
+export const DEFAULT_BOOK_CATEGORIES: BookCategoryFolder[] = [
+  {
+    id: 'Textbooks',
+    name: 'Textbooks',
+    description: 'Standard reference textbooks, author volumes & recommended study editions.',
+    icon: 'book',
+    aliases: ['textbooks', 'textbook']
+  },
+  {
+    id: 'Guides',
+    name: 'Guides',
+    description: 'Exam review guides, item notes, viva question banks & OSPE manuals.',
+    icon: 'bookmark',
+    aliases: ['guides', 'guide']
+  }
+];
+
+export function getBookCategoriesForSubject(subjectName: string | null | undefined): BookCategoryFolder[] {
+  if (!subjectName) return DEFAULT_BOOK_CATEGORIES;
+  const key = Object.keys(SUBJECT_BOOK_CATEGORIES).find(
+    (k) => k.toLowerCase() === subjectName.toLowerCase()
+  );
+  return key ? SUBJECT_BOOK_CATEGORIES[key] : DEFAULT_BOOK_CATEGORIES;
+}
+
+export function isResourceInBookCategory(
+  resource: Resource,
+  targetCategory: BookCategoryFolder,
+  subjectName: string
+): boolean {
+  if (!resource.category) {
+    if (subjectName.toLowerCase() === 'biochemistry') return targetCategory.id === '04. Biochemistry Textbooks';
+    if (subjectName.toLowerCase() === 'physiology') return targetCategory.id === '04. Physiology Textbooks';
+    if (subjectName.toLowerCase() === 'anatomy') return targetCategory.id === '05. Gross Anatomy Books';
+    return targetCategory.id === 'Textbooks' || targetCategory.id === '04. Biochemistry Textbooks';
+  }
+  const resCat = resource.category.trim().toLowerCase();
+  const targetId = targetCategory.id.trim().toLowerCase();
+  const targetName = targetCategory.name.trim().toLowerCase();
+
+  if (resCat === targetId || resCat === targetName) {
+    return true;
+  }
+
+  if (targetCategory.aliases && targetCategory.aliases.some((alias) => resCat === alias.toLowerCase())) {
+    return true;
+  }
+
+  // Legacy fallback mappings
+  if (subjectName.toLowerCase() === 'biochemistry') {
+    if (resCat === 'textbooks' || resCat === 'textbook') {
+      return targetCategory.id === '04. Biochemistry Textbooks';
+    }
+    if (resCat === 'guides' || resCat === 'guide') {
+      return targetCategory.id === '02. Biochemistry Guides';
+    }
+  } else if (subjectName.toLowerCase() === 'physiology') {
+    if (resCat === 'textbooks' || resCat === 'textbook') {
+      return targetCategory.id === '04. Physiology Textbooks';
+    }
+    if (resCat === 'guides' || resCat === 'guide') {
+      return targetCategory.id === '02. Physiology Guides';
+    }
+  } else if (subjectName.toLowerCase() === 'anatomy') {
+    if (resCat === 'textbooks' || resCat === 'textbook') {
+      return targetCategory.id === '05. Gross Anatomy Books';
+    }
+    if (resCat === 'guides' || resCat === 'guide') {
+      return targetCategory.id === '02. Anatomy Guide';
+    }
+  } else {
+    if (resCat === 'textbooks' || resCat === 'textbook') {
+      return targetCategory.id === 'Textbooks';
+    }
+    if (resCat === 'guides' || resCat === 'guide') {
+      return targetCategory.id === 'Guides';
+    }
+  }
+
+  return false;
+}
+
 export default function ResourceList({ 
   title, 
   description, 
@@ -213,25 +424,27 @@ export default function ResourceList({
     return TERMS_CONFIG.find((t) => t.term === activeTerm);
   }, [activeTerm]);
 
-  // Compute book category counts inside the active subject
-  const textbooksCount = useMemo(() => {
-    if (!activePhase || !activeSubject) return 0;
-    return resources.filter(
-      (r) =>
-        r.phase === activePhase &&
-        r.subject.toLowerCase() === activeSubject.toLowerCase() &&
-        r.category?.toLowerCase() === 'textbooks'
-    ).length;
-  }, [resources, activePhase, activeSubject]);
+  // Active subject book categories
+  const activeBookCategories = useMemo(() => {
+    return getBookCategoriesForSubject(activeSubject);
+  }, [activeSubject]);
 
-  const guidesCount = useMemo(() => {
-    if (!activePhase || !activeSubject) return 0;
-    return resources.filter(
-      (r) =>
-        r.phase === activePhase &&
-        r.subject.toLowerCase() === activeSubject.toLowerCase() &&
-        r.category?.toLowerCase() === 'guides'
-    ).length;
+  // Compute book category counts inside the active subject
+  const categoryCounts = useMemo(() => {
+    if (!activePhase || !activeSubject) return {};
+    const counts: Record<string, number> = {};
+    const cats = getBookCategoriesForSubject(activeSubject);
+
+    cats.forEach((cat) => {
+      const count = resources.filter(
+        (r) =>
+          r.phase === activePhase &&
+          r.subject.toLowerCase() === activeSubject.toLowerCase() &&
+          isResourceInBookCategory(r, cat, activeSubject)
+      ).length;
+      counts[cat.id] = count;
+    });
+    return counts;
   }, [resources, activePhase, activeSubject]);
 
   // Subject-level resources (like curriculum PDFs) that do not belong to any specific term or subfolder
@@ -263,12 +476,23 @@ export default function ResourceList({
 
     if (sectionType === 'book') {
       if (activePhase && activeSubject && activeCategory) {
+        const cats = getBookCategoriesForSubject(activeSubject);
+        const catObj = cats.find(
+          (c) =>
+            c.id.toLowerCase() === activeCategory.toLowerCase() ||
+            c.name.toLowerCase() === activeCategory.toLowerCase()
+        ) || {
+          id: activeCategory,
+          name: activeCategory,
+          description: '',
+          icon: 'book' as const,
+        };
+
         return resources.filter(
           (r) =>
             r.phase === activePhase &&
             r.subject.toLowerCase() === activeSubject.toLowerCase() &&
-            (r.category?.toLowerCase() === activeCategory.toLowerCase() ||
-              (!r.category && activeCategory === 'Textbooks'))
+            isResourceInBookCategory(r, catObj, activeSubject)
         );
       }
       return [];
@@ -1082,13 +1306,13 @@ export default function ResourceList({
         </div>
       )}
 
-      {/* LEVEL 3 (BOOKS): Textbooks & Guides Folders in each Subject */}
+      {/* LEVEL 3 (BOOKS): Category Folders in each Subject */}
       {!search && sectionType === 'book' && activePhase && activeSubject && !activeCategory && (
         <div className="animate-in slide-in-from-bottom-4 duration-500 space-y-8">
           <div className="flex items-center justify-between px-2 flex-wrap gap-3">
             <button
               onClick={resetToSubjects}
-              className="flex items-center gap-2 text-emerald-800 dark:text-slate-400 hover:text-emerald-950 dark:hover:text-slate-200 transition-colors font-medium"
+              className="flex items-center gap-2 text-emerald-800 dark:text-slate-400 hover:text-emerald-950 dark:hover:text-slate-200 transition-colors font-medium cursor-pointer"
             >
               <ArrowLeft size={18} /> Back to Subjects
             </button>
@@ -1098,8 +1322,8 @@ export default function ResourceList({
               </span>
               {isCurrentUserAdmin && (
                 <button
-                  onClick={() => handleOpenAddResource(activeSubject, 'Textbooks')}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all"
+                  onClick={() => handleOpenAddResource(activeSubject)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all cursor-pointer"
                 >
                   <PlusCircle size={14} />
                   <span>Add Book</span>
@@ -1131,76 +1355,55 @@ export default function ResourceList({
               <span>{activeSubject} Folders</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl">
-              {/* Textbooks Folder Card */}
-              <button
-                onClick={() => setActiveCategory('Textbooks')}
-                className="group bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-6 sm:p-7 rounded-3xl border border-emerald-900/10 dark:border-white/5 hover:border-emerald-500/30 hover:bg-emerald-50/80 dark:hover:bg-[#0b281f]/70 shadow-sm hover:shadow-[0_4px_20px_rgba(5,150,105,0.15)] transition-all text-left flex flex-col items-start gap-5 hover:-translate-y-1 cursor-pointer"
-              >
-                <div className="p-4 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 rounded-2xl group-hover:scale-110 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-500/20 transition-all ring-1 ring-emerald-300/60 dark:ring-emerald-500/20 shadow-inner">
-                  <BookOpen size={36} className="opacity-90" strokeWidth={1.5} />
-                </div>
-                <div className="w-full">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">
-                      Textbooks
-                    </h3>
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1.5 font-medium leading-relaxed">
-                    Standard reference textbooks, author volumes & recommended study editions.
-                  </p>
-                  <div className="mt-5 pt-3.5 border-t border-emerald-900/10 dark:border-white/5 flex items-center justify-between text-xs sm:text-sm text-emerald-700 dark:text-emerald-400 font-bold">
-                    <span>
-                      {textbooksCount} {textbooksCount === 1 ? 'Textbook' : 'Textbooks'}
-                    </span>
-                    <div className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                      <span>Explore</span>
-                      <ChevronRight size={16} />
+            <div className={`grid grid-cols-1 ${activeBookCategories.length > 2 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-2'} gap-6`}>
+              {activeBookCategories.map((cat) => {
+                const count = categoryCounts[cat.id] || 0;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setActiveCategory(cat.id)}
+                    className="group bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-6 sm:p-7 rounded-3xl border border-emerald-900/10 dark:border-white/5 hover:border-emerald-500/30 hover:bg-emerald-50/80 dark:hover:bg-[#0b281f]/70 shadow-sm hover:shadow-[0_4px_20px_rgba(5,150,105,0.15)] transition-all text-left flex flex-col items-start justify-between gap-5 hover:-translate-y-1 cursor-pointer min-h-[220px]"
+                  >
+                    <div className="p-4 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 rounded-2xl group-hover:scale-110 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-500/20 transition-all ring-1 ring-emerald-300/60 dark:ring-emerald-500/20 shadow-inner shrink-0">
+                      {cat.icon === 'layers' && <Layers size={32} className="opacity-90" strokeWidth={1.5} />}
+                      {cat.icon === 'bookmark' && <Bookmark size={32} className="opacity-90" strokeWidth={1.5} />}
+                      {cat.icon === 'book' && <BookOpen size={32} className="opacity-90" strokeWidth={1.5} />}
+                      {cat.icon === 'file' && <File size={32} className="opacity-90" strokeWidth={1.5} />}
                     </div>
-                  </div>
-                </div>
-              </button>
-
-              {/* Guides Folder Card */}
-              <button
-                onClick={() => setActiveCategory('Guides')}
-                className="group bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-6 sm:p-7 rounded-3xl border border-emerald-900/10 dark:border-white/5 hover:border-emerald-500/30 hover:bg-emerald-50/80 dark:hover:bg-[#0b281f]/70 shadow-sm hover:shadow-[0_4px_20px_rgba(5,150,105,0.15)] transition-all text-left flex flex-col items-start gap-5 hover:-translate-y-1 cursor-pointer"
-              >
-                <div className="p-4 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 rounded-2xl group-hover:scale-110 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-500/20 transition-all ring-1 ring-emerald-300/60 dark:ring-emerald-500/20 shadow-inner">
-                  <Bookmark size={36} className="opacity-90" strokeWidth={1.5} />
-                </div>
-                <div className="w-full">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">
-                      Guides
-                    </h3>
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1.5 font-medium leading-relaxed">
-                    Exam review guides, item notes, viva question banks & OSPE manuals.
-                  </p>
-                  <div className="mt-5 pt-3.5 border-t border-emerald-900/10 dark:border-white/5 flex items-center justify-between text-xs sm:text-sm text-emerald-700 dark:text-emerald-400 font-bold">
-                    <span>
-                      {guidesCount} {guidesCount === 1 ? 'Guide' : 'Guides'}
-                    </span>
-                    <div className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                      <span>Explore</span>
-                      <ChevronRight size={16} />
+                    <div className="w-full flex-1 flex flex-col justify-between">
+                      <div>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors leading-snug">
+                          {cat.name}
+                        </h3>
+                        <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 font-medium leading-relaxed line-clamp-2">
+                          {cat.description}
+                        </p>
+                      </div>
+                      <div className="mt-5 pt-3.5 border-t border-emerald-900/10 dark:border-white/5 flex items-center justify-between text-xs sm:text-sm text-emerald-700 dark:text-emerald-400 font-bold">
+                        <span>
+                          {count} {count === 1 ? 'Book' : 'Books'}
+                        </span>
+                        <div className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                          <span>Explore</span>
+                          <ChevronRight size={16} />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </button>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
       )}
 
-      {/* LEVEL 4 (BOOKS): Book Files inside Textbooks or Guides Folder */}
+      {/* LEVEL 4 (BOOKS): Book Files inside Category Folder */}
       {!search && sectionType === 'book' && activePhase && activeSubject && activeCategory && (
         <div className="animate-in slide-in-from-bottom-4 duration-500 space-y-4">
           <div className="flex items-center justify-between mb-4 px-2 flex-wrap gap-3">
             <button
               onClick={resetToCategories}
-              className="flex items-center gap-2 text-emerald-800 dark:text-slate-400 hover:text-emerald-950 dark:hover:text-slate-200 transition-colors font-medium"
+              className="flex items-center gap-2 text-emerald-800 dark:text-slate-400 hover:text-emerald-950 dark:hover:text-slate-200 transition-colors font-medium cursor-pointer"
             >
               <ArrowLeft size={18} /> Back to {activeSubject} Folders
             </button>
@@ -1211,10 +1414,10 @@ export default function ResourceList({
               {isCurrentUserAdmin && (
                 <button
                   onClick={() => handleOpenAddResource(activeSubject, activeCategory)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all cursor-pointer"
                 >
                   <PlusCircle size={15} />
-                  <span>Add {activeCategory === 'Textbooks' ? 'Textbook' : 'Guide'}</span>
+                  <span>Add Book</span>
                 </button>
               )}
             </div>
@@ -1223,27 +1426,21 @@ export default function ResourceList({
           {filteredResources.length === 0 ? (
             <div className="bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-md shadow-lg border border-emerald-900/10 dark:border-white/5 rounded-[2rem] p-16 text-center flex flex-col items-center justify-center">
               <div className="w-20 h-20 bg-emerald-100 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-6 border border-emerald-200 dark:border-white/5">
-                {activeCategory === 'Textbooks' ? (
-                  <BookOpen size={32} className="text-emerald-700/60 dark:text-slate-600" strokeWidth={1.5} />
-                ) : (
-                  <Bookmark size={32} className="text-emerald-700/60 dark:text-slate-600" strokeWidth={1.5} />
-                )}
+                <BookOpen size={32} className="text-emerald-700/60 dark:text-slate-600" strokeWidth={1.5} />
               </div>
               <p className="text-xl font-bold text-slate-900 dark:text-slate-300">
-                No {activeCategory.toLowerCase()} uploaded yet
+                No resources in {activeCategory} yet
               </p>
               <p className="text-slate-600 dark:text-slate-500 mt-2 font-light max-w-md">
-                {activeCategory === 'Textbooks'
-                  ? `Standard textbooks for ${activeSubject} will be listed here.`
-                  : `Revision guides and question banks for ${activeSubject} will be listed here.`}
+                Study materials and books for {activeSubject} ({activeCategory}) will be listed here.
               </p>
               {isCurrentUserAdmin && (
                 <button
                   onClick={() => handleOpenAddResource(activeSubject, activeCategory)}
-                  className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md transition-all text-sm"
+                  className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md transition-all text-sm cursor-pointer"
                 >
                   <PlusCircle size={18} />
-                  <span>Upload First {activeCategory === 'Textbooks' ? 'Textbook' : 'Guide'}</span>
+                  <span>Upload First Item</span>
                 </button>
               )}
             </div>
@@ -1688,41 +1885,32 @@ export default function ResourceList({
                 </div>
               )}
 
-              {/* If Book: Category selection (Textbooks vs Guides vs Curriculum) */}
+              {/* If Book: Category selection */}
               {resFormType === 'book' && (
                 <div className="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-[#02140d] border border-emerald-200 dark:border-emerald-800/40">
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-2">
-                    Placement / Folder *
+                    Placement / Folder in {resFormSubject || 'Subject'} *
                   </label>
-                  <div className="grid grid-cols-3 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setResFormCategory('Textbooks')}
-                      className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                        resFormCategory === 'Textbooks'
-                          ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-xs'
-                          : 'bg-white dark:bg-[#02100a] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-50 dark:hover:bg-emerald-950/40'
-                      }`}
-                    >
-                      <BookOpen size={13} />
-                      <span>Textbooks</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setResFormCategory('Guides')}
-                      className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                        resFormCategory === 'Guides'
-                          ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-xs'
-                          : 'bg-white dark:bg-[#02100a] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-50 dark:hover:bg-emerald-950/40'
-                      }`}
-                    >
-                      <Bookmark size={13} />
-                      <span>Guides</span>
-                    </button>
+                  <div className="flex flex-wrap gap-2">
+                    {getBookCategoriesForSubject(resFormSubject).map((cat) => (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => setResFormCategory(cat.id)}
+                        className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all flex items-center gap-1.5 cursor-pointer ${
+                          resFormCategory === cat.id
+                            ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-xs'
+                            : 'bg-white dark:bg-[#02100a] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-50 dark:hover:bg-emerald-950/40'
+                        }`}
+                      >
+                        {cat.icon === 'bookmark' ? <Bookmark size={13} /> : <BookOpen size={13} />}
+                        <span>{cat.name}</span>
+                      </button>
+                    ))}
                     <button
                       type="button"
                       onClick={() => setResFormCategory('Curriculum')}
-                      className={`py-2 px-2 text-xs font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all flex items-center gap-1.5 cursor-pointer ${
                         resFormCategory === 'Curriculum'
                           ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-xs'
                           : 'bg-white dark:bg-[#02100a] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-50 dark:hover:bg-emerald-950/40'

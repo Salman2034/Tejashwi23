@@ -57,7 +57,7 @@ export const resources: Resource[] = [
     subject: 'Biochemistry'
   },
 
-  // Standard Textbooks for 1st Phase (Inside Textbooks Folder)
+  // Standard Textbooks for 1st Phase
   {
     id: 'book-bd-chaurasia-anatomy',
     title: "BD Chaurasia's Human Anatomy (Regional & Applied)",
@@ -67,7 +67,62 @@ export const resources: Resource[] = [
     fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
     phase: '1st Phase',
     subject: 'Anatomy',
-    category: 'Textbooks'
+    category: '05. Gross Anatomy Books'
+  },
+  {
+    id: 'book-vishram-singh-general-anatomy',
+    title: 'General Anatomy by Vishram Singh',
+    description: 'Fundamental principles of general anatomy, tissues, fascia, bones, joints and anatomical terminology.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
+    phase: '1st Phase',
+    subject: 'Anatomy',
+    category: '04. General Anatomy Books'
+  },
+  {
+    id: 'book-snell-clinical-anatomy',
+    title: "Snell's Clinical Anatomy by Regions",
+    description: 'Clinical anatomy orientation with surgical vignettes, surface anatomy and diagnostic correlations.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
+    phase: '1st Phase',
+    subject: 'Anatomy',
+    category: '03. Anatomy Clinical Books'
+  },
+  {
+    id: 'book-inderbir-singh-histology',
+    title: "Inderbir Singh's Textbook of Human Histology",
+    description: 'Comprehensive microscopic anatomy with detailed color atlas diagrams and tissue histology slides.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
+    phase: '1st Phase',
+    subject: 'Anatomy',
+    category: '06. Histology Books'
+  },
+  {
+    id: 'book-langman-embryology',
+    title: "Langman's Medical Embryology",
+    description: 'Essential human developmental anatomy, congenital anomalies, teratology and organogenesis.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
+    phase: '1st Phase',
+    subject: 'Anatomy',
+    category: '07. Embryology Books'
+  },
+  {
+    id: 'book-netter-atlas-app',
+    title: "Netter's Atlas of Human Anatomy & 3D Interactive Guide",
+    description: 'World-renowned anatomical illustrations, interactive 3D digital atlas and region-by-region visual plates.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
+    phase: '1st Phase',
+    subject: 'Anatomy',
+    category: '08. Anatomy Atlas App'
   },
   {
     id: 'book-guyton-physiology',
@@ -78,7 +133,18 @@ export const resources: Resource[] = [
     fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/4.Physiology.pdf',
     phase: '1st Phase',
     subject: 'Physiology',
-    category: 'Textbooks'
+    category: '04. Physiology Textbooks'
+  },
+  {
+    id: 'book-ganong-physiology',
+    title: "Ganong's Review of Medical Physiology",
+    description: 'Concise, high-yield overview of mammalian and human medical physiology with clinical cases.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/4.Physiology.pdf',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    category: '04. Physiology Textbooks'
   },
   {
     id: 'book-lippincott-biochemistry',
@@ -89,20 +155,42 @@ export const resources: Resource[] = [
     fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/5.Biochemistry.pdf',
     phase: '1st Phase',
     subject: 'Biochemistry',
-    category: 'Textbooks'
+    category: '04. Biochemistry Textbooks'
+  },
+  {
+    id: 'book-harper-biochemistry',
+    title: "Harper's Illustrated Biochemistry",
+    description: 'Comprehensive medical biochemistry covering molecular biology, genetics and metabolic pathways.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/5.Biochemistry.pdf',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    category: '04. Biochemistry Textbooks'
   },
 
-  // Study Guides & Review Books (Inside Guides Folder)
+  // Study Guides & Review Books
   {
     id: 'guide-anatomy-item-ospe',
-    title: 'Anatomy Card & OSPE Revision Guide',
-    description: 'Comprehensive high-yield viva questions, viscera identification & surface marking guide.',
+    title: 'Anatomy Card & Surface Marking Guide',
+    description: 'Comprehensive high-yield card notes, viscera identification & surface marking guide.',
     date: '2026-09-03',
     type: 'book',
     fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
     phase: '1st Phase',
     subject: 'Anatomy',
-    category: 'Guides'
+    category: '02. Anatomy Guide'
+  },
+  {
+    id: 'anatomy-viva-practical-manual',
+    title: 'Anatomy Cadaver Dissection & Practical Manual',
+    description: 'Dissection guide, viscera spotters, osteology viva questions & OSPE station manual.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
+    phase: '1st Phase',
+    subject: 'Anatomy',
+    category: '01. Anatomy Viva & Practical'
   },
   {
     id: 'guide-physiology-viva-prep',
@@ -113,7 +201,29 @@ export const resources: Resource[] = [
     fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/4.Physiology.pdf',
     phase: '1st Phase',
     subject: 'Physiology',
-    category: 'Guides'
+    category: '02. Physiology Guides'
+  },
+  {
+    id: 'physiology-viva-practical-manual',
+    title: 'Physiology Practical & OSPE Lab Manual',
+    description: 'Practical procedures, blood lab tests, spirometry, ECG, nerve stimulation & viva voce questions.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/4.Physiology.pdf',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    category: '01. Physiology Viva, Practical'
+  },
+  {
+    id: 'physiology-clinical-books-guide',
+    title: 'Clinical Physiology & Pathophysiology Correlations',
+    description: 'Diagnostic physiological principles, cardiovascular & respiratory case-based clinical problems.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/4.Physiology.pdf',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    category: '03. Physiology Clinical Books'
   },
   {
     id: 'guide-biochemistry-cycle-pathways',
@@ -124,7 +234,29 @@ export const resources: Resource[] = [
     fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/5.Biochemistry.pdf',
     phase: '1st Phase',
     subject: 'Biochemistry',
-    category: 'Guides'
+    category: '02. Biochemistry Guides'
+  },
+  {
+    id: 'biochemistry-viva-practical-manual',
+    title: 'Biochemistry Viva, OSPE & Practical Manual',
+    description: 'Complete lab practical procedures, viva voce Q&A, reagent tests and OSPE station guides.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/5.Biochemistry.pdf',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    category: '01. Biochemistry Viva, Practical'
+  },
+  {
+    id: 'biochemistry-clinical-books-guide',
+    title: 'Clinical Biochemistry & Diagnostic Medicine',
+    description: 'Organ function tests, clinical enzymology, electrolyte disorders & diagnostic case studies.',
+    date: '2026-09-03',
+    type: 'book',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/5.Biochemistry.pdf',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    category: '03. Biochemistry Clinical Books'
   },
 
   // 1st Term Card 01 Lectures
