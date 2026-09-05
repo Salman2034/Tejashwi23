@@ -209,6 +209,15 @@ export function isResourceInBookCategory(
   targetCategory: BookCategoryFolder,
   subjectName: string
 ): boolean {
+  // Curriculum resources are subject-level files and must NEVER be placed inside subfolder categories
+  if (
+    resource.category?.toLowerCase() === 'curriculum' ||
+    resource.title.trim().toLowerCase() === 'curriculum' ||
+    resource.id.startsWith('curriculum-')
+  ) {
+    return false;
+  }
+
   if (!resource.category) {
     if (subjectName.toLowerCase() === 'biochemistry') return targetCategory.id === '04. Biochemistry Textbooks';
     if (subjectName.toLowerCase() === 'physiology') return targetCategory.id === '04. Physiology Textbooks';
@@ -456,7 +465,10 @@ export default function ResourceList({
         r.subject.toLowerCase() === activeSubject.toLowerCase() &&
         !r.term &&
         !r.card &&
-        !r.category
+        (r.category?.toLowerCase() === 'curriculum' ||
+         r.title.trim().toLowerCase() === 'curriculum' ||
+         r.id.startsWith('curriculum-') ||
+         !r.category)
     );
   }, [resources, activePhase, activeSubject]);
 

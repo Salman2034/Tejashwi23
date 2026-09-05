@@ -34,7 +34,8 @@ export const resources: Resource[] = [
     type: 'book',
     fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
     phase: '1st Phase',
-    subject: 'Anatomy'
+    subject: 'Anatomy',
+    category: 'Curriculum'
   },
   {
     id: 'curriculum-physiology',
@@ -44,7 +45,8 @@ export const resources: Resource[] = [
     type: 'book',
     fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/4.Physiology.pdf',
     phase: '1st Phase',
-    subject: 'Physiology'
+    subject: 'Physiology',
+    category: 'Curriculum'
   },
   {
     id: 'curriculum-biochemistry',
@@ -54,7 +56,8 @@ export const resources: Resource[] = [
     type: 'book',
     fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/5.Biochemistry.pdf',
     phase: '1st Phase',
-    subject: 'Biochemistry'
+    subject: 'Biochemistry',
+    category: 'Curriculum'
   },
 
   // Standard Textbooks for 1st Phase
