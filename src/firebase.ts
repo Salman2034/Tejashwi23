@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 import defaultConfig from '../firebase-applet-config.json';
@@ -17,18 +17,26 @@ const firebaseConfig = {
 
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
-// Initialize Cloud Firestore
-export const db = getFirestore(app);
+// Initialize Cloud Firestore with modern IndexedDB persistent local cache
+export const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentMultipleTabManager(),
+  }),
+});
 
 // Initialize Firebase Authentication
 export const auth = getAuth(app);
 
-// Initialize Firebase Analytics safely (only in client environments if supported)
+// Initialize Firebase Analytics safely (only in client environments if supported and online)
 export let analytics: ReturnType<typeof getAnalytics> | null = null;
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && navigator.onLine) {
   isSupported().then((supported) => {
     if (supported && firebaseConfig.measurementId) {
-      analytics = getAnalytics(app);
+      try {
+        analytics = getAnalytics(app);
+      } catch (err) {
+        console.warn('Analytics note:', err);
+      }
     }
   }).catch(() => {
     // Analytics not supported in this environment

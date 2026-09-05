@@ -44,7 +44,7 @@ service cloud.firestore {
                     && request.resource.data.text.size() <= 2000
                     && request.resource.data.senderName is string
                     && request.resource.data.senderName.size() > 0;
-      allow delete: if isAdmin();
+      allow delete: if isAdmin() || (isAuthenticated() && resource.data.senderUid == request.auth.uid);
       allow update: if isAdmin();
     }
 

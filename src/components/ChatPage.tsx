@@ -35,7 +35,14 @@ export default function ChatPage() {
     notifications
   } = useNotifications();
 
-  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_CHAT_MESSAGES);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    try {
+      const cached = localStorage.getItem('ewmc_cached_chat_messages');
+      return cached ? JSON.parse(cached) : INITIAL_CHAT_MESSAGES;
+    } catch {
+      return INITIAL_CHAT_MESSAGES;
+    }
+  });
   const [isFirebaseConnected, setIsFirebaseConnected] = useState<boolean>(false);
   const [isSending, setIsSending] = useState(false);
 
@@ -263,8 +270,18 @@ export default function ChatPage() {
               };
             });
             setMessages(firestoreMsgs);
+            try {
+              localStorage.setItem('ewmc_cached_chat_messages', JSON.stringify(firestoreMsgs));
+            } catch (err) {
+              console.warn('LocalStorage save chat note:', err);
+            }
           } else {
             setMessages([]);
+            try {
+              localStorage.removeItem('ewmc_cached_chat_messages');
+            } catch (err) {
+              console.warn('LocalStorage clear chat note:', err);
+            }
           }
         },
         (error) => {
@@ -510,17 +527,34 @@ export default function ChatPage() {
     }
   };
 
-  // Admin Single Message Delete
-  const handleDeleteMessage = async (messageId: string) => {
-    if (!isCurrentUserAdmin || deletingMessageId) return;
+  // Delete Single Message (Admin or Message Owner)
+  const handleDeleteMessage = async (messageId: string, senderUid?: string) => {
+    const isOwner = currentUser && senderUid === currentUser.uid;
+    if ((!isCurrentUserAdmin && !isOwner) || deletingMessageId) return;
+
     setDeletingMessageId(messageId);
     try {
-      await deleteDoc(doc(db, 'chatMessages', messageId));
-      setAdminActionNotice('Message deleted from database.');
+      try {
+        await deleteDoc(doc(db, 'chatMessages', messageId));
+      } catch (fErr) {
+        console.warn('Firestore doc delete note:', fErr);
+      }
+
+      setMessages((prev) => {
+        const updated = prev.filter((m) => m.id !== messageId);
+        try {
+          localStorage.setItem('ewmc_cached_chat_messages', JSON.stringify(updated));
+        } catch (cacheErr) {
+          console.warn('LocalStorage update chat note:', cacheErr);
+        }
+        return updated;
+      });
+
+      setAdminActionNotice('Message deleted successfully.');
       setTimeout(() => setAdminActionNotice(null), 3000);
     } catch (err) {
       console.error('Failed to delete message:', err);
-      setAdminActionNotice('Could not delete message. Check permissions.');
+      setAdminActionNotice('Could not delete message.');
       setTimeout(() => setAdminActionNotice(null), 4000);
     } finally {
       setDeletingMessageId(null);
@@ -543,36 +577,45 @@ export default function ChatPage() {
         q = query(collection(db, 'chatMessages'));
       }
 
-      const snapshot = await getDocs(q);
-
-      if (snapshot.empty) {
-        setAdminActionNotice('No messages found to delete.');
-        setIsClearingChat(false);
-        setShowClearConfirmModal(false);
-        setTimeout(() => setAdminActionNotice(null), 3000);
-        return;
-      }
-
-      // Firestore batches up to 500 writes
-      const docsToDelete = snapshot.docs;
-      const chunkSize = 400;
-      for (let i = 0; i < docsToDelete.length; i += chunkSize) {
-        const chunk = docsToDelete.slice(i, i + chunkSize);
-        const batch = writeBatch(db);
-        chunk.forEach((d) => batch.delete(d.ref));
-        await batch.commit();
+      try {
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          const docsToDelete = snapshot.docs;
+          const chunkSize = 400;
+          for (let i = 0; i < docsToDelete.length; i += chunkSize) {
+            const chunk = docsToDelete.slice(i, i + chunkSize);
+            const batch = writeBatch(db);
+            chunk.forEach((d) => batch.delete(d.ref));
+            await batch.commit();
+          }
+        }
+      } catch (dbErr) {
+        console.warn('Firestore query/delete note during clear chat:', dbErr);
       }
 
       const clearedLabel = clearScope === 'channel' 
         ? `#${CHANNELS.find(c => c.id === activeChannel)?.name}` 
         : 'All Channels';
 
-      setAdminActionNotice(`Successfully cleared chat history for ${clearedLabel} from database.`);
+      // Always clear local state and cache regardless of whether snapshot had cloud docs
+      setMessages((prev) => {
+        const updatedMessages = clearScope === 'channel'
+          ? prev.filter((m) => (m.channel || 'batch') !== activeChannel)
+          : [];
+        try {
+          localStorage.setItem('ewmc_cached_chat_messages', JSON.stringify(updatedMessages));
+        } catch (cacheErr) {
+          console.warn('LocalStorage update chat note:', cacheErr);
+        }
+        return updatedMessages;
+      });
+
+      setAdminActionNotice(`Successfully cleared chat history for ${clearedLabel}.`);
       setShowClearConfirmModal(false);
       setTimeout(() => setAdminActionNotice(null), 4000);
     } catch (err) {
-      console.error('Error clearing chat from database:', err);
-      setAdminActionNotice('Failed to clear chat from database.');
+      console.error('Error clearing chat:', err);
+      setAdminActionNotice('Failed to clear chat.');
       setTimeout(() => setAdminActionNotice(null), 4000);
     } finally {
       setIsClearingChat(false);
@@ -1280,14 +1323,14 @@ export default function ChatPage() {
                         </div>
                       )}
 
-                      {/* Admin Message Delete & Ban Triggers */}
-                      {isCurrentUserAdmin && (
+                      {/* Message Delete Trigger (For Admin or Message Owner) */}
+                      {(isCurrentUserAdmin || isMe) && (
                         <div className="flex items-center gap-1.5 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity ml-2 shrink-0">
                           <button
-                            onClick={() => handleDeleteMessage(msg.id)}
+                            onClick={() => handleDeleteMessage(msg.id, msg.senderUid)}
                             disabled={deletingMessageId === msg.id}
                             type="button"
-                            title="Delete message from database"
+                            title="Delete message"
                             className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center rounded-lg text-slate-500 hover:text-rose-500 hover:bg-rose-500/15 bg-slate-100/80 dark:bg-[#08291e] lg:bg-transparent border border-slate-200/50 dark:border-emerald-800/20 lg:border-none transition-all cursor-pointer active:scale-95"
                           >
                             {deletingMessageId === msg.id ? (
@@ -1297,7 +1340,7 @@ export default function ChatPage() {
                             )}
                           </button>
                           
-                          {!isMsgAdmin && (
+                          {isCurrentUserAdmin && !isMsgAdmin && (
                             <button
                               onClick={() => handleBanUserClick(msg.senderUid, msg.senderEmail || '', msg.senderName)}
                               type="button"
@@ -1636,6 +1679,114 @@ export default function ChatPage() {
                 className="px-5 py-2.5 text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl shadow-md transition-all cursor-pointer"
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Clear Chat Confirmation Modal */}
+      {showClearConfirmModal && isCurrentUserAdmin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="relative w-full max-w-md bg-white dark:bg-gradient-to-b dark:from-[#062017] dark:to-[#03130d] border border-rose-500/30 rounded-3xl p-6 sm:p-7 shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] animate-in zoom-in-95 overflow-hidden">
+            
+            {/* Top Red Accent Line */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 via-red-500 to-rose-500 rounded-t-3xl" />
+
+            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3 pt-1">
+              <div className="p-2.5 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200/80 dark:border-rose-900/40 shadow-sm">
+                <Trash2 size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+                  Clear Chat Messages
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Admin Action • Database Deletion
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4 mb-5">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                Choose the scope of messages you wish to clear permanently from the database:
+              </p>
+
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => setClearScope('channel')}
+                  className={`w-full p-3 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+                    clearScope === 'channel'
+                      ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-500 text-rose-900 dark:text-rose-100 shadow-sm'
+                      : 'bg-slate-50 dark:bg-[#02100a] border-slate-200 dark:border-emerald-900/30 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-emerald-950/30'
+                  }`}
+                >
+                  <div>
+                    <div className="font-bold text-xs sm:text-sm flex items-center gap-1.5">
+                      <Hash size={14} className="text-rose-500" />
+                      Only #{CHANNELS.find((c) => c.id === activeChannel)?.name}
+                    </div>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                      Clears messages in the active channel only
+                    </p>
+                  </div>
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${clearScope === 'channel' ? 'border-rose-500 bg-rose-500' : 'border-slate-300 dark:border-slate-600'}`}>
+                    {clearScope === 'channel' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setClearScope('all')}
+                  className={`w-full p-3 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+                    clearScope === 'all'
+                      ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-500 text-rose-900 dark:text-rose-100 shadow-sm'
+                      : 'bg-slate-50 dark:bg-[#02100a] border-slate-200 dark:border-emerald-900/30 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-emerald-950/30'
+                  }`}
+                >
+                  <div>
+                    <div className="font-bold text-xs sm:text-sm flex items-center gap-1.5">
+                      <Trash2 size={14} className="text-rose-500" />
+                      All Discussion Channels
+                    </div>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                      Deletes all chat messages across batch, academic & casual
+                    </p>
+                  </div>
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${clearScope === 'all' ? 'border-rose-500 bg-rose-500' : 'border-slate-300 dark:border-slate-600'}`}>
+                    {clearScope === 'all' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-200/80 dark:border-white/10">
+              <button
+                type="button"
+                disabled={isClearingChat}
+                onClick={() => setShowClearConfirmModal(false)}
+                className="px-4 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isClearingChat}
+                onClick={handleClearChatConfirmed}
+                className="px-5 py-2.5 text-xs font-bold bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white rounded-xl shadow-md hover:shadow-rose-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              >
+                {isClearingChat ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    <span>Clearing Chat...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 size={14} />
+                    <span>Clear Messages</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

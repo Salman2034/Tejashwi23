@@ -27,9 +27,32 @@ export default function App() {
   const [activeTab, setActiveTabState] = useState('home');
   const [activeAlbumId, setActiveAlbumId] = useState<string | null>(null);
   const [chatActiveChannel, setChatActiveChannel] = useState<'batch' | 'academic' | 'casual'>('batch');
-  const [noticesList, setNoticesList] = useState<Notice[]>(defaultNotices);
-  const [resourcesList, setResourcesList] = useState<Resource[]>(defaultResources);
-  const [galleryList, setGalleryList] = useState<GalleryGroup[]>(defaultGalleryGroups);
+  const [noticesList, setNoticesList] = useState<Notice[]>(() => {
+    try {
+      const cached = localStorage.getItem('ewmc_cached_notices');
+      return cached ? JSON.parse(cached) : defaultNotices;
+    } catch {
+      return defaultNotices;
+    }
+  });
+
+  const [resourcesList, setResourcesList] = useState<Resource[]>(() => {
+    try {
+      const cached = localStorage.getItem('ewmc_cached_resources');
+      return cached ? JSON.parse(cached) : defaultResources;
+    } catch {
+      return defaultResources;
+    }
+  });
+
+  const [galleryList, setGalleryList] = useState<GalleryGroup[]>(() => {
+    try {
+      const cached = localStorage.getItem('ewmc_cached_gallery');
+      return cached ? JSON.parse(cached) : defaultGalleryGroups;
+    } catch {
+      return defaultGalleryGroups;
+    }
+  });
 
   // Loading States: Initial full-screen splash + tab transition loader
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -77,13 +100,15 @@ export default function App() {
               ...(docSnap.data() as Omit<Notice, 'id'>),
             }));
             setNoticesList(fetched);
-          } else {
-            setNoticesList(defaultNotices);
+            try {
+              localStorage.setItem('ewmc_cached_notices', JSON.stringify(fetched));
+            } catch (err) {
+              console.warn('LocalStorage save notices note:', err);
+            }
           }
         },
         (err) => {
           console.warn('Firestore notices onSnapshot note:', err);
-          setNoticesList(defaultNotices);
         }
       );
       return () => unsubscribe();
@@ -105,13 +130,15 @@ export default function App() {
               ...(docSnap.data() as Omit<GalleryGroup, 'id'>),
             }));
             setGalleryList(fetched);
-          } else {
-            setGalleryList(defaultGalleryGroups);
+            try {
+              localStorage.setItem('ewmc_cached_gallery', JSON.stringify(fetched));
+            } catch (err) {
+              console.warn('LocalStorage save gallery note:', err);
+            }
           }
         },
         (err) => {
           console.warn('Firestore galleryGroups onSnapshot note:', err);
-          setGalleryList(defaultGalleryGroups);
         }
       );
       return () => unsubscribe();
@@ -133,13 +160,15 @@ export default function App() {
               ...(docSnap.data() as Omit<Resource, 'id'>),
             }));
             setResourcesList(fetched);
-          } else {
-            setResourcesList(defaultResources);
+            try {
+              localStorage.setItem('ewmc_cached_resources', JSON.stringify(fetched));
+            } catch (err) {
+              console.warn('LocalStorage save resources note:', err);
+            }
           }
         },
         (err) => {
           console.warn('Firestore resources onSnapshot note:', err);
-          setResourcesList(defaultResources);
         }
       );
       return () => unsubscribe();

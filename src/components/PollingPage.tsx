@@ -17,10 +17,24 @@ import { Poll, PollVote } from '../types';
 const ADMIN_EMAIL = 'cadetsalman2034@gmail.com';
 
 export default function PollingPage() {
-  const [polls, setPolls] = useState<Poll[]>([]);
-  const [votesByPoll, setVotesByPoll] = useState<Record<string, Record<string, PollVote>>>({});
+  const [polls, setPolls] = useState<Poll[]>(() => {
+    try {
+      const cached = localStorage.getItem('ewmc_cached_polls');
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [votesByPoll, setVotesByPoll] = useState<Record<string, Record<string, PollVote>>>(() => {
+    try {
+      const cached = localStorage.getItem('ewmc_cached_votes_by_poll');
+      return cached ? JSON.parse(cached) : {};
+    } catch {
+      return {};
+    }
+  });
   const [isFirebaseConnected, setIsFirebaseConnected] = useState<boolean>(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Authentication State
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
@@ -122,6 +136,11 @@ export default function PollingPage() {
           });
           setPolls(pollsList);
           setLoading(false);
+          try {
+            localStorage.setItem('ewmc_cached_polls', JSON.stringify(pollsList));
+          } catch (err) {
+            console.warn('LocalStorage save polls note:', err);
+          }
         },
         (err) => {
           console.error('Polls snapshot error:', err);
@@ -154,10 +173,18 @@ export default function PollingPage() {
             pollVotesMap[docSnap.id] = v;
           });
 
-          setVotesByPoll((prev) => ({
-            ...prev,
-            [poll.id]: pollVotesMap,
-          }));
+          setVotesByPoll((prev) => {
+            const updated = {
+              ...prev,
+              [poll.id]: pollVotesMap,
+            };
+            try {
+              localStorage.setItem('ewmc_cached_votes_by_poll', JSON.stringify(updated));
+            } catch (err) {
+              console.warn('LocalStorage save votes note:', err);
+            }
+            return updated;
+          });
         },
         (error) => {
           console.warn(`Votes listener note for ${poll.id}:`, error);
