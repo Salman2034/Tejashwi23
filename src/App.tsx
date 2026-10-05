@@ -179,6 +179,7 @@ export default function App() {
 
   const lectures = resourcesList.filter(r => r.type === 'lecture');
   const books = resourcesList.filter(r => r.type === 'book');
+  const questions = resourcesList.filter(r => r.type === 'question');
 
   return (
     <ThemeProvider>
@@ -250,6 +251,15 @@ export default function App() {
               resources={books}
               showHierarchy={false}
               sectionType="book"
+            />
+          )}
+          {activeTab === 'questions' && (
+            <ResourceList
+              title="Question Bank"
+              description="Previous years' 1st Professional MBBS exam questions, term examinations, item tests, and card question papers."
+              resources={questions}
+              showHierarchy={true}
+              sectionType="question"
             />
           )}
           {activeTab === 'notices' && (

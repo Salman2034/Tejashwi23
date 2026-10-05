@@ -1,4 +1,4 @@
-export type ResourceType = 'lecture' | 'book';
+export type ResourceType = 'lecture' | 'book' | 'question';
 export type Phase = '1st Phase' | '2nd Phase' | '3rd Phase' | '4th Phase';
 export type Term = '1st Term' | '2nd Term' | '3rd Term';
 export type Card = '1st Card' | '2nd Card' | '3rd Card' | '4th Card' | '5th Card' | '6th Card';
@@ -32,7 +32,7 @@ export interface ResourceFolder {
   term?: string;
   level?: FolderLevel;
   description?: string;
-  section?: 'lecture' | 'book' | 'all';
+  section?: 'lecture' | 'book' | 'question' | 'all';
   isDeleted?: boolean;
   createdTimestamp?: number;
   updatedTimestamp?: number;

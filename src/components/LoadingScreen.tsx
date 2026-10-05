@@ -1,5 +1,5 @@
 import { useState, useEffect, ElementType } from 'react';
-import { Stethoscope, BookOpen, FileText, Bell, MessageCircle, MessageSquare, CalendarDays, Image as ImageIcon, Vote, Activity } from 'lucide-react';
+import { Stethoscope, BookOpen, FileText, HelpCircle, Bell, MessageCircle, MessageSquare, CalendarDays, Image as ImageIcon, Vote, Activity } from 'lucide-react';
 
 interface LoadingScreenProps {
   isInitialLoading: boolean;
@@ -12,6 +12,7 @@ const TAB_METADATA: Record<string, { label: string; icon: ElementType; subtitle:
   routine: { label: 'Class Routine', icon: CalendarDays, subtitle: 'Loading weekly academic schedule...' },
   lectures: { label: 'Lecture Archive', icon: FileText, subtitle: 'Fetching slides, PDF notes & handouts...' },
   books: { label: 'Medical Textbooks', icon: BookOpen, subtitle: 'Loading clinical library & references...' },
+  questions: { label: 'Question Bank', icon: HelpCircle, subtitle: 'Loading exam papers, board questions & card solutions...' },
   notices: { label: 'Notice Board', icon: Bell, subtitle: 'Checking batch announcements & alerts...' },
   calendar: { label: 'Academic Calendar', icon: CalendarDays, subtitle: 'Loading exam dates & terms...' },
   gallery: { label: 'Memories Gallery', icon: ImageIcon, subtitle: 'Loading photo collections & albums...' },

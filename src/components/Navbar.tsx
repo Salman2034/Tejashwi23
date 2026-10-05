@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Stethoscope, BookOpen, FileText, Bell, MessageCircle, MessageSquare, CalendarDays, Image as ImageIcon, Vote, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Stethoscope, BookOpen, FileText, HelpCircle, Bell, MessageCircle, MessageSquare, CalendarDays, Image as ImageIcon, Vote, ChevronLeft, ChevronRight } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import NotificationCenter from './NotificationCenter';
 import { useNotifications } from '../context/NotificationContext';
@@ -16,6 +16,7 @@ export default function Navbar({ activeTab, setActiveTab, setActiveAlbumId }: { 
     { id: 'routine', label: 'Routine', icon: CalendarDays },
     { id: 'lectures', label: 'Lectures', icon: FileText },
     { id: 'books', label: 'Books', icon: BookOpen },
+    { id: 'questions', label: 'Question Bank', icon: HelpCircle },
     { id: 'notices', label: 'Notices', icon: Bell },
     { id: 'calendar', label: 'Calendar', icon: CalendarDays },
     { id: 'gallery', label: 'Gallery', icon: ImageIcon },

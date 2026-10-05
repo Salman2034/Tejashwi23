@@ -29,7 +29,7 @@ interface ResourceListProps {
   description: string;
   resources: Resource[];
   showHierarchy?: boolean; // true for class lectures (Term -> Card -> Files)
-  sectionType: 'lecture' | 'book';
+  sectionType: 'lecture' | 'book' | 'question';
 }
 
 const PHASES: Phase[] = ['1st Phase', '2nd Phase', '3rd Phase', '4th Phase'];
@@ -48,6 +48,13 @@ const DEFAULT_PHASE_SUBJECTS: Partial<Record<Phase, string[]>> = {
   '2nd Phase': ['Community Medicine', 'Forensic Medicine'],
   '3rd Phase': ['Pathology', 'Microbiology', 'Pharmacology'],
   '4th Phase': ['Medicine', 'Surgery', 'Gynae & Obs']
+};
+
+const DEFAULT_QUESTION_PHASE_SUBJECTS: Partial<Record<Phase, string[]>> = {
+  '1st Phase': ['Anatomy', 'Physiology', 'Biochemistry'],
+  '2nd Phase': [],
+  '3rd Phase': [],
+  '4th Phase': []
 };
 
 export interface BookCategoryFolder {
@@ -322,7 +329,7 @@ export default function ResourceList({
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [folderPhase, setFolderPhase] = useState<Phase>('1st Phase');
-  const [folderSectionScope, setFolderSectionScope] = useState<'all' | 'lecture' | 'book'>('all');
+  const [folderSectionScope, setFolderSectionScope] = useState<'all' | 'lecture' | 'book' | 'question'>('all');
   const [isSubmittingFolder, setIsSubmittingFolder] = useState(false);
   const [folderFormError, setFolderFormError] = useState<string | null>(null);
 
@@ -393,7 +400,11 @@ export default function ResourceList({
     const subjects = new Set<string>();
 
     // 1. Add default phase subjects unless marked deleted
-    const defaults = DEFAULT_PHASE_SUBJECTS[activePhase] || [];
+    const defaults = (
+      sectionType === 'question'
+        ? (DEFAULT_QUESTION_PHASE_SUBJECTS[activePhase] || [])
+        : (DEFAULT_PHASE_SUBJECTS[activePhase] || [])
+    );
     defaults.forEach((sub) => {
       const isDeleted = customFolders.some(
         (f) => f.phase === activePhase && f.name.toLowerCase() === sub.toLowerCase() && f.isDeleted
@@ -456,7 +467,7 @@ export default function ResourceList({
     return counts;
   }, [resources, activePhase, activeSubject]);
 
-  // Subject-level resources (like curriculum PDFs) that do not belong to any specific term or subfolder
+  // Subject-level resources (like curriculum PDFs or Prof Exam Question Papers) that do not belong to any specific term or subfolder
   const subjectLevelResources = useMemo(() => {
     if (!activePhase || !activeSubject) return [];
     return resources.filter(
@@ -465,12 +476,13 @@ export default function ResourceList({
         r.subject.toLowerCase() === activeSubject.toLowerCase() &&
         !r.term &&
         !r.card &&
-        (r.category?.toLowerCase() === 'curriculum' ||
+        (sectionType === 'question' ||
+         r.category?.toLowerCase() === 'curriculum' ||
          r.title.trim().toLowerCase() === 'curriculum' ||
          r.id.startsWith('curriculum-') ||
          !r.category)
     );
-  }, [resources, activePhase, activeSubject]);
+  }, [resources, activePhase, activeSubject, sectionType]);
 
   // Filtered resources based on search and breadcrumb level
   const filteredResources = useMemo(() => {
@@ -667,7 +679,7 @@ export default function ResourceList({
             payload.card = deleteField();
           }
         }
-      } else if (resFormType === 'lecture') {
+      } else if (resFormType === 'lecture' || resFormType === 'question') {
         if (resFormTerm) {
           payload.term = resFormTerm;
         } else if (resourceModalMode === 'edit') {
@@ -860,7 +872,7 @@ export default function ResourceList({
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs text-xs transition-all"
             >
               <PlusCircle size={15} />
-              <span>{sectionType === 'lecture' ? 'Add Lecture' : 'Add Book'}</span>
+              <span>{sectionType === 'lecture' ? 'Add Lecture' : sectionType === 'book' ? 'Add Book' : 'Add Question'}</span>
             </button>
             <button
               onClick={() => {
@@ -901,7 +913,7 @@ export default function ResourceList({
             </div>
             <input
               type="text"
-              placeholder="Search lectures, topics, or terms..."
+              placeholder={sectionType === 'question' ? 'Search questions, prof papers, or terms...' : sectionType === 'book' ? 'Search textbooks, guides, or authors...' : 'Search lectures, topics, or terms...'}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="block w-full pl-11 pr-4 py-3.5 border border-emerald-900/15 dark:border-white/10 rounded-xl leading-5 bg-white/90 dark:bg-slate-900/50 backdrop-blur-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/50 transition-all text-slate-900 dark:text-slate-200 shadow-sm"
@@ -914,7 +926,7 @@ export default function ResourceList({
               title="Add New Resource"
             >
               <PlusCircle size={18} />
-              <span>{sectionType === 'lecture' ? 'Add Lecture' : 'Add Book'}</span>
+              <span>{sectionType === 'lecture' ? 'Add Lecture' : sectionType === 'book' ? 'Add Book' : 'Add Question'}</span>
             </button>
           )}
         </div>
@@ -956,7 +968,7 @@ export default function ResourceList({
               <button
                 onClick={sectionType === 'book' ? resetToCategories : resetToTerms}
                 className={`transition-colors ${
-                  (sectionType === 'book' && !activeCategory) || (sectionType === 'lecture' && !activeTerm)
+                  (sectionType === 'book' && !activeCategory) || ((sectionType === 'lecture' || sectionType === 'question') && !activeTerm)
                     ? 'text-emerald-700 dark:text-emerald-400 font-bold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-300'
                 }`}
@@ -1181,7 +1193,7 @@ export default function ResourceList({
                   className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all"
                 >
                   <PlusCircle size={14} />
-                  <span>Add Lecture</span>
+                  <span>{sectionType === 'question' ? 'Add Question' : 'Add Lecture'}</span>
                 </button>
               )}
             </div>
@@ -1192,7 +1204,11 @@ export default function ResourceList({
             <div className="space-y-3">
               <div className="flex items-center gap-2 px-2 text-slate-800 dark:text-slate-300 font-bold text-sm">
                 <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span>General & Curriculum Resources</span>
+                <span>
+                  {sectionType === 'question'
+                    ? '1st Professional & Subject-Level Question Papers'
+                    : 'General & Curriculum Resources'}
+                </span>
               </div>
               <FileList 
                 resources={subjectLevelResources} 
@@ -1207,7 +1223,7 @@ export default function ResourceList({
           <div>
             <div className="flex items-center gap-2 px-2 mb-4 text-slate-800 dark:text-slate-300 font-bold text-sm">
               <Folder size={16} className="text-emerald-600 dark:text-emerald-400" />
-              <span>Term Folders</span>
+              <span>{sectionType === 'question' ? 'Term Question Folders' : 'Term Folders'}</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {TERMS_CONFIG.map(({ term, cards, description: termDesc }) => {
@@ -1236,10 +1252,12 @@ export default function ResourceList({
                       <p className="text-xs text-emerald-800 dark:text-emerald-400 mt-1 font-semibold">
                         {cards.join(' & ')}
                       </p>
-                      <p className="text-xs text-slate-600 dark:text-slate-500 mt-1">{termDesc}</p>
+                      <p className="text-xs text-slate-600 dark:text-slate-500 mt-1">
+                        {sectionType === 'question' ? `${cards.join(' & ')} past questions` : termDesc}
+                      </p>
                       <div className="mt-4 pt-3 border-t border-emerald-900/10 dark:border-white/5 w-full flex items-center justify-between text-xs text-emerald-700 dark:text-emerald-400 font-bold">
                         <span>
-                          {termFileCount} {termFileCount === 1 ? 'Lecture' : 'Lectures'}
+                          {termFileCount} {termFileCount === 1 ? (sectionType === 'question' ? 'Question Paper' : 'Lecture') : (sectionType === 'question' ? 'Question Papers' : 'Lectures')}
                         </span>
                         <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                       </div>
@@ -1272,7 +1290,7 @@ export default function ResourceList({
                   className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all"
                 >
                   <PlusCircle size={14} />
-                  <span>Add Lecture</span>
+                  <span>{sectionType === 'question' ? 'Add Question' : 'Add Lecture'}</span>
                 </button>
               )}
             </div>
@@ -1302,11 +1320,11 @@ export default function ResourceList({
                       {card}
                     </h3>
                     <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
-                      {activeSubject} Curriculum
+                      {activeSubject} {sectionType === 'question' ? 'Card Questions' : 'Curriculum'}
                     </p>
                     <div className="mt-4 pt-3 border-t border-emerald-900/10 dark:border-white/5 flex items-center justify-between text-xs text-emerald-700 dark:text-emerald-400 font-bold">
                       <span>
-                        {cardFileCount} {cardFileCount === 1 ? 'Lecture' : 'Lectures'}
+                        {cardFileCount} {cardFileCount === 1 ? (sectionType === 'question' ? 'Question Paper' : 'Lecture') : (sectionType === 'question' ? 'Question Papers' : 'Lectures')}
                       </span>
                       <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </div>
@@ -1468,8 +1486,8 @@ export default function ResourceList({
         </div>
       )}
 
-      {/* LEVEL 5 (LECTURES): Lecture Files (Inside Card) */}
-      {!search && sectionType === 'lecture' && activePhase && activeSubject && showHierarchy && activeTerm && activeCard && (
+      {/* LEVEL 5: Files inside Card (for Lecture & Question) */}
+      {!search && (sectionType === 'lecture' || sectionType === 'question') && activePhase && activeSubject && showHierarchy && activeTerm && activeCard && (
         <div className="animate-in slide-in-from-bottom-4 duration-500 space-y-4">
           <div className="flex items-center justify-between mb-4 px-2 flex-wrap gap-3">
             <button
@@ -1488,7 +1506,7 @@ export default function ResourceList({
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all"
                 >
                   <PlusCircle size={15} />
-                  <span>Add Lecture Here</span>
+                  <span>{sectionType === 'question' ? 'Add Question Here' : 'Add Lecture Here'}</span>
                 </button>
               )}
             </div>
@@ -1499,9 +1517,13 @@ export default function ResourceList({
               <div className="w-20 h-20 bg-emerald-100 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-6 border border-emerald-200 dark:border-white/5">
                 <File size={32} className="text-emerald-700/60 dark:text-slate-600" strokeWidth={1.5} />
               </div>
-              <p className="text-xl font-bold text-slate-900 dark:text-slate-300">No lectures uploaded yet</p>
+              <p className="text-xl font-bold text-slate-900 dark:text-slate-300">
+                {sectionType === 'question' ? 'No questions uploaded yet' : 'No lectures uploaded yet'}
+              </p>
               <p className="text-slate-600 dark:text-slate-500 mt-2 font-light max-w-md">
-                Lectures for {activeSubject} • {activeTerm} ({activeCard}) will be listed here.
+                {sectionType === 'question'
+                  ? `Question papers for ${activeSubject} • ${activeTerm} (${activeCard}) will be listed here.`
+                  : `Lectures for ${activeSubject} • ${activeTerm} (${activeCard}) will be listed here.`}
               </p>
               {isCurrentUserAdmin && (
                 <button
@@ -1596,7 +1618,7 @@ export default function ResourceList({
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-emerald-300/90 mb-1.5">
                   Folder Scope
                 </label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <button
                     type="button"
                     onClick={() => setFolderSectionScope('all')}
@@ -1606,7 +1628,7 @@ export default function ResourceList({
                         : 'bg-slate-100 dark:bg-emerald-950/40 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-200 dark:hover:bg-emerald-900/60'
                     }`}
                   >
-                    Both Sections
+                    All Sections
                   </button>
                   <button
                     type="button"
@@ -1629,6 +1651,17 @@ export default function ResourceList({
                     }`}
                   >
                     Books Only
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFolderSectionScope('question')}
+                    className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                      folderSectionScope === 'question'
+                        ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-sm'
+                        : 'bg-slate-100 dark:bg-emerald-950/40 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-200 dark:hover:bg-emerald-900/60'
+                    }`}
+                  >
+                    Questions Only
                   </button>
                 </div>
               </div>
@@ -1740,7 +1773,9 @@ export default function ResourceList({
                     {resourceModalMode === 'add'
                       ? resFormType === 'lecture'
                         ? 'Add New Lecture Material'
-                        : 'Add New Medical Textbook'
+                        : resFormType === 'book'
+                        ? 'Add New Medical Textbook'
+                        : 'Add New Question Paper / Bank'
                       : 'Edit Resource Details'}
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -1765,7 +1800,7 @@ export default function ResourceList({
               )}
 
               {/* Resource Type */}
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={() => setResFormType('lecture')}
@@ -1775,7 +1810,7 @@ export default function ResourceList({
                       : 'bg-slate-100 dark:bg-emerald-950/40 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-200 dark:hover:bg-emerald-900/60'
                   }`}
                 >
-                  Class Lecture
+                  Lecture
                 </button>
                 <button
                   type="button"
@@ -1786,7 +1821,18 @@ export default function ResourceList({
                       : 'bg-slate-100 dark:bg-emerald-950/40 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-200 dark:hover:bg-emerald-900/60'
                   }`}
                 >
-                  Medical Textbook
+                  Textbook
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setResFormType('question')}
+                  className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                    resFormType === 'question'
+                      ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-600 shadow-sm'
+                      : 'bg-slate-100 dark:bg-emerald-950/40 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-emerald-900/40 hover:bg-slate-200 dark:hover:bg-emerald-900/60'
+                  }`}
+                >
+                  Question Bank
                 </button>
               </div>
 
@@ -1935,8 +1981,8 @@ export default function ResourceList({
                 </div>
               )}
 
-              {/* If Lecture: Term and Card dropdowns */}
-              {resFormType === 'lecture' && (
+              {/* If Lecture or Question: Term and Card dropdowns */}
+              {(resFormType === 'lecture' || resFormType === 'question') && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-[#02140d] border border-emerald-200 dark:border-emerald-800/40">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 dark:text-emerald-300/90 mb-1">
@@ -1947,7 +1993,7 @@ export default function ResourceList({
                       onChange={(e) => setResFormTerm(e.target.value)}
                       className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-emerald-900/50 bg-white dark:bg-[#02100a] text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none text-xs"
                     >
-                      <option value="">None (Subject / Curriculum level)</option>
+                      <option value="">{resFormType === 'question' ? 'None (1st Prof / Subject level)' : 'None (Subject / Curriculum level)'}</option>
                       {ALL_TERMS.map((t) => (
                         <option key={t} value={t}>
                           {t}

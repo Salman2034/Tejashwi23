@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { BookOpen, FileText, Users, Eye, Image as ImageIcon, Bell, Activity } from 'lucide-react';
+import { BookOpen, FileText, HelpCircle, Users, Eye, Image as ImageIcon, Bell, Activity } from 'lucide-react';
 import { resources as defaultResources, notices as defaultNotices } from '../data';
 import { galleryGroups as defaultGalleryGroups } from '../data/gallery';
 import { GalleryGroup, Resource, Notice } from '../types';
@@ -28,6 +28,10 @@ export default function StatsWidget({
 
   const totalBooks = useMemo(() => {
     return currentResources.filter(r => r.type === 'book').length;
+  }, [currentResources]);
+
+  const totalQuestions = useMemo(() => {
+    return currentResources.filter(r => r.type === 'question').length;
   }, [currentResources]);
 
   const totalGalleryPhotos = useMemo(() => {
@@ -187,7 +191,23 @@ export default function StatsWidget({
             </div>
           </button>
 
-          {/* 3. Photos */}
+          {/* 3. Questions */}
+          <button 
+            type="button"
+            onClick={() => setActiveTab('questions')}
+            className="flex items-center justify-start md:justify-center gap-1.5 group cursor-pointer hover:opacity-80 py-0.5 px-1 md:p-1 transition-all"
+            title="View Question Bank"
+          >
+            <div className="p-1.5 bg-emerald-100/80 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 rounded-lg shrink-0">
+              <HelpCircle size={14} />
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm leading-none">{totalQuestions}</span>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-none">Questions</span>
+            </div>
+          </button>
+
+          {/* 4. Photos */}
           <button 
             type="button"
             onClick={() => setActiveTab('gallery')}

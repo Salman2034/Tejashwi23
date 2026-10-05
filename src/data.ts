@@ -710,6 +710,115 @@ export const resources: Resource[] = [
     subject: 'Physiology',
     term: '1st Term',
     card: '2nd Card'
+  },
+
+  // ================= 1ST PHASE QUESTION BANK =================
+  // Anatomy Questions
+  {
+    id: 'qb-anatomy-1st-prof',
+    title: '1st Professional MBBS Anatomy Written Question Bank (2018-2025)',
+    description: 'Comprehensive compilation of university written examination questions for Paper I (General Anatomy, Histology, Embryology, Superior Extremity, Thorax) & Paper II (Inferior Extremity, Abdomen, Head & Neck, Neuroanatomy).',
+    date: '2026-09-05',
+    type: 'question',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/3.Anatomy.pdf',
+    phase: '1st Phase',
+    subject: 'Anatomy'
+  },
+  {
+    id: 'qb-anatomy-term1-card1',
+    title: 'Anatomy 1st Term Card-01 Written & OSPE Question Paper',
+    description: 'Past exam questions, viva spotters, and structured short answer questions for General Anatomy & Superior Extremity.',
+    date: '2026-09-05',
+    type: 'question',
+    fileUrl: 'https://t.me/anatomy2ewmc',
+    phase: '1st Phase',
+    subject: 'Anatomy',
+    term: '1st Term',
+    card: '1st Card'
+  },
+  {
+    id: 'qb-anatomy-term1-card2',
+    title: 'Anatomy 1st Term Card-02 Inferior Extremity Exam Questions',
+    description: 'Card completion exam question collection, surface marking questions, and clinical reasoning questions for Lower Limb.',
+    date: '2026-09-05',
+    type: 'question',
+    fileUrl: 'https://t.me/anatomy2ewmc',
+    phase: '1st Phase',
+    subject: 'Anatomy',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+
+  // Physiology Questions
+  {
+    id: 'qb-physiology-1st-prof',
+    title: '1st Professional MBBS Physiology Written Question Bank (2018-2025)',
+    description: 'Archive of Dhaka University & affiliated medical college 1st Prof questions for Paper I (General Physiology, Blood, CVS, Respiration) & Paper II (Renal, Endocrinology, Reproduction, GIT, Nervous System).',
+    date: '2026-09-05',
+    type: 'question',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/4.Physiology.pdf',
+    phase: '1st Phase',
+    subject: 'Physiology'
+  },
+  {
+    id: 'qb-physiology-term1-card1',
+    title: 'Physiology 1st Term Card-01 Exam Questions & Viva Review',
+    description: 'Term exam questions, physiological calculations, hematology spot questions, and OSPE stations for Card 1.',
+    date: '2026-09-05',
+    type: 'question',
+    fileUrl: 'https://t.me/physiology2ewmc',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '1st Card'
+  },
+  {
+    id: 'qb-physiology-term1-card2',
+    title: 'Physiology 1st Term Card-02 CVS Exam Questions & Hemodynamics',
+    description: 'Cardiovascular physiology exam questions, cardiac cycle diagrams, ECG interpretation questions, and circulation problem sets.',
+    date: '2026-09-05',
+    type: 'question',
+    fileUrl: 'https://t.me/physiology2ewmc',
+    phase: '1st Phase',
+    subject: 'Physiology',
+    term: '1st Term',
+    card: '2nd Card'
+  },
+
+  // Biochemistry Questions
+  {
+    id: 'qb-biochemistry-1st-prof',
+    title: '1st Professional MBBS Biochemistry Written Question Bank (2018-2025)',
+    description: 'Master repository of 1st Prof university question papers for Paper I (Biomolecules, Enzymes, Nutrition, Cell Biology, Acid-Base) & Paper II (Metabolism, Clinical Biochemistry, Molecular Biology, Endocrinology).',
+    date: '2026-09-05',
+    type: 'question',
+    fileUrl: 'https://www.bmdc.org.bd/docs/curriculum/2021/5.Biochemistry.pdf',
+    phase: '1st Phase',
+    subject: 'Biochemistry'
+  },
+  {
+    id: 'qb-biochemistry-term1-card1',
+    title: 'Biochemistry 1st Term Card-01 Item & Card Exam Questions',
+    description: 'Enzyme kinetics, vitamins, coenzymes, water-electrolyte balance item questions, and practical OSPE test bank.',
+    date: '2026-09-05',
+    type: 'question',
+    fileUrl: 'https://t.me/biochemistryewmc',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    term: '1st Term',
+    card: '1st Card'
+  },
+  {
+    id: 'qb-biochemistry-term1-card2',
+    title: 'Biochemistry 1st Term Card-02 Carbohydrate & Lipid Metabolism Questions',
+    description: 'Item exam questions, metabolic pathway regulation, clinical vignette questions, and inborn errors of metabolism test collection.',
+    date: '2026-09-05',
+    type: 'question',
+    fileUrl: 'https://t.me/biochemistryewmc',
+    phase: '1st Phase',
+    subject: 'Biochemistry',
+    term: '1st Term',
+    card: '2nd Card'
   }
 ];
 

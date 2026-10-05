@@ -1,4 +1,4 @@
-import { BookOpen, FileText, Bell, HeartPulse, ArrowRight, MessageCircle, MessageSquare } from 'lucide-react';
+import { BookOpen, FileText, HelpCircle, Bell, HeartPulse, ArrowRight, MessageCircle, MessageSquare } from 'lucide-react';
 import RoutineWidget from './RoutineWidget';
 import CalendarWidget from './CalendarWidget';
 import GalleryWidget from './GalleryWidget';
@@ -83,10 +83,10 @@ export default function Home({
       />
 
       {/* Quick Access Cards */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div 
           onClick={() => setActiveTab('lectures')} 
-          className="group bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-8 rounded-[2rem] border border-emerald-900/10 dark:border-emerald-500/20 hover:bg-white dark:hover:bg-[#0e2f24]/80 hover:border-emerald-500/40 shadow-[0_4px_20px_rgba(4,40,24,0.04)] hover:shadow-[0_12px_30px_rgba(4,40,24,0.08)] dark:shadow-none dark:hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] transition-all duration-300 cursor-pointer flex flex-col h-full hover:-translate-y-1"
+          className="group bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-7 rounded-[2rem] border border-emerald-900/10 dark:border-emerald-500/20 hover:bg-white dark:hover:bg-[#0e2f24]/80 hover:border-emerald-500/40 shadow-[0_4px_20px_rgba(4,40,24,0.04)] hover:shadow-[0_12px_30px_rgba(4,40,24,0.08)] dark:shadow-none dark:hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] transition-all duration-300 cursor-pointer flex flex-col h-full hover:-translate-y-1"
         >
           <div className="w-14 h-14 bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-emerald-500/25 transition-all duration-300 ring-1 ring-emerald-500/20 group-hover:ring-emerald-500/40 shadow-inner">
             <FileText size={26} />
@@ -98,7 +98,7 @@ export default function Home({
 
         <div 
           onClick={() => setActiveTab('books')} 
-          className="group bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-8 rounded-[2rem] border border-emerald-900/10 dark:border-emerald-500/20 hover:bg-white dark:hover:bg-[#0e2f24]/80 hover:border-emerald-500/40 shadow-[0_4px_20px_rgba(4,40,24,0.04)] hover:shadow-[0_12px_30px_rgba(4,40,24,0.08)] dark:shadow-none dark:hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] transition-all duration-300 cursor-pointer flex flex-col h-full hover:-translate-y-1"
+          className="group bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-7 rounded-[2rem] border border-emerald-900/10 dark:border-emerald-500/20 hover:bg-white dark:hover:bg-[#0e2f24]/80 hover:border-emerald-500/40 shadow-[0_4px_20px_rgba(4,40,24,0.04)] hover:shadow-[0_12px_30px_rgba(4,40,24,0.08)] dark:shadow-none dark:hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] transition-all duration-300 cursor-pointer flex flex-col h-full hover:-translate-y-1"
         >
           <div className="w-14 h-14 bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-emerald-500/25 transition-all duration-300 ring-1 ring-emerald-500/20 group-hover:ring-emerald-500/40 shadow-inner">
             <BookOpen size={26} />
@@ -109,8 +109,20 @@ export default function Home({
         </div>
 
         <div 
+          onClick={() => setActiveTab('questions')} 
+          className="group bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-7 rounded-[2rem] border border-emerald-900/10 dark:border-emerald-500/20 hover:bg-white dark:hover:bg-[#0e2f24]/80 hover:border-emerald-500/40 shadow-[0_4px_20px_rgba(4,40,24,0.04)] hover:shadow-[0_12px_30px_rgba(4,40,24,0.08)] dark:shadow-none dark:hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] transition-all duration-300 cursor-pointer flex flex-col h-full hover:-translate-y-1"
+        >
+          <div className="w-14 h-14 bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-emerald-500/25 transition-all duration-300 ring-1 ring-emerald-500/20 group-hover:ring-emerald-500/40 shadow-inner">
+            <HelpCircle size={26} />
+          </div>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3 tracking-tight">Question Bank</h3>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mb-8 leading-relaxed flex-grow font-light">Previous years' professional exam questions, term questions, and card solutions.</p>
+          <span className="text-emerald-700 dark:text-emerald-400 text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">Explore questions <ArrowRight size={18} /></span>
+        </div>
+
+        <div 
           onClick={() => setActiveTab('notices')} 
-          className="group bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-8 rounded-[2rem] border border-emerald-900/10 dark:border-emerald-500/20 hover:bg-white dark:hover:bg-[#0e2f24]/80 hover:border-emerald-500/40 shadow-[0_4px_20px_rgba(4,40,24,0.04)] hover:shadow-[0_12px_30px_rgba(4,40,24,0.08)] dark:shadow-none dark:hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] transition-all duration-300 cursor-pointer flex flex-col h-full hover:-translate-y-1"
+          className="group bg-white/80 dark:bg-[#0a231b]/60 backdrop-blur-sm p-7 rounded-[2rem] border border-emerald-900/10 dark:border-emerald-500/20 hover:bg-white dark:hover:bg-[#0e2f24]/80 hover:border-emerald-500/40 shadow-[0_4px_20px_rgba(4,40,24,0.04)] hover:shadow-[0_12px_30px_rgba(4,40,24,0.08)] dark:shadow-none dark:hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] transition-all duration-300 cursor-pointer flex flex-col h-full hover:-translate-y-1"
         >
           <div className="w-14 h-14 bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-emerald-500/25 transition-all duration-300 ring-1 ring-emerald-500/20 group-hover:ring-emerald-500/40 shadow-inner">
             <Bell size={26} />
